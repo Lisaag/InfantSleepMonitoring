@@ -1,4 +1,4 @@
-name: simple_project_env
+name: lisa_env
 channels:
   - defaults
 dependencies:
@@ -24,4 +24,42 @@ dependencies:
   - wheel=0.44.0=py39hca03da5_0
   - xz=5.4.6=h80987f9_1
   - zlib=1.2.13=h18a0788_1
-prefix: /opt/anaconda3/envs/simple_project_env
+  - pip:
+      - absl-py==2.1.0
+      - astunparse==1.6.3
+      - certifi==2024.8.30
+      - charset-normalizer==3.4.0
+      - flatbuffers==24.3.25
+      - gast==0.6.0
+      - google-pasta==0.2.0
+      - grpcio==1.67.1
+      - h5py==3.12.1
+      - idna==3.10
+      - importlib-metadata==8.5.0
+      - keras==3.6.0
+      - libclang==18.1.1
+      - markdown==3.7
+      - markdown-it-py==3.0.0
+      - markupsafe==3.0.2
+      - mdurl==0.1.2
+      - ml-dtypes==0.4.1
+      - namex==0.0.8
+      - opt-einsum==3.4.0
+      - optree==0.13.0
+      - packaging==24.1
+      - protobuf==5.28.3
+      - pygments==2.18.0
+      - requests==2.32.3
+      - rich==13.9.4
+      - six==1.16.0
+      - tensorboard==2.18.0
+      - tensorboard-data-server==0.7.2
+      - tensorflow==2.18.0
+      - tensorflow-io-gcs-filesystem==0.37.1
+      - termcolor==2.5.0
+      - typing-extensions==4.12.2
+      - urllib3==2.2.3
+      - werkzeug==3.1.1
+      - wrapt==1.16.0
+      - zipp==3.20.2
+prefix: /opt/anaconda3/envs/lisa_env
