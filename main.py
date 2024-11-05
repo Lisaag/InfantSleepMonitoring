@@ -1,7 +1,7 @@
-from tensorflow import keras
+#from tensorflow import keras
 import tensorflow as tf
-from tensorflow.keras.datasets import fashion_mnist
-from keras import layers
+# from tensorflow.keras.datasets import fashion_mnist
+# from keras import layers
 
 
 print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
