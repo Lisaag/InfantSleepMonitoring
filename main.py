@@ -3,16 +3,19 @@ import tensorflow as tf
 from tensorflow.keras.datasets import fashion_mnist
 from keras import layers
 
-devices = tf.config.list_physical_devices()
-print("\nDevices: ", devices)
 
-gpus = tf.config.list_physical_devices('GPU')
-if gpus:
-  details = tf.config.experimental.get_device_details(gpus[0])
-  print("GPU details: ", details)
+print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
+
+# devices = tf.config.list_physical_devices()
+# print("\nDevices: ", devices)
+
+# gpus = tf.config.list_physical_devices('GPU')
+# if gpus:
+#   details = tf.config.experimental.get_device_details(gpus[0])
+#   print("GPU details: ", details)
 
 
-print("1")
+# print("1")
 # #Preparing the data
 # (x_train, y_train), (x_test, y_test) = fashion_mnist.load_data()
 
