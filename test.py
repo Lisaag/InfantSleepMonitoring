@@ -25,7 +25,7 @@ def get_keypoints(im_path):
     image = cv2.imread(im_path, cv2.IMREAD_COLOR)
     print(np.shape(image))
 
-    model = SHN(32, 17, ".\weights\pose_higher_hrnet_w32_512.pth")
+    model = SHN(32, 17, "weights\pose_higher_hrnet_w32_512.pth")
 
     joints = model.predict(image)
 
