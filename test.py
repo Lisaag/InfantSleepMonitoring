@@ -63,7 +63,16 @@ folder_dir = os.path.join(os.path.abspath(os.getcwd()), 'data', 'YOLOset', 'imag
 for file_name in os.listdir(folder_dir):
     img_path = os.path.join(folder_dir, file_name)
 
-    eye1, eye2, nose = get_keypoints(img_path)
+    try:
+        eye1, eye2, nose = get_keypoints(img_path)
+    except:
+        print("one of the eyes or nose not visible!")
+        continue
+
+
+    if(eye1 == None or eye2 == None or nose == None):
+        print("one of the eyes or nose not visible!")
+        continue
 
     eye1_norm, eye2_norm, bb_w_norm, bb_h_norm = get_normalized_bounding_box(img_path, eye1, eye2)
 
