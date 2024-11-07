@@ -70,9 +70,9 @@ for file_name in os.listdir(folder_dir):
         continue
 
 
-    if(eye1 == None or eye2 == None or nose == None):
-        print("one of the eyes or nose not visible!")
-        continue
+    # if(eye1 == None or eye2 == None or nose == None):
+    #     print("one of the eyes or nose not visible!")
+    #     continue
 
     eye1_norm, eye2_norm, bb_w_norm, bb_h_norm = get_normalized_bounding_box(img_path, eye1, eye2)
 
