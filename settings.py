@@ -1,2 +1,2 @@
 #Dataset locations
-slapi_dir = "datasets\\SLAPI"
+slapi_dir = "datasets/SLAPI"
