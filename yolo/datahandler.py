@@ -126,6 +126,8 @@ def split_dataset():
         else:
             train[df_info["file"][i]] = df_info["annotated"][i]
 
+    print(len(train))
+    print(len(val))
 
     df_all = pd.read_csv(os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "raw", "annotations", "all.csv"))
 
