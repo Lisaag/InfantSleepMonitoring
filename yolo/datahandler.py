@@ -4,7 +4,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 
 import re
 import shutil
-
+import cv2
 import pandas as pd
 import settings
 
@@ -77,6 +77,9 @@ def create_yolo_labels():
 
     for i in range(len(df_all)):
         x, y, w, h = get_aabb_from_string(df_all["region_shape_attributes"][i])
+        image = cv2.imread(os.path.join(os.path.abspath(os.getcwd()), all_images_dir, df_all["filename"][i]))
+        height, width, _ = image.shape
+        x/=width; w/=width; y/=height; h/=height
         write_label(df_all["filename"][i], all_labels_dir, x, y, w, h)
 
 
