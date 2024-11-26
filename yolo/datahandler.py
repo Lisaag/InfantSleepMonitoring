@@ -105,13 +105,14 @@ def create_yolo_labels(is_dummy:bool = False):
 
 def test_bb(file_name, x, y, w, h):
     im_path = os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "raw", "images", file_name)
+    print(im_path)
     image = cv2.imread(im_path, cv2.IMREAD_COLOR)
 
     #To draw a rectangle, you need top-left corner and bottom-right corner of rectangle.
     #cv2.rectangle(image, (x-(w/2), y-(h/2)), (x+(w/2), y+(h/2)), (0,255,0), 3)
 
-    if not cv2.imwrite(os.path.join(os.path.abspath(os.getcwd()), 'dataset', 'SLAPI', 'vis', file_name), image):
-        print("imwrite failed")
+    # if not cv2.imwrite(os.path.join(os.path.abspath(os.getcwd()), 'dataset', 'SLAPI', 'vis', file_name), image):
+    #     print("imwrite failed")
 
 ##All functions for train/val/test splitting
 def create_dummy_data(file_name, dir_name):
