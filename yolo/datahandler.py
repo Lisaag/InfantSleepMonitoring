@@ -94,19 +94,21 @@ def create_yolo_labels(is_dummy:bool = False):
         x, y, w, h = get_aabb_from_string(df_all["region_shape_attributes"][i])
         x=x-(w/2)
         y=y-(h/2)
+        test_bb(df_all["filename"][i], x, y, w, h)
+
         if(not is_dummy):
             image = cv2.imread(os.path.join(os.path.abspath(os.getcwd()), all_images_dir, df_all["filename"][i]))
             height, width, _ = image.shape
             x/=width; w/=width; y/=height; h/=height
         write_label(df_all["filename"][i], all_labels_dir, x, y, w, h)
-        test_bb(df_all["filename"][i], x, y, w, h)
+
 
 def test_bb(file_name, x, y, w, h):
     im_path = os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "raw", "images", file_name)
     image = cv2.imread(im_path, cv2.IMREAD_COLOR)
 
     #To draw a rectangle, you need top-left corner and bottom-right corner of rectangle.
-    cv2.rectangle(image,(x-(w/2), y-(h/2)),(x+(w/2), y+(h/2)),(0,255,0),3)
+    #cv2.rectangle(image, (x-(w/2), y-(h/2)), (x+(w/2), y+(h/2)), (0,255,0), 3)
 
     if not cv2.imwrite(os.path.join(os.path.abspath(os.getcwd()), 'dataset', 'SLAPI', 'vis', file_name), image):
         print("imwrite failed")
