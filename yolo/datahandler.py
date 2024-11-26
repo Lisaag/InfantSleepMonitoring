@@ -109,10 +109,10 @@ def test_bb(file_name, x, y, w, h):
     image = cv2.imread(im_path, cv2.IMREAD_COLOR)
 
     #To draw a rectangle, you need top-left corner and bottom-right corner of rectangle.
-    #cv2.rectangle(image, (x-(w/2), y-(h/2)), (x+(w/2), y+(h/2)), (0,255,0), 3)
-    cv2.imwrite(os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "raw", 'vis', file_name), image)
-    # if not cv2.imwrite(os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "raw", 'vis', file_name), image):
-    #     print("imwrite failed")
+    cv2.rectangle(image, (x-(w/2), y-(h/2)), (x+(w/2), y+(h/2)), (0,255,0), 3)
+    
+    if not cv2.imwrite(os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "raw", 'vis', file_name), image):
+        print("imwrite failed")
 
 ##All functions for train/val/test splitting
 def create_dummy_data(file_name, dir_name):
