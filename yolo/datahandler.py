@@ -109,8 +109,7 @@ def test_bb(file_name, x, y, w, h):
     image = cv2.imread(im_path, cv2.IMREAD_COLOR)
 
     #To draw a rectangle, you need top-left corner and bottom-right corner of rectangle.
-    #cv2.rectangle(image, (x-(w/2), y-(h/2)), (x+(w/2), y+(h/2)), (0,255,0), 3)
-    cv2.rectangle(image, (0, 0), (2, 2), (0,255,0), 3)
+    cv2.rectangle(image, (int(x-(w/2)), int(y-(h/2))), int((x+(w/2)), int(y+(h/2))), (0,255,0), 3)
 
     if not cv2.imwrite(os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "raw", 'vis', file_name), image):
         print("imwrite failed")
