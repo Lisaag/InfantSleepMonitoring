@@ -110,7 +110,7 @@ def test_bb(file_name, x, y, w, h):
 
     #To draw a rectangle, you need top-left corner and bottom-right corner of rectangle.
     cv2.rectangle(image, (int(x-(w/2)), int(y-(h/2))), (int(x+(w/2)), int(y+(h/2))), (0,255,0), 3)
-
+    cv2.circle(image,(int(x-(w/2)), int(y-(h/2))), 63, (255,0,0), -1)
     if not cv2.imwrite(os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "raw", 'vis', file_name), image):
         print("imwrite failed")
 
