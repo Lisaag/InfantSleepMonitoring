@@ -179,9 +179,6 @@ def split_dataset():
 
     df_info = pd.read_csv(os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "raw", "annotations", "info.csv"))
 
-    group1_count = 0
-    group2_count = 0
-    pmas =[]
 
     for i in range(len(df_info)):
         all_data[df_info["file"][i]] = df_info["annotated"][i]
@@ -191,22 +188,8 @@ def split_dataset():
             val[df_info["file"][i]] = df_info["annotated"][i]
 
         else:
-            pma = int(df_info["PMA"][i][:2])
-            if(pma !=  0): pmas.append(pma)
-            if (pma < 35): group1_count+=1
-            else: group2_count+=1
             train[df_info["file"][i]] = df_info["annotated"][i]
 
-    df_pma = {'pma': pmas}
-    df = pd.DataFrame(df_pma)
-    df['pma'].hist(bins=6)
-    plt.title('PMA frequencies')
-    plt.xlabel('Value')
-    plt.ylabel('Frequency')
-    plt.grid(False)
-    plt.show()
-    print(group1_count)
-    print(group2_count)
 
     df_all = pd.read_csv(os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "raw", "annotations", "all.csv"))
 
