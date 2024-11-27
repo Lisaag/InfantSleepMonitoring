@@ -105,7 +105,7 @@ def create_yolo_labels(is_dummy:bool = False):
 
 def test_bb(file_name, x, y, w, h):
     im_path = os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "raw", "images", file_name)
-    print(im_path)
+    #print(im_path)
     image = cv2.imread(im_path, cv2.IMREAD_COLOR)
 
     #To draw a rectangle, you need top-left corner and bottom-right corner of rectangle.
