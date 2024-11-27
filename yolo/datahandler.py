@@ -10,6 +10,8 @@ import pandas as pd
 import settings
 import matplotlib.pyplot as plt
 
+from collections import Counter
+
 #directories
 train_labels_dir = os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "train", "labels")
 train_images_dir = os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "train", "images")
@@ -179,16 +181,47 @@ def split_dataset():
 
     df_info = pd.read_csv(os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "raw", "annotations", "info.csv"))
 
+    group1_count = 0
+    group2_count = 0
+    pmas =[]
 
     for i in range(len(df_info)):
         all_data[df_info["file"][i]] = df_info["annotated"][i]
+
+        pma = int(df_info["PMA"][i][:2])
+
         if(df_info["annotated"][i]):
             test[df_info["file"][i]] = df_info["annotated"][i]
             #TEMP
             val[df_info["file"][i]] = df_info["annotated"][i]
 
         else:
+            pma = int(df_info["PMA"][i][:2])
+            if (pma != 0): pmas.append(pma)
+
             train[df_info["file"][i]] = df_info["annotated"][i]
+
+
+    counted_data = Counter(pmas)
+    
+    # Extract the integers (x values) and their counts (y values)
+    x = list(counted_data.keys())
+    y = list(counted_data.values())
+
+    # Create the bar chart
+    plt.bar(x, y, color='skyblue', edgecolor='black')
+
+    # Add titles and labels
+    plt.title('Occurrences PMA')
+    plt.xlabel('PMA')
+    plt.ylabel('Frequency')
+
+    # Show exact count above each bar
+    for i, v in enumerate(y):
+        plt.text(x[i], v + 0.1, str(v), ha='center', fontsize=10)
+
+    # Display the chart
+    plt.show()
 
 
     df_all = pd.read_csv(os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "raw", "annotations", "all.csv"))
