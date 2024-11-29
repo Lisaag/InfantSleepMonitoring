@@ -43,7 +43,7 @@ def get_aabb_from_string(input_string: str):
     pattern = r'"x":(\d+),"y":(\d+),"width":(\d+),"height":(\d+)'
 
     match = re.search(pattern, input_string)
-
+    print(match)
     if match:
         x = int(match.group(1))
         y = int(match.group(2))
