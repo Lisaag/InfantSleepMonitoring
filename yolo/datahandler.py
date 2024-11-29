@@ -191,6 +191,9 @@ def split_dataset():
     delete_files_in_directory(train_labels_dir)
     delete_files_in_directory(test_labels_dir)
     delete_files_in_directory(val_labels_dir)
+    delete_files_in_directory(train_images_dir)
+    delete_files_in_directory(test_images_dir)
+    delete_files_in_directory(val_images_dir)
 
     df_info = pd.read_csv(os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "raw", "annotations", "info.csv"))
 
