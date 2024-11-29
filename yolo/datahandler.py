@@ -198,16 +198,16 @@ def split_dataset():
 
     df_info = pd.read_csv(os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "raw", "annotations", "info.csv"))
 
-    for i in range(len(df_info)):
-        all_data[df_info["file"][i]] = df_info["annotated"][i]
+    # for i in range(len(df_info)):
+    #     all_data[df_info["file"][i]] = df_info["annotated"][i]
 
-        pma = int(df_info["PMA"][i][:2])
+    #     pma = int(df_info["PMA"][i][:2])
 
-        if(df_info["annotated"][i]): #add to test set if annotated with (OR/CR/C/O)
-            test[df_info["file"][i]] = 1#df_info["annotated"][i]
-            val[df_info["file"][i]] = 1
-        else: 
-            train[df_info["file"][i]] = 1
+    #     if(df_info["annotated"][i]): #add to test set if annotated with (OR/CR/C/O)
+    #         test[df_info["file"][i]] = 1#df_info["annotated"][i]
+    #         val[df_info["file"][i]] = 1
+    #     else: 
+    #         train[df_info["file"][i]] = 1
 
         # elif(pma < 32 or pma > 36):
         #     test[df_info["file"][i]] = 1
@@ -220,42 +220,42 @@ def split_dataset():
 
     df_all = pd.read_csv(os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "raw", "annotations", "all.csv"))
 
-    # train_val_dic = dict()
-    # total_open_count = 0
-    # total_closed_count = 0
-    # for i in range(len(df_all)):
-    #     key = re.sub(r'_\d+\.jpg$', '', df_all["filename"][i])
-    #     if key in test: continue
-    #     if key not in train_val_dic:
-    #         train_val_dic[key] = SampleInfo()
+    train_val_dic = dict()
+    total_open_count = 0
+    total_closed_count = 0
+    for i in range(len(df_all)):
+        key = re.sub(r'_\d+\.jpg$', '', df_all["filename"][i])
+        if key in test: continue
+        if key not in train_val_dic:
+            train_val_dic[key] = SampleInfo()
 
-    #     attributes = get_attributes_from_string(df_all["region_attributes"][i])
-    #     if(attributes[0]): total_open_count += 1
-    #     else: total_closed_count += 1
-    #     update_sample_properties(train_val_dic[key], attributes, df_all["filename"][i])
+        attributes = get_attributes_from_string(df_all["region_attributes"][i])
+        if(attributes[0]): total_open_count += 1
+        else: total_closed_count += 1
+        update_sample_properties(train_val_dic[key], attributes, df_all["filename"][i])
 
-    # open_val = int(total_open_count * 0.2)
-    # open_train = total_open_count - open_val
-    # closed_val = int(total_closed_count * 0.2)
-    # closed_train = total_closed_count - closed_val
+    open_val = int(total_open_count * 0.2)
+    open_train = total_open_count - open_val
+    closed_val = int(total_closed_count * 0.2)
+    closed_train = total_closed_count - closed_val
 
-    # val_open_count = 0
-    # val_closed_count = 0
+    val_open_count = 0
+    val_closed_count = 0
 
-    # for key in train_val_dic:
-    #     if(val_open_count < open_val and train_val_dic[key].open_count != 0):
-    #         val[key] = 1
-    #         val_open_count += train_val_dic[key].open_count
-    #         val_closed_count += train_val_dic[key].closed_count
-    #     elif(val_closed_count < closed_val and train_val_dic[key].closed_count != 0):
-    #         val[key] = 1
-    #         val_open_count += train_val_dic[key].open_count
-    #         val_closed_count += train_val_dic[key].closed_count
-    #     else:
-    #         train[key] = 1
+    for key in train_val_dic:
+        if(val_open_count < open_val and train_val_dic[key].open_count != 0):
+            val[key] = 1
+            val_open_count += train_val_dic[key].open_count
+            val_closed_count += train_val_dic[key].closed_count
+        elif(val_closed_count < closed_val and train_val_dic[key].closed_count != 0):
+            val[key] = 1
+            val_open_count += train_val_dic[key].open_count
+            val_closed_count += train_val_dic[key].closed_count
+        else:
+            train[key] = 1
         
-    # print(len(train_val_dic))
-    # print('train={:d}, val={:d}, test={:d}'.format(len(train), len(val), len(test)))
+    print(len(train_val_dic))
+    print('train={:d}, val={:d}, test={:d}'.format(len(train), len(val), len(test)))
         
 
 
