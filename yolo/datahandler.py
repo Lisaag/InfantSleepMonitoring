@@ -187,37 +187,7 @@ def update_sample_properties(sample_info, attributes, file_name):
     if(open_value): sample_info.open_count += 1
     else: sample_info.closed_count += 1
 
-
-def split_dataset():
-    delete_files_in_directory(train_labels_dir)
-    delete_files_in_directory(test_labels_dir)
-    delete_files_in_directory(val_labels_dir)
-    delete_files_in_directory(train_images_dir)
-    delete_files_in_directory(test_images_dir)
-    delete_files_in_directory(val_images_dir)
-
-    df_info = pd.read_csv(os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "raw", "annotations", "info.csv"))
-
-    # for i in range(len(df_info)):
-    #     all_data[df_info["file"][i]] = df_info["annotated"][i]
-
-    #     pma = int(df_info["PMA"][i][:2])
-
-    #     if(df_info["annotated"][i]): #add to test set if annotated with (OR/CR/C/O)
-    #         test[df_info["file"][i]] = 1#df_info["annotated"][i]
-    #         val[df_info["file"][i]] = 1
-    #     else: 
-    #         train[df_info["file"][i]] = 1
-
-        # elif(pma < 32 or pma > 36):
-        #     test[df_info["file"][i]] = 1
-            # #TEMP
-            # val[df_info["file"][i]] = df_info["annotated"][i]
-        # else:
-        #     if (pma != 0): pmas.append(pma)
-
-        #     train[df_info["file"][i]] = df_info["annotated"][i]
-
+def train_val_split():
     df_all = pd.read_csv(os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "raw", "annotations", "all.csv"))
 
     train_val_dic = dict()
@@ -255,9 +225,47 @@ def split_dataset():
             train[key] = 1
         
     print(len(train_val_dic))
-    print('train={:d}, val={:d}, test={:d}'.format(len(train), len(val), len(test)))
-        
 
+def split_dataset():
+    delete_files_in_directory(train_labels_dir)
+    delete_files_in_directory(test_labels_dir)
+    delete_files_in_directory(val_labels_dir)
+    delete_files_in_directory(train_images_dir)
+    delete_files_in_directory(test_images_dir)
+    delete_files_in_directory(val_images_dir)
+
+    df_info = pd.read_csv(os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "raw", "annotations", "info.csv"))
+
+    for i in range(len(df_info)):
+        all_data[df_info["file"][i]] = df_info["annotated"][i]
+
+        pma = int(df_info["PMA"][i][:2])
+
+        if(df_info["annotated"][i]): #add to test set if annotated with (OR/CR/C/O)
+            test[df_info["file"][i]] = 1#df_info["annotated"][i]
+        #     val[df_info["file"][i]] = 1
+        # else: 
+        #     train[df_info["file"][i]] = 1
+
+        # elif(pma < 32 or pma > 36):
+        #     test[df_info["file"][i]] = 1
+        #     #TEMP
+        #     val[df_info["file"][i]] = df_info["annotated"][i]
+        # else:
+        #     if (pma != 0): pmas.append(pma)
+
+        #     train[df_info["file"][i]] = df_info["annotated"][i]
+
+    train_val_split()
+
+    print('train={:d}, val={:d}, test={:d}'.format(len(train), len(val), len(test)))
+
+
+    df_all = pd.read_csv(os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "raw", "annotations", "all.csv"))
+    
+    for i in range(len(df_all)):
+        attributes = get_attributes_from_string(df_all["region_attributes"][i])
+        copy_to_split(df_all["filename"][i], attributes)
 
 
     ##################################CHECKS############################################
@@ -273,10 +281,6 @@ def split_dataset():
             print("SAME PATIENT DATA IN MULTIPLE SETS!!! " + df_info["file"][i])
         if(count == 0):
             print("PATIENT DATA NOT IN ANY SET!!! " + df_info["file"][i])
-
-    for i in range(len(df_all)):
-        attributes = get_attributes_from_string(df_all["region_attributes"][i])
-        copy_to_split(df_all["filename"][i], attributes)
 
 
     print('train set open={:d}, closed={:d}, q1={:d},q2={:d},q3={:d},q4={:d},q5={:d}, occlusion={:d}'.format(train_info.open_count, train_info.closed_count,
