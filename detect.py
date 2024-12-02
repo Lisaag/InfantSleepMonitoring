@@ -5,7 +5,7 @@ from ultralytics import YOLO  # Replace with appropriate YOLO class import
 model = YOLO("runs/detect/train2/weights/best.pt")
 
 # Load video
-cap = cv2.VideoCapture("vid/vlc-record-2024-12-02-23h12m51s-2023-03-14 12-59-52.mp4")
+cap = cv2.VideoCapture("vlc-record-2024-12-02-23h12m51s-2023-03-14 12-59-52.mp4-.mp4")
 
 output_video = "vid/output.mp4"  # Path to save the processed video
 
