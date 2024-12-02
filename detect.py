@@ -1,5 +1,5 @@
 import cv2
-from yolo import YOLO  # Replace with appropriate YOLO class import
+from ultralytics import YOLO  # Replace with appropriate YOLO class import
 
 # Initialize model
 model = YOLO(weights="path/to/yolov5s.pt")
