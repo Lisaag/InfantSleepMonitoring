@@ -1,13 +1,15 @@
 import cv2
 from ultralytics import YOLO  # Replace with appropriate YOLO class import
+import os
+import sys
 
 # Initialize model
 model = YOLO("runs/detect/train2/weights/best.pt")
 
 # Load video
-cap = cv2.VideoCapture("1.mp4")
+cap = cv2.VideoCapture(os.path.join(os.path.abspath(os.getcwd()), "vid","1.mp4"))
 
-output_video = "vid/output.mp4"  # Path to save the processed video
+output_video = os.path.join(os.path.abspath(os.getcwd()), "vid","output.mp4")  # Path to save the processed video
 
 # Get video properties
 frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
