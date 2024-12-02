@@ -10,6 +10,7 @@ import cv2
 import pandas as pd
 import settings
 import matplotlib.pyplot as plt
+import statistics
 
 #directories
 train_labels_dir = os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "train", "labels")
@@ -37,6 +38,7 @@ class SampleInfo:
     file_names: List[str] = field(default_factory=list)
     open_count = 0
     closed_count = 0
+    qualities: List[int] = field(default_factory=list)
 
 ##All functions for csv string interpretation
 def get_aabb_from_string(input_string: str):
@@ -183,9 +185,26 @@ def update_sample_properties(sample_info, attributes, file_name):
     open_value, quality_value, occlusion_value = attributes
 
     sample_info.file_names.append(file_name)
+    sample_info.qualities.append(attributes[1])
 
     if(open_value): sample_info.open_count += 1
     else: sample_info.closed_count += 1
+
+def divide_train_val(sample_dict:dict, open_val, closed_val):
+    val_open_count = 0 #how many open samples are in the validation set currently
+    val_closed_count = 0 #how many closed samples are in the validation set currently
+    for key in sample_dict:
+        # print(int(statistics.median(train_val_dic[key].qualities)))
+        if(val_open_count < open_val and sample_dict[key].open_count != 0):
+            val[key] = 1
+            val_open_count += sample_dict[key].open_count
+            val_closed_count += sample_dict[key].closed_count
+        elif(val_closed_count < closed_val and sample_dict[key].closed_count != 0):
+            val[key] = 1
+            val_open_count += sample_dict[key].open_count
+            val_closed_count += sample_dict[key].closed_count
+        else:
+            train[key] = 1
 
 def train_val_split():
     df_all = pd.read_csv(os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "raw", "annotations", "all.csv"))
@@ -193,36 +212,47 @@ def train_val_split():
     train_val_dic = dict()
     total_open_count = 0
     total_closed_count = 0
+
     for i in range(len(df_all)):
         key = re.sub(r'_\d+\.jpg$', '', df_all["filename"][i])
         if key in test: continue
+
         if key not in train_val_dic:
             train_val_dic[key] = SampleInfo()
 
         attributes = get_attributes_from_string(df_all["region_attributes"][i])
+
         if(attributes[0]): total_open_count += 1
         else: total_closed_count += 1
         update_sample_properties(train_val_dic[key], attributes, df_all["filename"][i])
 
-    open_val = int(total_open_count * 0.2)
-    open_train = total_open_count - open_val
-    closed_val = int(total_closed_count * 0.2)
-    closed_train = total_closed_count - closed_val
 
-    val_open_count = 0
-    val_closed_count = 0
+    q1_samples = dict()
+    q2_samples = dict()
+    q3_samples = dict()
+
+    open_counts = [0, 0, 0]
+    closed_counts = [0, 0, 0]
 
     for key in train_val_dic:
-        if(val_open_count < open_val and train_val_dic[key].open_count != 0):
-            val[key] = 1
-            val_open_count += train_val_dic[key].open_count
-            val_closed_count += train_val_dic[key].closed_count
-        elif(val_closed_count < closed_val and train_val_dic[key].closed_count != 0):
-            val[key] = 1
-            val_open_count += train_val_dic[key].open_count
-            val_closed_count += train_val_dic[key].closed_count
-        else:
-            train[key] = 1
+        quality_median = int(statistics.median(train_val_dic[key].qualities))
+        if(quality_median == 1):
+            q1_samples[key] = train_val_dic[key]
+            open_counts[0] += q1_samples[key].open_count
+            closed_counts[0] += q1_samples[key].closed_count
+        elif(quality_median == 2):
+            q2_samples[key] = train_val_dic[key]
+            open_counts[1] += q2_samples[key].open_count
+            closed_counts[1] += q2_samples[key].closed_count
+        elif(quality_median >= 3):
+            q3_samples[key] = train_val_dic[key]
+            open_counts[2] += q3_samples[key].open_count
+            closed_counts[2] += q3_samples[key].closed_count
+
+
+    divide_train_val(q1_samples, int(open_counts[0] * 0.2), int(closed_counts[0] * 0.2))
+    divide_train_val(q2_samples, int(open_counts[1] * 0.2), int(closed_counts[1] * 0.2))
+    divide_train_val(q3_samples, int(open_counts[2] * 0.2), int(closed_counts[2] * 0.2))
         
     print(len(train_val_dic))
 
@@ -275,8 +305,8 @@ def split_dataset():
             count += 1
         if(df_info["file"][i] in val):
             count += 1
-        # if(df_info["file"][i] in test):
-        #     count += 1
+        if(df_info["file"][i] in test):
+            count += 1
         if(count > 1):
             print("SAME PATIENT DATA IN MULTIPLE SETS!!! " + df_info["file"][i])
         if(count == 0):
