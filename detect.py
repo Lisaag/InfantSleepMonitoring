@@ -1,4 +1,5 @@
 import supervision as sv
+from ultralytics import YOLO
 import cv2
 import numpy as np
 import os
