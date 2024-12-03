@@ -1,38 +1,26 @@
+import supervision as sv
 import cv2
-from ultralytics import YOLO  # Replace with appropriate YOLO class import
+import numpy as np
 import os
-import sys
+
 
 # Initialize model
 model = YOLO("runs/detect/train2/weights/best.pt")
 
-# Load video
-cap = cv2.VideoCapture(os.path.join(os.path.abspath(os.getcwd()), "vid","1.mp4"))
+classes = ["eye"]
+model.set_classes(classes)
 
-output_video = os.path.join(os.path.abspath(os.getcwd()), "vid","output.mp4")  # Path to save the processed video
+def process_frame(frame: np.ndarray, _) -> np.ndarray:
+    results = model.infer(frame, text=classes)
+    
+    detections = sv.Detections.from_inference(results)
 
-# Get video properties
-frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-fps = int(cap.get(cv2.CAP_PROP_FPS))
+    box_annotator = sv.BoxAnnotator(thickness=4, text_thickness=4, text_scale=2)
 
-# Define video writer
-fourcc = cv2.VideoWriter_fourcc(*"mp4v")  # Codec for MP4
-out = cv2.VideoWriter(output_video, fourcc, fps, (frame_width, frame_height))
+    labels = [f"{model.names[class_id]} {confidence:0.2f}" for _, _, confidence, class_id, _ in detections]
+    frame = box_annotator.annotate(scene=frame, detections=detections, labels=labels)
 
-while cap.isOpened():
-    ret, frame = cap.read()
-    if not ret:
-        break
+    return frame
 
-    # Predict using YOLO
-    results = model(frame)
-
-    # Annotate frame with predictions
-    annotated_frame = results.render()[0]  # Render annotated frame
-
-    # Write frame to output video
-    out.write(annotated_frame)
-
-cap.release()
-out.release()
+VIDEO_PATH = os.path.join(os.path.abspath(os.getcwd()), "vid","1.mp4")
+sv.process_video(source_path=VIDEO_PATH, target_path=f"result.mp4", callback=process_frame)
