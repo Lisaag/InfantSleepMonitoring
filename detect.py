@@ -8,55 +8,62 @@ weights_path = os.path.join(os.path.abspath(os.getcwd()), "runs", "detect", "tra
 video_input_path = os.path.join(os.path.abspath(os.getcwd()), "vid","1.mp4")
 output_video_path = os.path.join(os.path.abspath(os.getcwd()), "vid","output.mp4")
 
+IN_directory = os.path.join(os.path.abspath(os.getcwd()), "vid", "IN")
+OUT_directory = os.path.join(os.path.abspath(os.getcwd()), "vid", "OUT")
+for filename in os.listdir(IN_directory):
+    print(filename)
 
-# Load the YOLO model
-model = YOLO(weights_path)
 
-# Open the video file
-cap = cv2.VideoCapture(video_input_path)
+# # Load the YOLO model
+# model = YOLO(weights_path)
 
-# Get video properties
-frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-fps = int(cap.get(cv2.CAP_PROP_FPS))
+# # Open the video file
+# cap = cv2.VideoCapture(video_input_path)
 
-# Define the codec and create VideoWriter object
-fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-out = cv2.VideoWriter(output_video_path, fourcc, fps, (frame_width, frame_height))
+# # Get video properties
+# frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+# frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+# fps = int(cap.get(cv2.CAP_PROP_FPS))
 
-# Process each frame
-while cap.isOpened():
-    ret, frame = cap.read()
-    if not ret:
-        break
+# # Define the codec and create VideoWriter object
+# fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+# out = cv2.VideoWriter(output_video_path, fourcc, fps, (frame_width, frame_height))
 
-    # Make predictions
-    results = model(frame)
 
-    # Draw predictions on the frame
-    for result in results:  # Iterate through detections
-        boxes = result.boxes  # Get bounding boxes
-        for box in boxes:
-            x1, y1, x2, y2 = map(int, box.xyxy[0])  # Bounding box coordinates
-            conf = box.conf[0]  # Confidence score
-            cls = box.cls[0]  # Class index
 
-            # Draw bounding box
-            cv2.rectangle(frame, (x1, y1), (x2, y2), (255, 0, 0), 2)
-            label = f"{model.names[int(cls)]} {conf:.2f}"  # Class label and confidence
-            cv2.putText(frame, label, (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 0, 0), 2)
+# # Process each frame
+# while cap.isOpened():
+#     ret, frame = cap.read()
+#     if not ret:
+#         break
 
-    # Write the frame to the output video
-    out.write(frame)
+#     # Make predictions
+#     results = model(frame)
 
-    # Optional: Display the frame (comment out if not needed)
-    # cv2.imshow('YOLO Prediction', frame)
-    # if cv2.waitKey(1) & 0xFF == ord('q'):
-    #     break
+#     # Draw predictions on the frame
+#     for result in results:  # Iterate through detections
+#         boxes = result.boxes  # Get bounding boxes
+#         for box in boxes:
+#             x1, y1, x2, y2 = map(int, box.xyxy[0])  # Bounding box coordinates
+#             conf = box.conf[0]  # Confidence score
+#             cls = box.cls[0]  # Class index
 
-# Release resources
-cap.release()
-out.release()
-cv2.destroyAllWindows()
+#             # Draw bounding box
+#             cv2.rectangle(frame, (x1, y1), (x2, y2), (255, 0, 0), 2)
+#             label = f"{model.names[int(cls)]} {conf:.2f}"  # Class label and confidence
+#             cv2.putText(frame, label, (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 0, 0), 2)
 
-print(f"Processed video saved at {output_video_path}")
+#     # Write the frame to the output video
+#     out.write(frame)
+
+#     # Optional: Display the frame (comment out if not needed)
+#     # cv2.imshow('YOLO Prediction', frame)
+#     # if cv2.waitKey(1) & 0xFF == ord('q'):
+#     #     break
+
+# # Release resources
+# cap.release()
+# out.release()
+# cv2.destroyAllWindows()
+
+# print(f"Processed video saved at {output_video_path}")
