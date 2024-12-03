@@ -1,27 +1,51 @@
-import supervision as sv
-from ultralytics import YOLO
 import cv2
-import numpy as np
+from ultralytics import YOLO
+from pathlib import Path
 import os
 
+# Define the paths
+weights_path = os.path.join(os.path.abspath(os.getcwd()), "runs", "detect", "train2", "weights", "best.pt")
+video_input_path = os.path.join(os.path.abspath(os.getcwd()), "vid","1.mp4")
+output_video_path = os.path.join(os.path.abspath(os.getcwd()), "vid","output.mp4")
 
-# Initialize model
-model = YOLO("runs/detect/train2/weights/best.pt")
+# Load the YOLO model
+model = YOLO(weights_path)
 
-classes = ["eye"]
-# model.set_classes(classes)
+# Open the video file
+cap = cv2.VideoCapture(video_input_path)
 
-def process_frame(frame: np.ndarray, _) -> np.ndarray:
-    results = model.infer(frame, text=classes)
-    
-    detections = sv.Detections.from_inference(results)
+# Get video properties
+frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+fps = int(cap.get(cv2.CAP_PROP_FPS))
 
-    box_annotator = sv.BoxAnnotator(thickness=4, text_thickness=4, text_scale=2)
+# Define the codec and create VideoWriter object
+fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+out = cv2.VideoWriter(output_video_path, fourcc, fps, (frame_width, frame_height))
 
-    labels = [f"{model.names[class_id]} {confidence:0.2f}" for _, _, confidence, class_id, _ in detections]
-    frame = box_annotator.annotate(scene=frame, detections=detections, labels=labels)
+# Process each frame
+while cap.isOpened():
+    ret, frame = cap.read()
+    if not ret:
+        break
 
-    return frame
+    # Make predictions
+    results = model(frame)
 
-VIDEO_PATH = os.path.join(os.path.abspath(os.getcwd()), "vid","1.mp4")
-sv.process_video(source_path=VIDEO_PATH, target_path=f"result.mp4", callback=process_frame)
+    # Render predictions on the frame
+    rendered_frame = results.render()[0]
+
+    # Write the frame to the output video
+    out.write(rendered_frame)
+
+    # Optional: Display the frame (comment out if not needed)
+    # cv2.imshow('YOLO Prediction', rendered_frame)
+    # if cv2.waitKey(1) & 0xFF == ord('q'):
+    #     break
+
+# Release resources
+cap.release()
+out.release()
+cv2.destroyAllWindows()
+
+print(f"Processed video saved at {output_video_path}")
