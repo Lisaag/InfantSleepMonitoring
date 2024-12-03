@@ -9,7 +9,7 @@ import os
 model = YOLO("runs/detect/train2/weights/best.pt")
 
 classes = ["eye"]
-model.set_classes(classes)
+# model.set_classes(classes)
 
 def process_frame(frame: np.ndarray, _) -> np.ndarray:
     results = model.infer(frame, text=classes)
