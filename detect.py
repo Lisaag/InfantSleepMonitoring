@@ -8,6 +8,7 @@ weights_path = os.path.join(os.path.abspath(os.getcwd()), "runs", "detect", "tra
 video_input_path = os.path.join(os.path.abspath(os.getcwd()), "vid","1.mp4")
 output_video_path = os.path.join(os.path.abspath(os.getcwd()), "vid","output.mp4")
 
+
 # Load the YOLO model
 model = YOLO(weights_path)
 
@@ -32,14 +33,24 @@ while cap.isOpened():
     # Make predictions
     results = model(frame)
 
-    # Render predictions on the frame
-    rendered_frame = results.render()[0]
+    # Draw predictions on the frame
+    for result in results:  # Iterate through detections
+        boxes = result.boxes  # Get bounding boxes
+        for box in boxes:
+            x1, y1, x2, y2 = map(int, box.xyxy[0])  # Bounding box coordinates
+            conf = box.conf[0]  # Confidence score
+            cls = box.cls[0]  # Class index
+
+            # Draw bounding box
+            cv2.rectangle(frame, (x1, y1), (x2, y2), (255, 0, 0), 2)
+            label = f"{model.names[int(cls)]} {conf:.2f}"  # Class label and confidence
+            cv2.putText(frame, label, (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
 
     # Write the frame to the output video
-    out.write(rendered_frame)
+    out.write(frame)
 
     # Optional: Display the frame (comment out if not needed)
-    # cv2.imshow('YOLO Prediction', rendered_frame)
+    # cv2.imshow('YOLO Prediction', frame)
     # if cv2.waitKey(1) & 0xFF == ord('q'):
     #     break
 
