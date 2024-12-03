@@ -44,7 +44,7 @@ while cap.isOpened():
             # Draw bounding box
             cv2.rectangle(frame, (x1, y1), (x2, y2), (255, 0, 0), 2)
             label = f"{model.names[int(cls)]} {conf:.2f}"  # Class label and confidence
-            cv2.putText(frame, label, (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (255, 0, 0), 2)
+            cv2.putText(frame, label, (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 0, 0), 2)
 
     # Write the frame to the output video
     out.write(frame)
