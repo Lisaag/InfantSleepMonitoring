@@ -77,8 +77,6 @@ def write_aabb_label(file_name, dir_name, x, y, w, h):
 def write_obb_label(file_name, dir_name, all_points_x, all_points_y):
     file_name = re.sub(r'\.jpg$', '', file_name)
 
-    print(file_name)
-
     with open(os.path.join(os.path.abspath(os.getcwd()), dir_name, file_name + '.txt'), "a") as file:
         file.write("0 " + str(all_points_x[0]) + " " + str(all_points_y[0]) + " "  + str(all_points_x[1]) + " " + str(all_points_y[1]) + " "+ str(all_points_x[2]) + " " + str(all_points_y[2]) + " "+ str(all_points_x[3]) + " " + str(all_points_y[3]) + "\n")
 
@@ -147,11 +145,8 @@ def create_yolo_labels(is_dummy:bool = False, annotation_type:str = "aabb"):
                 test_obb(df_all["filename"][i], all_points_x, all_points_y)
                 image = cv2.imread(os.path.join(os.path.abspath(os.getcwd()), all_images_dir, df_all["filename"][i]))
                 height, width, _ = image.shape
-                for i in range(len(all_points_x)): 
-                    all_points_x[i] /= width
-                for i in range(len(all_points_y)): 
-                    all_points_y[i] /= height
-            print(i)
+                for x in range(len(all_points_x)): all_points_x[x] /= width
+                for y in range(len(all_points_y)): all_points_y[y] /= height
             write_obb_label(df_all["filename"][i], all_obb_labels_dir, all_points_x, all_points_y)
     else:
         print("unknown annotation type")
