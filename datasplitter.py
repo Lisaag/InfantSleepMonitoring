@@ -13,14 +13,15 @@ import matplotlib.pyplot as plt
 import statistics
 
 #directories
-train_labels_dir = os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "train", "labels")
-train_images_dir = os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "train", "images")
-val_labels_dir = os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "val", "labels")
-val_images_dir = os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "val", "images")
-test_labels_dir = os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "test", "labels")
-test_images_dir = os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "test", "images")
-all_labels_dir = os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "raw", "labels")
-all_images_dir = os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "raw", "images")
+train_labels_dir = ""
+train_images_dir = ""
+val_labels_dir = ""
+val_images_dir = ""
+test_labels_dir = ""
+test_images_dir = ""
+all_labels_dir = ""
+all_images_dir = ""
+all_csv = ""
 
 @dataclass
 class SetInfo:
@@ -49,6 +50,9 @@ val:dict = dict()
 train_info = SetInfo()
 val_info = SetInfo()
 test_info = SetInfo()
+
+def str_to_bool(s: str):
+   return s.lower() == "true"
 
 def delete_files_in_directory(directory_path):
    try:
@@ -144,7 +148,7 @@ def divide_train_val(sample_dict:dict, open_val, closed_val):
             train[key] = 1
 
 def train_val_split():
-    df_all = pd.read_csv(os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "raw", "annotations", "all.csv"))
+    df_all = pd.read_csv(all_csv)
 
     train_val_dic = dict()
     total_open_count = 0
@@ -193,7 +197,26 @@ def train_val_split():
         
     print(len(train_val_dic))
 
-def split_dataset():
+def split_dataset(annotation_type:str = "aabb"):
+    global train_labels_dir
+    train_labels_dir = os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, annotation_type, "train", "labels")
+    global train_images_dir
+    train_images_dir = os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, annotation_type, "train", "images")
+    global val_labels_dir
+    val_labels_dir = os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, annotation_type, "val", "labels")
+    global val_images_dir
+    val_images_dir = os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, annotation_type,"val", "images")
+    global test_labels_dir
+    test_labels_dir = os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, annotation_type, "test", "labels")
+    global test_images_dir
+    test_images_dir = os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, annotation_type, "test", "images")
+    global all_labels_dir
+    all_labels_dir = os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "raw", "labels", annotation_type)
+    global all_images_dir
+    all_images_dir = os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "raw", "images")
+    global all_csv
+    all_csv = os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "raw", "annotations", annotation_type + ".csv")
+
     delete_files_in_directory(train_labels_dir)
     delete_files_in_directory(test_labels_dir)
     delete_files_in_directory(val_labels_dir)
@@ -228,7 +251,7 @@ def split_dataset():
     print('train={:d}, val={:d}, test={:d}'.format(len(train), len(val), len(test)))
 
 
-    df_all = pd.read_csv(os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "raw", "annotations", "all.csv"))
+    df_all = pd.read_csv(all_csv)
     
     for i in range(len(df_all)):
         attributes = get_attributes_from_string(df_all["region_attributes"][i])
