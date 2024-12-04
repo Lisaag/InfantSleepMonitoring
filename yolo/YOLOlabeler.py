@@ -147,8 +147,11 @@ def create_yolo_labels(is_dummy:bool = False, annotation_type:str = "aabb"):
                 test_obb(df_all["filename"][i], all_points_x, all_points_y)
                 image = cv2.imread(os.path.join(os.path.abspath(os.getcwd()), all_images_dir, df_all["filename"][i]))
                 height, width, _ = image.shape
-                for i in range(len(all_points_x)): all_points_x[i] /= width
-                for i in range(len(all_points_y)): all_points_y[i] /= height
+                for i in range(len(all_points_x)): 
+                    all_points_x[i] /= width
+                for i in range(len(all_points_y)): 
+                    all_points_y[i] /= height
+            print(i)
             write_obb_label(df_all["filename"][i], all_obb_labels_dir, all_points_x, all_points_y)
     else:
         print("unknown annotation type")
