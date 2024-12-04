@@ -96,9 +96,11 @@ def test_aabb(file_name, x, y, w, h):
 #Draw aabb on image to check if implementation is correct
 def test_obb(file_name, all_points_x, all_points_y):
     im_path = os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "raw", "vis", "obb", file_name)
-    image = cv2.imread(im_path, cv2.IMREAD_COLOR)
-    if(image is None): im_path = os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "raw", "images", file_name)
-    image = cv2.imread(im_path, cv2.IMREAD_COLOR)
+    if(os.path.exists(im_path)):
+        image = cv2.imread(im_path, cv2.IMREAD_COLOR)
+    else: 
+        im_path = os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "raw", "images", file_name)
+        image = cv2.imread(im_path, cv2.IMREAD_COLOR)
 
     pts = np.array([[all_points_x[0], all_points_y[0]],[all_points_x[1], all_points_y[1]],[all_points_x[2], all_points_y[2]],[all_points_x[3], all_points_y[3]]], np.int32)
     pts = pts.reshape((-1,1,2))
