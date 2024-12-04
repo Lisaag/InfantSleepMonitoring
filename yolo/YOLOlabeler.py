@@ -82,7 +82,7 @@ def write_obb_label(file_name, dir_name, all_points_x, all_points_y):
 
 #Draw aabb on image to check if implementation is correct
 def test_aabb(file_name, x, y, w, h):
-    im_path = os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "raw", "vis", "abb", file_name)
+    im_path = os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "raw", "vis", "aabb", file_name)
     if(os.path.exists(im_path)):
         image = cv2.imread(im_path, cv2.IMREAD_COLOR)
     else: 
@@ -92,7 +92,7 @@ def test_aabb(file_name, x, y, w, h):
     #To draw a rectangle, you need top-left corner and bottom-right corner of rectangle.
     cv2.rectangle(image, (int(x-(w/2)), int(y-(h/2))), (int(x+(w/2)), int(y+(h/2))), (0,255,0), 3)
     cv2.circle(image,(int(x-(w/2)), int(y-(h/2))), 10, (255,0,0), -1)
-    if not cv2.imwrite(os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "raw", "vis", "abb", file_name), image):
+    if not cv2.imwrite(os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "raw", "vis", "aabb", file_name), image):
         print("imwrite failed")
 
 #Draw aabb on image to check if implementation is correct
