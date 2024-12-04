@@ -77,15 +77,19 @@ def write_aabb_label(file_name, dir_name, x, y, w, h):
 def write_obb_label(file_name, dir_name, all_points_x, all_points_y):
     file_name = re.sub(r'\.jpg$', '', file_name)
 
+    print(file_name)
+
     with open(os.path.join(os.path.abspath(os.getcwd()), dir_name, file_name + '.txt'), "a") as file:
         file.write("0 " + str(all_points_x[0]) + " " + str(all_points_y[0]) + " "  + str(all_points_x[1]) + " " + str(all_points_y[1]) + " "+ str(all_points_x[2]) + " " + str(all_points_y[2]) + " "+ str(all_points_x[3]) + " " + str(all_points_y[3]) + "\n")
 
 #Draw aabb on image to check if implementation is correct
 def test_aabb(file_name, x, y, w, h):
     im_path = os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "raw", "vis", "abb", file_name)
-    image = cv2.imread(im_path, cv2.IMREAD_COLOR)
-    if(image is None): im_path = os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "raw", "images", file_name)
-    image = cv2.imread(im_path, cv2.IMREAD_COLOR)
+    if(os.path.exists(im_path)):
+        image = cv2.imread(im_path, cv2.IMREAD_COLOR)
+    else: 
+        im_path = os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "raw", "images", file_name)
+        image = cv2.imread(im_path, cv2.IMREAD_COLOR)
 
     #To draw a rectangle, you need top-left corner and bottom-right corner of rectangle.
     cv2.rectangle(image, (int(x-(w/2)), int(y-(h/2))), (int(x+(w/2)), int(y+(h/2))), (0,255,0), 3)
