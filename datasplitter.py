@@ -214,8 +214,11 @@ def split_dataset(annotation_type:str = "aabb"):
     all_labels_dir = os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "raw", "labels", annotation_type)
     global all_images_dir
     all_images_dir = os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "raw", "images")
+
+    csv_filename = annotation_type + ".csv"
+    if(annotation_type == "ocaabb"): csv_filename = "aabb.csv"
     global all_csv
-    all_csv = os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "raw", "annotations", annotation_type + ".csv")
+    all_csv = os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "raw", "annotations", csv_filename)
 
     delete_files_in_directory(train_labels_dir)
     delete_files_in_directory(test_labels_dir)
