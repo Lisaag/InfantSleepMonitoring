@@ -14,7 +14,7 @@ all_images_dir = ""
 
 # all_aabb_labels_dir = os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "raw", "labels", "aabb")
 # all_obb_labels_dir = os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "raw", "labels", "obb")
-# all_images_dir = os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "raw", "images")
+all_images_dir = os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "raw", "images")
 vis_aabb_dir = os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "raw", "vis", "aabb")
 vis_obb_dir = os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "raw", "vis", "obb")
     
@@ -135,7 +135,6 @@ def get_attributes_from_string(input_string: str):
 
 def create_yolo_labels(is_dummy:bool = False, annotation_type:str = "aabb"):
     global all_labels_dir
-    #global all_images_dir
     all_labels_dir = os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "raw", "labels", annotation_type)
 
     if(annotation_type == "aabb" or annotation_type == "ocaabb"):
