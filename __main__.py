@@ -22,7 +22,7 @@ if __name__ == '__main__':
         datasplitter.split_dataset(annotation_type)
 
     elif(args.detect):
-        datasplitter.split_dataset(args.detect)
+        datasplitter.split_dataset(args.detect[0])
 
        
 
