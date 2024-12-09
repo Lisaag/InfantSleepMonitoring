@@ -16,13 +16,11 @@ if __name__ == '__main__':
         is_dummy = False
         if(dummy == 'dummy'): is_dummy = True
         YOLOlabeler.create_yolo_labels(is_dummy, annotation_type)
-
     elif(args.datasplit):
         annotation_type = args.datasplit[0]
         datasplitter.split_dataset(annotation_type)
-
     elif(args.detect):
-        datasplitter.split_dataset(args.detect[0])
+        detect.detect_vid(args.detect[0])
 
        
 
