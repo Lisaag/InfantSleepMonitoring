@@ -13,6 +13,7 @@ def augment_brightness():
         bright = np.ones(image.shape, dtype="uint8") * 70
         brightincrease = cv2.add(image,bright)
         cv2.imwrite(os.path.join(destination_dir, "augmentations", "brightness", img), brightincrease)
+        print(str(img))
         print(os.path.join(destination_dir, "augmentations", "brightness"))
 
 
