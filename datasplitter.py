@@ -51,6 +51,40 @@ train_info = SetInfo()
 val_info = SetInfo()
 test_info = SetInfo()
 
+omitted_files:set = {
+    "228_14-03-2023_3.jpg"
+    "250_14-12-2022_2.jpg",
+    "350_10-10-2022_2.jpg",
+    "399_04-10-2023_5.jpg",
+    "437_01-03-2022_3.jpg",
+    "524_14-12-2022_2.jpg",
+    "545_28-10-2022_2.jpg",
+    "554_02-03-2023_2.jpg",
+    "554_03-03-2023_2.jpg",
+    "614_22-11-2022_6.jpg",
+    "616_14-03-2024_1.jpg",
+    "657_16-03-2023_3.jpg",
+    "657_16-03-2023_5.jpg",
+    "663_24-02-2022_2.jpg",
+    "681_24-05-2022_3.jpg",
+    "701_02-03-2022_2.jpg",
+    "773_02-11-2022_3.jpg",
+    "778_26-04-2024_5.jpg",
+    "805_18-10-2022_3.jpg",
+    "867_08-12-2022_4.jpg",
+    "875_06_07_2022_2.jpg",
+    "976_18-11-2022_2.jpg",
+    "976_18-11-2022_6.jpg",
+    "976_18-11-2022_7.jpg",
+    "CG_461_05-09-2022_3.jpg"
+    }
+
+def check_omitted(filename:str):
+    if filename in omitted_files:
+        print("OMIT " + filename)
+        return True
+    return False
+
 def str_to_bool(s: str):
    return s.lower() == "true"
 
@@ -157,6 +191,7 @@ def train_val_split():
     for i in range(len(df_all)):
         key = re.sub(r'_\d+\.jpg$', '', df_all["filename"][i])
         if key in test: continue
+        if check_omitted(df_all["filename"][i]): continue
 
         if key not in train_val_dic:
             train_val_dic[key] = SampleInfo()
@@ -257,6 +292,7 @@ def split_dataset(annotation_type:str = "aabb"):
     df_all = pd.read_csv(all_csv)
     
     for i in range(len(df_all)):
+        if check_omitted(df_all["filename"][i]): continue
         attributes = get_attributes_from_string(df_all["region_attributes"][i])
         copy_to_split(df_all["filename"][i], attributes)
 
