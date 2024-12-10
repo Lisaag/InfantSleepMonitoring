@@ -117,13 +117,17 @@ def get_attributes_from_string(input_string: str):
 
     return [open_value, quality_value, occlusion_value]
 
+def copy_files(old_image_path:str, new_image_path:str, new_label_path:str, file_name:str, label_file:str, prefix:str = ""):
+    shutil.copy(os.path.join(old_image_path, file_name), os.path.join(new_image_path, prefix+file_name))
+    shutil.copy(os.path.join(all_labels_dir, label_file), os.path.join(new_label_path, prefix+label_file))
+
 def copy_to_split(file_name:str, attributes):
     label_file = re.sub(r'\.jpg$', '', file_name) + ".txt"
     key = re.sub(r'_\d+\.jpg$', '', file_name)
 
     if(train.get(key) != None):
-        shutil.copy(os.path.join(all_images_dir, file_name), train_images_dir)
-        shutil.copy(os.path.join(all_labels_dir, label_file), train_labels_dir)
+        copy_files(all_images_dir, train_images_dir, train_labels_dir, file_name, label_file)
+        copy_files(os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", "raw", "augmentations", "brightness"), train_images_dir, train_labels_dir, file_name, label_file, "BR")
         update_set_properties(train_info, attributes)
     if(test.get(key) != None):
         shutil.copy(os.path.join(all_images_dir, file_name), test_images_dir)
