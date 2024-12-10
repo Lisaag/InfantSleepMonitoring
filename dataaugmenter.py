@@ -12,7 +12,7 @@ def augment_brightness():
         bright = np.ones(image.shape, dtype="uint8") * 70
         brightincrease = cv2.add(image,bright)
         cv2.imwrite(os.path.join(os.path.abspath(os.getcwd()), "datasets","SLAPI", "raw", "augmentations", "brightness", img), brightincrease)
-        print(os.path.join(os.path.abspath(os.getcwd()), "datasets","SLAPI", "raw", "augmentations", "brightness", img))
+        print("AAA" + os.path.join(os.path.abspath(os.getcwd()), "datasets","SLAPI", "raw", "augmentations", "brightness", img))
 
 
 def augment_all_images():
