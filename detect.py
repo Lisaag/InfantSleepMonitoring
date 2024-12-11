@@ -115,7 +115,8 @@ def detect_vid_obb(relative_weights_path:str):
                     print("B")
                     #obb.cpu()
                     print(list(chain.from_iterable(obb.xyxyxyxy.cpu().data.numpy())))
-                    pts = list(chain.from_iterable(obb.xyxyxyxy.cpu().data.numpy()))
+                    pts = np.array(chain.from_iterable(obb.xyxyxyxy.cpu().data.numpy()))
+                    pts = pts.reshape((-1,1,2))
                     cv2.polylines(frame,[pts],True,(0,255,255))
 
                     # pts = np.array([[all_points_x[0], all_points_y[0]],[all_points_x[1], all_points_y[1]],[all_points_x[2], all_points_y[2]],[all_points_x[3], all_points_y[3]]], np.int32)
