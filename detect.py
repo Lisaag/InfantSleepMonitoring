@@ -134,9 +134,9 @@ def detect_vid_obb(relative_weights_path:str):
 
 
 def detect_vid(annotation_type:str, relative_weights_path:str):
-    if(annotation_type is "aabb"):
+    if(annotation_type == "aabb"):
         detect_vid_aabb(relative_weights_path)
-    elif(annotation_type is "obb"):
+    elif(annotation_type == "obb"):
         detect_vid_obb(relative_weights_path)
     else:
         print("annotation type [" + annotation_type + "] not recognized")
