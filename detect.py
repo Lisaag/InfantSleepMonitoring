@@ -2,6 +2,7 @@ import cv2
 from ultralytics import YOLO
 from pathlib import Path
 import os
+import numpy as np
 
 # Load the YOLO model
 #weights_path = os.path.join(os.path.abspath(os.getcwd()), "runs", "detect", "train2", "weights", "best.pt")
@@ -108,7 +109,11 @@ def detect_vid_obb(relative_weights_path:str):
                 #print(result)
                 obbs = result.obb  # Get bounding boxes
                 for obb in obbs:
-                    print(obb.xyxyxyxy)
+                    print(obb.xyxyxyxy[0][0])
+
+                    # pts = np.array([[all_points_x[0], all_points_y[0]],[all_points_x[1], all_points_y[1]],[all_points_x[2], all_points_y[2]],[all_points_x[3], all_points_y[3]]], np.int32)
+                    # pts = pts.reshape((-1,1,2))
+                    # cv2.polylines(image,[pts],True,(0,255,255))
                 #     x1, y1, x2, y2 = map(int, box.xyxy[0])  # Bounding box coordinates
                 #     conf = box.conf[0]  # Confidence score
                 #     cls = box.cls[0]  # Class index
