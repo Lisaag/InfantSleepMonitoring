@@ -115,6 +115,8 @@ def detect_vid_obb(relative_weights_path:str):
                     print("B")
                     #obb.cpu()
                     print(list(chain.from_iterable(obb.xyxyxyxy.cpu().data.numpy())))
+                    pts = list(chain.from_iterable(obb.xyxyxyxy.cpu().data.numpy()))
+                    cv2.polylines(frame,[pts],True,(0,255,255))
 
                     # pts = np.array([[all_points_x[0], all_points_y[0]],[all_points_x[1], all_points_y[1]],[all_points_x[2], all_points_y[2]],[all_points_x[3], all_points_y[3]]], np.int32)
                     # pts = pts.reshape((-1,1,2))
@@ -129,7 +131,7 @@ def detect_vid_obb(relative_weights_path:str):
                 #     cv2.putText(frame, label, (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 0, 0), 2)
 
             # Write the frame to the output video
-            # out.write(frame)
+            out.write(frame)
 
             # Optional: Display the frame (comment out if not needed)
             # cv2.imshow('YOLO Prediction', frame)
