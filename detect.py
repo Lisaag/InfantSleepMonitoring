@@ -108,7 +108,7 @@ def detect_vid_obb(relative_weights_path:str):
                 #print(result)
                 obbs = result.obb  # Get bounding boxes
                 for obb in obbs:
-                    print(obb)
+                    print(obb.xyxyxyxy)
                 #     x1, y1, x2, y2 = map(int, box.xyxy[0])  # Bounding box coordinates
                 #     conf = box.conf[0]  # Confidence score
                 #     cls = box.cls[0]  # Class index
