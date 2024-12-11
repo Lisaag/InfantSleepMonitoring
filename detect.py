@@ -3,7 +3,6 @@ from ultralytics import YOLO
 from pathlib import Path
 import os
 import numpy as np
-import torch
 
 # Load the YOLO model
 #weights_path = os.path.join(os.path.abspath(os.getcwd()), "runs", "detect", "train2", "weights", "best.pt")
@@ -113,7 +112,7 @@ def detect_vid_obb(relative_weights_path:str):
                     print("A")
                     print(obb.xyxyxyxy)
                     print("B")
-                    print(torch.stack(obb.xyxyxyxy))
+                    print(obb.xyxyxyxy.inputs())
 
                     # pts = np.array([[all_points_x[0], all_points_y[0]],[all_points_x[1], all_points_y[1]],[all_points_x[2], all_points_y[2]],[all_points_x[3], all_points_y[3]]], np.int32)
                     # pts = pts.reshape((-1,1,2))
