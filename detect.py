@@ -109,6 +109,9 @@ def detect_vid_obb(relative_weights_path:str):
                 #print(result)
                 obbs = result.obb  # Get bounding boxes
                 for obb in obbs:
+                    print("A")
+                    print(obb.xyxyxyxy)
+                    print("B")
                     print(obb.xyxyxyxy[0][0])
 
                     # pts = np.array([[all_points_x[0], all_points_y[0]],[all_points_x[1], all_points_y[1]],[all_points_x[2], all_points_y[2]],[all_points_x[3], all_points_y[3]]], np.int32)
