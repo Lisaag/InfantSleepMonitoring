@@ -119,6 +119,7 @@ def detect_vid_obb(relative_weights_path:str):
                     pts = np.array([[points[0][0], points[0][1]], [points[1][0], points[1][1]], [points[2][0], points[2][1]], [points[3][0], points[3][1]]], np.int32)
                     pts = pts.reshape((-1,1,2))
                     cv2.polylines(frame,[pts],True,(0,255,255), thickness=20)
+                    cv2.circle(frame,(int(points[0][0]), int(points[0][1])), 10, (255,0,0), -1)
 
                     # pts = np.array([[all_points_x[0], all_points_y[0]],[all_points_x[1], all_points_y[1]],[all_points_x[2], all_points_y[2]],[all_points_x[3], all_points_y[3]]], np.int32)
                     # pts = pts.reshape((-1,1,2))
