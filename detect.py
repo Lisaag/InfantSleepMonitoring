@@ -113,7 +113,7 @@ def detect_vid_obb(relative_weights_path:str):
                     print(obb.xyxyxyxy)
                     print("B")
                     #obb.cpu()
-                    print(obb.xyxyxyxy.argmax())
+                    print(obb.xyxyxyxy.cpu().data.numpy())
 
                     # pts = np.array([[all_points_x[0], all_points_y[0]],[all_points_x[1], all_points_y[1]],[all_points_x[2], all_points_y[2]],[all_points_x[3], all_points_y[3]]], np.int32)
                     # pts = pts.reshape((-1,1,2))
