@@ -127,7 +127,8 @@ def copy_to_split(file_name:str, attributes):
 
     if(train.get(key) != None):
         copy_files(all_images_dir, train_images_dir, train_labels_dir, file_name, label_file)
-        copy_files(os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", "raw", "augmentations", "brightness"), train_images_dir, train_labels_dir, file_name, label_file, "BR")
+        copy_files(os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", "raw", "augmentations", "brightness"), train_images_dir, train_labels_dir, file_name, label_file, "BR") #brightness increase
+        copy_files(os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", "raw", "augmentations", "brightness_decrease"), train_images_dir, train_labels_dir, file_name, label_file, "DBR")#brightness decrease
         update_set_properties(train_info, attributes)
     if(test.get(key) != None):
         shutil.copy(os.path.join(all_images_dir, file_name), test_images_dir)
