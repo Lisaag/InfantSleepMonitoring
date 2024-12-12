@@ -53,10 +53,12 @@ def detect_vid_aabb(relative_weights_path:str):
                     conf = box.conf[0]  # Confidence score
                     cls = box.cls[0]  # Class index
 
+                    boxColor = (255, 0, 0)
+                    if cls == 0: boxColor = (0, 255, 0)
                     # Draw bounding box
-                    cv2.rectangle(frame, (x1, y1), (x2, y2), (255, 0, 0), 2)
+                    cv2.rectangle(frame, (x1, y1), (x2, y2), boxColor, 2)
                     label = f"{model.names[int(cls)]} {conf:.2f}"  # Class label and confidence
-                    cv2.putText(frame, label, (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 0, 0), 2)
+                    cv2.putText(frame, label, (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 1.0, boxColor, 2)
 
             # Write the frame to the output video
             out.write(frame)
@@ -115,11 +117,19 @@ def detect_vid_obb(relative_weights_path:str):
                     # print("B")
                     # #obb.cpu()
                     # print(list(chain.from_iterable(obb.xyxyxyxy.cpu().data.numpy())))
+
+                    conf = obb.conf[0]  # Confidence score
+                    cls = obb.cls[0]  # Class index
+
+                    boxColor = (255, 0, 0)
+                    if cls == 0: boxColor = (0, 255, 0)
+
                     points = list(chain.from_iterable(obb.xyxyxyxy.cpu().data.numpy()))
                     pts = np.array([[points[0][0], points[0][1]], [points[1][0], points[1][1]], [points[2][0], points[2][1]], [points[3][0], points[3][1]]], np.int32)
                     pts = pts.reshape((-1,1,2))
-                    cv2.polylines(frame,[pts],True,(0,255,255), thickness=20)
-                    cv2.circle(frame,(int(points[0][0]), int(points[0][1])), 10, (255,0,0), -1)
+                    cv2.polylines(frame,[pts],True,boxColor, thickness=20)
+                    cv2.circle(frame,(int(points[0][0]), int(points[0][1])), 10, (0,0,255), -1)
+
 
                     # pts = np.array([[all_points_x[0], all_points_y[0]],[all_points_x[1], all_points_y[1]],[all_points_x[2], all_points_y[2]],[all_points_x[3], all_points_y[3]]], np.int32)
                     # pts = pts.reshape((-1,1,2))
