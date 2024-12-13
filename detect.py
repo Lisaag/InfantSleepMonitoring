@@ -52,7 +52,7 @@ def track_vid_aabb(relative_weights_path:str):
             for result in results:  # Iterate through detections
 
                 boxes = result.boxes  # Get bounding boxes
-                track_ids = result.boxes.id.int().cpu().tolist()
+                track_ids = list(chain.from_iterable(boxes.id.cpu().tolist()))
 
                 for box, track_id in zip(boxes, track_ids):
                     x1, y1, x2, y2 = map(int, box.xyxy[0])  # Bounding box coordinates
