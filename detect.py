@@ -79,7 +79,7 @@ def detect_vid_aabb(relative_weights_path:str):
 #write aabb label in YOLO format
 def write_obb_detection(filename, data):
     x, y, w, h, r = list(chain.from_iterable(data.cpu().data.numpy()))
-    with open(os.path.join(os.path.abspath(os.getcwd()), "vis", "OUT", filename + '.txt'), "a") as file:
+    with open(os.path.join(os.path.abspath(os.getcwd()), "vid", "OUT", filename + '.txt'), "a") as file:
         file.write(str(r) + "\n")
 
 def detect_vid_obb(relative_weights_path:str):
