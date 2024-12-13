@@ -4,6 +4,7 @@ from pathlib import Path
 import os
 import numpy as np
 from itertools import chain 
+from collections import defaultdict
 
 
 # Load the YOLO model
@@ -26,6 +27,9 @@ def track_vid_aabb(relative_weights_path:str):
         # Open the video file
         cap = cv2.VideoCapture(video_input_path)
 
+        # Store the track history
+        track_history = defaultdict(lambda: [])
+
         # Get video properties
         frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
         frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
@@ -35,24 +39,33 @@ def track_vid_aabb(relative_weights_path:str):
         fourcc = cv2.VideoWriter_fourcc(*'mp4v')
         out = cv2.VideoWriter(video_output_path, fourcc, fps, (frame_width, frame_height))
 
-
-        frame_count = 0
         # Process each frame
         while cap.isOpened():
             ret, frame = cap.read()
             if not ret:
                 break
-            frame_count+=1
 
             # Make predictions
             results = model.track(frame, verbose=False)
 
-
             # Draw predictions on the frame
             for result in results:  # Iterate through detections
+
                 boxes = result.boxes  # Get bounding boxes
-                for box in boxes:
+                track_ids = result.boxes.id.int().cpu().tolist()
+
+                for box, track_id in zip(boxes, track_ids):
                     x1, y1, x2, y2 = map(int, box.xyxy[0])  # Bounding box coordinates
+                    x = int((x1 + x2) / 2)
+                    y = int((y1 + y2) / 2)
+                    # track = track_history[track_id]
+
+
+
+                    # track.append((float(x), float(y)))  # x, y center point
+                    # if len(track) > 30:  # retain 90 tracks for 90 frames
+                    #     track.pop(0)
+
                     conf = box.conf[0]  # Confidence score
                     cls = box.cls[0]  # Class index
 
@@ -60,7 +73,7 @@ def track_vid_aabb(relative_weights_path:str):
                     if cls == 0: boxColor = (0, 255, 0)
                     # Draw bounding box
                     cv2.rectangle(frame, (x1, y1), (x2, y2), boxColor, 2)
-                    label = f"{model.names[int(cls)]} {conf:.2f}"  # Class label and confidence
+                    label = f"{model.names[int(cls)]} {conf:.2f} {track_id:.2f}"  # Class label and confidence
                     cv2.putText(frame, label, (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 1.0, boxColor, 2)
 
             # Write the frame to the output video
@@ -196,6 +209,7 @@ def detect_vid_obb(relative_weights_path:str):
 
                     boxColor = (255, 0, 0)
                     if cls == 0: boxColor = (0, 255, 0)
+
 
                     points = list(chain.from_iterable(obb.xyxyxyxy.cpu().data.numpy()))
                     pts = np.array([[points[0][0], points[0][1]], [points[1][0], points[1][1]], [points[2][0], points[2][1]], [points[3][0], points[3][1]]], np.int32)
