@@ -5,6 +5,7 @@ import os
 import numpy as np
 from itertools import chain 
 
+
 # Load the YOLO model
 #weights_path = os.path.join(os.path.abspath(os.getcwd()), "runs", "detect", "train2", "weights", "best.pt")
 
@@ -75,6 +76,12 @@ def detect_vid_aabb(relative_weights_path:str):
 
         print(f"Processed video saved at {video_output_path}")
 
+#write aabb label in YOLO format
+def write_obb_detection(filename, data):
+    x, y, w, h, r = list(chain.from_iterable(data.cpu().data.numpy()))
+    with open(os.path.join(os.path.abspath(os.getcwd()), "vis", "OUT", filename + '.txt'), "a") as file:
+        file.write(str(r) + "\n")
+
 def detect_vid_obb(relative_weights_path:str):
     weights_path = os.path.join(os.path.abspath(os.getcwd()), relative_weights_path)
     model = YOLO(weights_path)
@@ -129,6 +136,8 @@ def detect_vid_obb(relative_weights_path:str):
                     pts = pts.reshape((-1,1,2))
                     cv2.polylines(frame,[pts],True,boxColor, thickness=20)
                     cv2.circle(frame,(int(points[0][0]), int(points[0][1])), 10, (0,0,255), -1)
+
+                    write_obb_detection(filename, obb.xywhr)
 
 
                     # pts = np.array([[all_points_x[0], all_points_y[0]],[all_points_x[1], all_points_y[1]],[all_points_x[2], all_points_y[2]],[all_points_x[3], all_points_y[3]]], np.int32)
