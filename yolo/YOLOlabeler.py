@@ -104,7 +104,7 @@ def test_obb(file_name, all_points_x, all_points_y):
     pts = np.array([[all_points_x[0], all_points_y[0]],[all_points_x[1], all_points_y[1]],[all_points_x[2], all_points_y[2]],[all_points_x[3], all_points_y[3]]], np.int32)
     pts = pts.reshape((-1,1,2))
     cv2.polylines(image,[pts],True,(0,255,255))
-
+    cv2.circle(image, (all_points_x[0], all_points_y[0]), 10, (255,0,0), -1)
     if not cv2.imwrite(os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "raw", "vis", "obb", file_name), image):
         print("imwrite failed")
 
