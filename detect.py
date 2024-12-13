@@ -44,7 +44,7 @@ def detect_vid_aabb(relative_weights_path:str):
                 break
 
             # Make predictions
-            results = model(frame)
+            results = model(frame, verbose=False)
 
             # Draw predictions on the frame
             for result in results:  # Iterate through detections
