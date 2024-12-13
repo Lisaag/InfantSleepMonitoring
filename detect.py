@@ -47,6 +47,9 @@ def detect_vid_aabb(relative_weights_path:str):
             # Make predictions
             results = model(frame, verbose=False)
 
+            print(results)
+
+
             # Draw predictions on the frame
             for result in results:  # Iterate through detections
                 boxes = result.boxes  # Get bounding boxes
@@ -74,10 +77,6 @@ def detect_vid_aabb(relative_weights_path:str):
         cap.release()
         out.release()
         cv2.destroyAllWindows()
-
-        print('NUMBER OF FRAMES: ' + str(frame_count))
-        fps = cap.get(cv2.CAP_PROP_FPS)
-        print(f"Frames per second: {fps}")
         print(f"Processed video saved at {video_output_path}")
 
 #write aabb label in YOLO format
