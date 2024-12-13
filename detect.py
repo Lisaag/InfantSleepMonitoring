@@ -117,7 +117,7 @@ def detect_vid_obb(relative_weights_path:str):
                     # print("B")
                     # #obb.cpu()
                     # print(list(chain.from_iterable(obb.xyxyxyxy.cpu().data.numpy())))
-
+                    print(obb)
                     conf = obb.conf[0]  # Confidence score
                     cls = obb.cls[0]  # Class index
 
