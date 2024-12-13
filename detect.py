@@ -46,15 +46,16 @@ def track_vid_aabb(relative_weights_path:str):
                 break
 
             # Make predictions
-            results = model.track(frame, verbose=False)
+            results = model.track(frame, verbose=False, persist=True)
 
             # Draw predictions on the frame
             for result in results:  # Iterate through detections
 
                 boxes = result.boxes  # Get bounding boxes
-                print(boxes.id)
+                if(boxes.id != None):
+                    track_ids = boxes.id.int().cpu().tolist()
 
-                for box in boxes:
+                for box, track_id in zip(boxes, track_ids):
                     x1, y1, x2, y2 = map(int, box.xyxy[0])  # Bounding box coordinates
                     x = int((x1 + x2) / 2)
                     y = int((y1 + y2) / 2)
