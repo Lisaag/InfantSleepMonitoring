@@ -52,9 +52,9 @@ def track_vid_aabb(relative_weights_path:str):
             for result in results:  # Iterate through detections
 
                 boxes = result.boxes  # Get bounding boxes
-                track_ids = list(chain.from_iterable(boxes.id.cpu().tolist()))
+                print(boxes.id)
 
-                for box, track_id in zip(boxes, track_ids):
+                for box in boxes:
                     x1, y1, x2, y2 = map(int, box.xyxy[0])  # Bounding box coordinates
                     x = int((x1 + x2) / 2)
                     y = int((y1 + y2) / 2)
@@ -73,7 +73,7 @@ def track_vid_aabb(relative_weights_path:str):
                     if cls == 0: boxColor = (0, 255, 0)
                     # Draw bounding box
                     cv2.rectangle(frame, (x1, y1), (x2, y2), boxColor, 2)
-                    label = f"{model.names[int(cls)]} {conf:.2f} {track_id:.2f}"  # Class label and confidence
+                    label = f"{model.names[int(cls)]} {conf:.2f}"  # Class label and confidence
                     cv2.putText(frame, label, (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 1.0, boxColor, 2)
 
             # Write the frame to the output video
