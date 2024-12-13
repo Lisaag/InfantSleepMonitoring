@@ -169,7 +169,7 @@ def detect_vid_obb(relative_weights_path:str):
 
 
 def detect_vid(annotation_type:str, relative_weights_path:str):
-    if(annotation_type == "aabb"):
+    if(annotation_type == "aabb" or annotation_type == "ocaabb"):
         detect_vid_aabb(relative_weights_path)
     elif(annotation_type == "obb"):
         detect_vid_obb(relative_weights_path)
