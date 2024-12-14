@@ -56,8 +56,8 @@ def track_vid_aabb(relative_weights_path:str):
                             current_length = len(track_history[key])
 
                             #Track the one with the highest number of detections within max_track_epoch epochs
-                            if(current_length > highest_length):
-                                current_track_id = int(key)
+                            # if(current_length > highest_length):
+                            #     current_track_id = int(key)
                         #     #If the number of detections is the same, pick the one with the highest mean confidence score
                         #     elif(current_length == highest_length):
                         #             if(statistics.mean(track_history[key]) > statistics.mean(track_history[current_track_id])):
