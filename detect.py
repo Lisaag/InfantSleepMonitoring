@@ -79,8 +79,7 @@ def track_vid_aabb(relative_weights_path:str):
 
                 for box, track_id in zip(boxes, track_ids):
                     conf = float(box.conf[0])  # Confidence score
-                    print(f'CONF {type(conf)}')
-                    track_history[track_id].append(0)
+                    track_history[track_id].append(conf)
 
 
                 current_track_epoch += 1             
