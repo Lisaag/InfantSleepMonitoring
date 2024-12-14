@@ -52,8 +52,8 @@ def track_vid_aabb(relative_weights_path:str):
                         print(f'dictionary length: {len(track_history)}')
                         #First determine the initial object to be detected
                         if(previous_track_id == -1):
-                            highest_length = len(track_history[current_track_id])
-                            current_length = len(track_history[key])
+                            highest_length = 0#len(track_history[current_track_id])
+                            current_length = 0#len(track_history[key])
 
                             #Track the one with the highest number of detections within max_track_epoch epochs
                             # if(current_length > highest_length):
