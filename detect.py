@@ -49,7 +49,6 @@ def track_vid_aabb(relative_weights_path:str):
 #TODO add a check if current_track_epoch does not exist anymore in following epoch..
                 if (current_track_epoch == max_track_epoch):
                     for key in track_history.keys():
-                        print(f'dictionary length: {len(track_history)}')
                         highest_length = -1
                         if(current_track_id != -1):
                             highest_length = len(track_history[current_track_id])
@@ -80,8 +79,8 @@ def track_vid_aabb(relative_weights_path:str):
 
                 for box, track_id in zip(boxes, track_ids):
                     conf = box.conf[0]  # Confidence score
-
-                    track_history[track_id].append(conf)
+                    print(f'CONF {conf}')
+                    track_history[track_id].append(0)
 
 
                 current_track_epoch += 1             
