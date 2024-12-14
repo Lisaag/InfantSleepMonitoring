@@ -5,6 +5,7 @@ import os
 import numpy as np
 from itertools import chain 
 from collections import defaultdict
+import statistics
 
 
 def track_vid_aabb(relative_weights_path:str):
@@ -24,6 +25,7 @@ def track_vid_aabb(relative_weights_path:str):
         # Store the track history
         track_history = defaultdict(lambda: [])
         current_track_id = -1
+        previous_track_id = -1
         max_track_epoch = 15
         current_track_epoch = 0
 
@@ -45,13 +47,26 @@ def track_vid_aabb(relative_weights_path:str):
                 boxes = result.boxes  # Get bounding boxes
 
                 if (current_track_epoch == max_track_epoch):
-                    print("TRACKS")
-                    highest_detections = 0
                     for key in track_history:
-                        print(f'Track id {key} is {len(track_history[key])} times detected within 15 frames')
-                        if(len(track_history[key]) > highest_detections):
-                            highest_detections = len(track_history[key])
-                            current_track_id = key
+                        #First determine the initial object to be detected
+                        if(previous_track_id == -1):
+                            highest_length = len(track_history[current_track_id])
+                            current_length = len(track_history[key])
+
+                            #Track the one with the highest number of detections within max_track_epoch epochs
+                            if(current_length > highest_length):
+                                current_track_id = key
+                            #If the number of detections is the same, pick the one with the highest mean confidence score
+                            elif(current_length == highest_length):
+                                    if(statistics.mean(track_history[key]) > statistics.mean(track_history[current_track_id])):
+                                        current_track_id = key
+                        #For following detections..
+                        else:
+                            #if current track length is higher than previous highest, then switch
+                            if(current_length > highest_length + (highest_length * 0.2)):
+                                current_track_id = key
+
+                    previous_track_id = current_track_id
                     tracking_data[filename].append(current_track_id)
                     track_history = defaultdict(lambda: [])
                     current_track_epoch = 0
