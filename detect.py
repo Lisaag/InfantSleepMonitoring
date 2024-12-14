@@ -15,7 +15,7 @@ def track_vid_aabb(relative_weights_path:str):
 
     tracking_data = defaultdict(lambda: [])
 
-    all_boxes = defaultdict(lambda: [])
+    all_boxes = defaultdict(lambda: {})
 
     for filename in os.listdir(IN_directory):
         if(filename != "ROT360_08-04-2022.mp4"): continue
@@ -86,7 +86,7 @@ def track_vid_aabb(relative_weights_path:str):
                     previous_track_id = current_track_id
                     tracking_data[filename].append(current_track_id)
                     all_boxes[filename].append(box_history[current_track_id])
-                    box_history = defaultdict(lambda: [])
+                    box_history = defaultdict(lambda: {})
                     track_history = defaultdict(lambda: [])
                     current_track_epoch = 0
 
