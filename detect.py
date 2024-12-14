@@ -110,9 +110,9 @@ def track_vid_aabb(relative_weights_path:str):
        
         print(f"Finish processing {video_output_path}")
     print(all_boxes)
-    return tracking_data
+    return all_boxes
 
-def detect_vid_aabb_filter(relative_weights_path:str, box:defaultdict):
+def detect_vid_aabb_filter(box:defaultdict):
     IN_directory = os.path.join(os.path.abspath(os.getcwd()), "vid", "IN")
     OUT_directory = os.path.join(os.path.abspath(os.getcwd()), "vid", "OUT")
     for filename in os.listdir(IN_directory):
@@ -140,10 +140,20 @@ def detect_vid_aabb_filter(relative_weights_path:str, box:defaultdict):
                 break
 
 
+            if filename in box:
+                if current_frame in box[filename]:
+                    x1, y1, x2, y2 = box[filename][current_frame]
+                    cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
 
-
+            out.write(frame)
 
             current_frame += 1
+
+        # Release resources
+        cap.release()
+        out.release()
+        cv2.destroyAllWindows()
+        print(f"Processed video saved at {video_output_path}")
 
 
 
@@ -307,7 +317,8 @@ def detect_vid_obb(relative_weights_path:str):
 def detect_vid(annotation_type:str, relative_weights_path:str):
     if(annotation_type == "aabb" or annotation_type == "ocaabb"):
         #detect_vid_aabb(relative_weights_path)
-        track_vid_aabb(relative_weights_path)
+        all_boxes = track_vid_aabb(relative_weights_path)
+        detect_vid_aabb_filter(all_boxes)
     elif(annotation_type == "obb"):
         detect_vid_obb(relative_weights_path)
     else:
