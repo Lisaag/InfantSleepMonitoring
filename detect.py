@@ -144,8 +144,8 @@ def detect_vid_aabb_filter(box:defaultdict):
 
 
             if filename in box:
-                print("a")
-                if current_frame in box[filename]:
+                print(current_frame)
+                if box[filename].get(current_frame) != None:
                     print("SLOEP")
                     x1, y1, x2, y2 = box[filename][current_frame]
                     cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
