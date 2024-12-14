@@ -15,6 +15,8 @@ def track_vid_aabb(relative_weights_path:str):
 
     tracking_data = defaultdict(lambda: [])
 
+    all_boxes = defaultdict(lambda: [])
+
     for filename in os.listdir(IN_directory):
         print(f'Processing {filename}')
         video_output_path =  os.path.join(os.path.abspath(os.getcwd()), "vid", "OUT", "OUT"+str(filename))
@@ -24,6 +26,7 @@ def track_vid_aabb(relative_weights_path:str):
 
         # Store the track history
         track_history = defaultdict(lambda: [])
+        box_history = defaultdict(lambda: [])
         current_track_id = -1
         previous_track_id = -1
         max_track_epoch = 15
@@ -33,12 +36,16 @@ def track_vid_aabb(relative_weights_path:str):
         frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
         frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
+
+        current_frame = 0
         # Process each frame
         while cap.isOpened():
             ret, frame = cap.read()
             if not ret:
                 break
             
+            
+
             results = model.track(frame, verbose=False, persist=True)
 
             # Draw predictions on the frame
@@ -48,6 +55,7 @@ def track_vid_aabb(relative_weights_path:str):
 
 #TODO add a check if current_track_epoch does not exist anymore in following epoch..
                 if (current_track_epoch == max_track_epoch):
+                    #if currently tracked object does not exist in current epoch, set to -1
                     if(current_track_id not in track_history): current_track_id = -1
                     for key in track_history.keys():
                         print(f'key {key}')
@@ -75,8 +83,11 @@ def track_vid_aabb(relative_weights_path:str):
 
                     previous_track_id = current_track_id
                     tracking_data[filename].append(current_track_id)
+                    all_boxes[filename].append(box_history[current_track_id])
+                    box_history = defaultdict(lambda: [])
                     track_history = defaultdict(lambda: [])
                     current_track_epoch = 0
+
 
                 if(boxes.id == None): continue
                 
@@ -84,18 +95,25 @@ def track_vid_aabb(relative_weights_path:str):
 
                 for box, track_id in zip(boxes, track_ids):
                     conf = float(box.conf[0])  # Confidence score
+                    x1, y1, x2, y2 = map(int, box.xyxy[0]) 
                     track_history[track_id].append(conf)
+                    box_history[track_id].append([current_frame, x1,y1,x2,y2])
+                    
 
 
-                current_track_epoch += 1             
+                current_track_epoch += 1
+                current_frame += 1             
 
         # Release resources
         cap.release()
         cv2.destroyAllWindows()
        
         print(f"Finish processing {video_output_path}")
-    print(tracking_data)
+    print(all_boxes)
+    return tracking_data
 
+def detect_vid_aabb_filter(relative_weights_path:str, tracking_data:defaultdict):
+    print("floepiefloep")
 
 
 def detect_vid_aabb(relative_weights_path:str):
