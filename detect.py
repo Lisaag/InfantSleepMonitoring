@@ -49,6 +49,7 @@ def track_vid_aabb(relative_weights_path:str):
 #TODO add a check if current_track_epoch does not exist anymore in following epoch..
                 if (current_track_epoch == max_track_epoch):
                     for key in track_history.keys():
+                        print(f'key {key}')
                         if(current_track_id == -1):
                             current_track_id = key
                             continue
