@@ -18,6 +18,8 @@ def track_vid_aabb(relative_weights_path:str):
     all_boxes = defaultdict(lambda: [])
 
     for filename in os.listdir(IN_directory):
+        if(filename != "OUTROT360_08-04-2022.mp4"): continue
+
         print(f'Processing {filename}')
         video_output_path =  os.path.join(os.path.abspath(os.getcwd()), "vid", "OUT", "OUT"+str(filename))
         video_input_path =  os.path.join(os.path.abspath(os.getcwd()), "vid", "IN", filename)
@@ -117,6 +119,8 @@ def detect_vid_aabb_filter(box:defaultdict):
     OUT_directory = os.path.join(os.path.abspath(os.getcwd()), "vid", "OUT")
     for filename in os.listdir(IN_directory):
         print(filename)
+        if(filename != "OUTROT360_08-04-2022.mp4"): continue
+
         video_output_path =  os.path.join(os.path.abspath(os.getcwd()), "vid", "OUT", "OUT"+str(filename))
         video_input_path =  os.path.join(os.path.abspath(os.getcwd()), "vid", "IN", filename)
         # Open the video file
@@ -161,6 +165,7 @@ def detect_vid_aabb_filter(box:defaultdict):
 
 
 def detect_vid_aabb(relative_weights_path:str):
+
     weights_path = os.path.join(os.path.abspath(os.getcwd()), relative_weights_path)
     model = YOLO(weights_path)
     IN_directory = os.path.join(os.path.abspath(os.getcwd()), "vid", "IN")
