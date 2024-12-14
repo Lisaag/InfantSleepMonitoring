@@ -97,7 +97,7 @@ def track_vid_aabb(relative_weights_path:str):
                     conf = float(box.conf[0])  # Confidence score
                     x1, y1, x2, y2 = map(int, box.xyxy[0]) 
                     track_history[track_id].append(conf)
-                    box_history[track_id].append([current_frame, x1,y1,x2,y2])
+                    box_history[track_id].append(dict({current_frame: [x1,y1,x2,y2]}))
                     
 
 
@@ -112,8 +112,40 @@ def track_vid_aabb(relative_weights_path:str):
     print(all_boxes)
     return tracking_data
 
-def detect_vid_aabb_filter(relative_weights_path:str, tracking_data:defaultdict):
-    print("floepiefloep")
+def detect_vid_aabb_filter(relative_weights_path:str, box:defaultdict):
+    IN_directory = os.path.join(os.path.abspath(os.getcwd()), "vid", "IN")
+    OUT_directory = os.path.join(os.path.abspath(os.getcwd()), "vid", "OUT")
+    for filename in os.listdir(IN_directory):
+        print(filename)
+        video_output_path =  os.path.join(os.path.abspath(os.getcwd()), "vid", "OUT", "OUT"+str(filename))
+        video_input_path =  os.path.join(os.path.abspath(os.getcwd()), "vid", "IN", filename)
+        # Open the video file
+        cap = cv2.VideoCapture(video_input_path)
+
+        # Get video properties
+        frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+        frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        fps = int(cap.get(cv2.CAP_PROP_FPS))
+
+        # Define the codec and create VideoWriter object
+        fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+        out = cv2.VideoWriter(video_output_path, fourcc, fps, (frame_width, frame_height))
+
+
+        current_frame = 0
+        # Process each frame
+        while cap.isOpened():
+            ret, frame = cap.read()
+            if not ret:
+                break
+
+
+
+
+
+            current_frame += 1
+
+
 
 
 def detect_vid_aabb(relative_weights_path:str):
