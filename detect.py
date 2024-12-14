@@ -43,8 +43,9 @@ def track_vid_aabb(relative_weights_path:str):
 
                 if (current_track_epoch == max_track_epoch):
                     for key in track_history:
-                        print(f'Track idea {key} is {len(track_history[key])} times detected within 15 frames')
+                        print(f'Track id {key} is {len(track_history[key])} times detected within 15 frames')
                     track_history = defaultdict(lambda: [])
+                    current_track_epoch = 0
 
                 if(boxes.id == None): continue
                 
