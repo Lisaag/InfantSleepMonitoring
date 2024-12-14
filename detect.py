@@ -49,15 +49,15 @@ def track_vid_aabb(relative_weights_path:str):
 #TODO add a check if current_track_epoch does not exist anymore in following epoch..
                 if (current_track_epoch == max_track_epoch):
                     for key in track_history.keys():
-                        highest_length = -1
-                        if(current_track_id != -1):
-                            highest_length = len(track_history[current_track_id])
+                        if(current_track_id == -1):
+                            current_track_id = key
+                        highest_length = len(track_history[current_track_id])
                         current_length = len(track_history[key])
                         #First determine the initial object to be detected
                         if(previous_track_id == -1):
                             #Track the one with the highest number of detections within max_track_epoch epochs
                             if(current_length > highest_length):
-                                current_track_id = int(key)
+                                current_track_id = key
                             #If the number of detections is the same, pick the one with the highest mean confidence score
                             elif(current_length == highest_length):
                                     if(statistics.mean(track_history[key]) > statistics.mean(track_history[current_track_id])):
