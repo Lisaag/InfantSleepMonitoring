@@ -37,7 +37,7 @@ def track_vid_aabb(relative_weights_path:str):
             if not ret:
                 break
             
-            results = model.track(frame, verbose=False)
+            results = model.track(frame, verbose=False, persist=True)
 
             # Draw predictions on the frame
             for result in results:  # Iterate through detections
@@ -71,8 +71,9 @@ def track_vid_aabb(relative_weights_path:str):
         # Release resources
         cap.release()
         cv2.destroyAllWindows()
-        print(tracking_data)
+       
         print(f"Finish processing {video_output_path}")
+    print(tracking_data)
 
 
 
