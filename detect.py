@@ -34,7 +34,7 @@ def track_vid_aabb(relative_weights_path:str):
             if not ret:
                 break
             
-            results = model.track(frame, verbose=False, persist=True)
+            results = model.track(frame, verbose=False)
 
             # Draw predictions on the frame
             for result in results:  # Iterate through detections
@@ -42,6 +42,7 @@ def track_vid_aabb(relative_weights_path:str):
                 boxes = result.boxes  # Get bounding boxes
 
                 if (current_track_epoch == max_track_epoch):
+                    print("TRACKS")
                     for key in track_history:
                         print(f'Track id {key} is {len(track_history[key])} times detected within 15 frames')
                     track_history = defaultdict(lambda: [])
