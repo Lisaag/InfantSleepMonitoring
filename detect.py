@@ -51,6 +51,7 @@ def track_vid_aabb(relative_weights_path:str):
                     for key in track_history.keys():
                         if(current_track_id == -1):
                             current_track_id = key
+                            continue
                         highest_length = len(track_history[current_track_id])
                         current_length = len(track_history[key])
                         #First determine the initial object to be detected
