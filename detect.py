@@ -28,7 +28,7 @@ def track_vid_aabb(relative_weights_path:str):
 
         # Store the track history
         track_history = defaultdict(lambda: [])
-        box_history = defaultdict(lambda: [])
+        box_history = defaultdict(lambda: {})
         current_track_id = -1
         previous_track_id = -1
         max_track_epoch = 15
@@ -99,7 +99,7 @@ def track_vid_aabb(relative_weights_path:str):
                     conf = float(box.conf[0])  # Confidence score
                     x1, y1, x2, y2 = map(int, box.xyxy[0]) 
                     track_history[track_id].append(conf)
-                    box_history[track_id].append(dict({current_frame: [x1,y1,x2,y2]}))
+                    box_history[track_id].append({current_frame: [x1,y1,x2,y2]})
                     
 
 
