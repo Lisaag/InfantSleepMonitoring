@@ -12,7 +12,10 @@ def track_vid_aabb(relative_weights_path:str):
     model = YOLO(weights_path)
     IN_directory = os.path.join(os.path.abspath(os.getcwd()), "vid", "IN")
 
+    tracking_data = defaultdict(lambda: [])
+
     for filename in os.listdir(IN_directory):
+        print(f'Processing {filename}')
         video_output_path =  os.path.join(os.path.abspath(os.getcwd()), "vid", "OUT", "OUT"+str(filename))
         video_input_path =  os.path.join(os.path.abspath(os.getcwd()), "vid", "IN", filename)
         # Open the video file
@@ -43,8 +46,13 @@ def track_vid_aabb(relative_weights_path:str):
 
                 if (current_track_epoch == max_track_epoch):
                     print("TRACKS")
+                    highest_detections = 0
                     for key in track_history:
                         print(f'Track id {key} is {len(track_history[key])} times detected within 15 frames')
+                        if(len(track_history[key]) > highest_detections):
+                            highest_detections = len(track_history[key])
+                            current_track_id = key
+                    tracking_data[filename].append(current_track_id)
                     track_history = defaultdict(lambda: [])
                     current_track_epoch = 0
 
@@ -63,6 +71,7 @@ def track_vid_aabb(relative_weights_path:str):
         # Release resources
         cap.release()
         cv2.destroyAllWindows()
+        print(tracking_data)
         print(f"Finish processing {video_output_path}")
 
 
