@@ -141,6 +141,7 @@ def detect_vid_aabb_filter(box:defaultdict):
 
 
             if filename in box:
+                print("a")
                 if current_frame in box[filename]:
                     print("SLOEP")
                     x1, y1, x2, y2 = box[filename][current_frame]
