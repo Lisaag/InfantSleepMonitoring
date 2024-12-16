@@ -142,11 +142,11 @@ def detect_vid_aabb_filter(box:defaultdict):
             if filename in box:
                 if box[filename].get(current_frame) != None:
                     x1, y1, x2, y2 = box[filename][current_frame]
-                    height = abs(x1 - x2)
+                    height = abs(y1 - y2)
                     width = height * ratio
-                    y_center = (y1 + y2) / 2
-                    y1 = int(y_center - width / 2)
-                    y2 = int(y_center + width / 2)
+                    x_center = (x1 + x2) / 2
+                    x1 = int(x_center - width / 2)
+                    x2 = int(x_center + width / 2)
                     
                     cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
 
