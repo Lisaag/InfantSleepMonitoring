@@ -113,6 +113,8 @@ def track_vid_aabb(relative_weights_path:str):
     return all_boxes
 
 def detect_vid_aabb_filter(box:defaultdict):
+    ratio = 16/9
+
     IN_directory = os.path.join(os.path.abspath(os.getcwd()), "vid", "IN")
     OUT_directory = os.path.join(os.path.abspath(os.getcwd()), "vid", "OUT")
     for filename in os.listdir(IN_directory):
@@ -130,7 +132,6 @@ def detect_vid_aabb_filter(box:defaultdict):
         fourcc = cv2.VideoWriter_fourcc(*'mp4v')
         out = cv2.VideoWriter(video_output_path, fourcc, fps, (frame_width, frame_height))
 
-
         current_frame = 0
         # Process each frame
         while cap.isOpened():
@@ -141,6 +142,12 @@ def detect_vid_aabb_filter(box:defaultdict):
             if filename in box:
                 if box[filename].get(current_frame) != None:
                     x1, y1, x2, y2 = box[filename][current_frame]
+                    height = abs(x1 - x2)
+                    width = height * ratio
+                    y_center = (y1 + y2) / 2
+                    y1 = y_center - width / 2
+                    y2 = y_center + width / 2
+                    
                     cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
 
             out.write(frame)
