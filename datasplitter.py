@@ -8,7 +8,6 @@ import re
 import shutil
 import cv2
 import pandas as pd
-import settings
 import matplotlib.pyplot as plt
 import statistics
 
@@ -127,8 +126,8 @@ def copy_to_split(file_name:str, attributes):
 
     if(train.get(key) != None):
         copy_files(all_images_dir, train_images_dir, train_labels_dir, file_name, label_file)
-        copy_files(os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", "raw", "augmentations", "brightness"), train_images_dir, train_labels_dir, file_name, label_file, "BR") #brightness increase
-        copy_files(os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", "raw", "augmentations", "brightness_decrease"), train_images_dir, train_labels_dir, file_name, label_file, "DBR")#brightness decrease
+        # copy_files(os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", "raw", "augmentations", "brightness"), train_images_dir, train_labels_dir, file_name, label_file, "BR") #brightness increase
+        # copy_files(os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", "raw", "augmentations", "brightness_decrease"), train_images_dir, train_labels_dir, file_name, label_file, "DBR")#brightness decrease
         update_set_properties(train_info, attributes)
     if(test.get(key) != None):
         shutil.copy(os.path.join(all_images_dir, file_name), test_images_dir)
@@ -239,26 +238,27 @@ def train_val_split():
 
 def split_dataset(annotation_type:str = "aabb"):
     global train_labels_dir
-    train_labels_dir = os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, annotation_type, "train", "labels")
+    train_labels_dir = os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", annotation_type, "train", "labels")
     global train_images_dir
-    train_images_dir = os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, annotation_type, "train", "images")
+    train_images_dir = os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", annotation_type, "train", "images")
     global val_labels_dir
-    val_labels_dir = os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, annotation_type, "val", "labels")
+    val_labels_dir = os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", annotation_type, "val", "labels")
     global val_images_dir
-    val_images_dir = os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, annotation_type,"val", "images")
+    val_images_dir = os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", annotation_type,"val", "images")
     global test_labels_dir
-    test_labels_dir = os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, annotation_type, "test", "labels")
+    test_labels_dir = os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", annotation_type, "test", "labels")
     global test_images_dir
-    test_images_dir = os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, annotation_type, "test", "images")
+    test_images_dir = os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", annotation_type, "test", "images")
     global all_labels_dir
-    all_labels_dir = os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "raw", "labels", annotation_type)
+    all_labels_dir = os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", "raw", "labels", annotation_type)
     global all_images_dir
-    all_images_dir = os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "raw", "images")
+    all_images_dir = os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", "raw", "images")
 
     csv_filename = annotation_type + ".csv"
     if(annotation_type == "ocaabb"): csv_filename = "aabb.csv"
+    if(annotation_type == "ocobb"): csv_filename = "obb.csv"
     global all_csv
-    all_csv = os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "raw", "annotations", csv_filename)
+    all_csv = os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", "raw", "annotations", csv_filename)
 
     delete_files_in_directory(train_labels_dir)
     delete_files_in_directory(test_labels_dir)
@@ -267,7 +267,7 @@ def split_dataset(annotation_type:str = "aabb"):
     delete_files_in_directory(test_images_dir)
     delete_files_in_directory(val_images_dir)
 
-    df_info = pd.read_csv(os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "raw", "annotations", "info.csv"))
+    df_info = pd.read_csv(os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", "raw", "annotations", "info.csv"))
 
     for i in range(len(df_info)):
         all_data[df_info["file"][i]] = df_info["annotated"][i]

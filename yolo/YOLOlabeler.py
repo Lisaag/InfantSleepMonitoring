@@ -71,11 +71,11 @@ def write_aabb_label(file_name, dir_name, x, y, w, h, object_class):
         file.write(str(object_class) + " " + str(x) + " " + str(y) + " " + str(w) + " " + str(h) + "\n")
 
 #write aabb label in YOLO format
-def write_obb_label(file_name, dir_name, all_points_x, all_points_y):
+def write_obb_label(file_name, dir_name, all_points_x, all_points_y, object_class):
     file_name = re.sub(r'\.jpg$', '', file_name)
 
     with open(os.path.join(os.path.abspath(os.getcwd()), dir_name, file_name + '.txt'), "a") as file:
-        file.write("0 " + str(all_points_x[0]) + " " + str(all_points_y[0]) + " "  + str(all_points_x[1]) + " " + str(all_points_y[1]) + " "+ str(all_points_x[2]) + " " + str(all_points_y[2]) + " "+ str(all_points_x[3]) + " " + str(all_points_y[3]) + "\n")
+        file.write(str(object_class) + " " + str(all_points_x[0]) + " " + str(all_points_y[0]) + " "  + str(all_points_x[1]) + " " + str(all_points_y[1]) + " "+ str(all_points_x[2]) + " " + str(all_points_y[2]) + " "+ str(all_points_x[3]) + " " + str(all_points_y[3]) + "\n")
 
 #Draw aabb on image to check if implementation is correct
 def test_aabb(file_name, x, y, w, h):
@@ -135,12 +135,12 @@ def get_attributes_from_string(input_string: str):
 
 def create_yolo_labels(is_dummy:bool = False, annotation_type:str = "aabb"):
     global all_labels_dir
-    all_labels_dir = os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "raw", "labels", annotation_type)
+    all_labels_dir = os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", "raw", "labels", annotation_type)
 
     if(annotation_type == "aabb" or annotation_type == "ocaabb"):
         delete_files_in_directory(all_labels_dir)
         delete_files_in_directory(vis_aabb_dir)
-        df_all = pd.read_csv(os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "raw", "annotations", "aabb.csv"))
+        df_all = pd.read_csv(os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", "raw", "annotations", "aabb.csv"))
         for i in range(len(df_all)):
             x, y, w, h = get_aabb_from_string(df_all["region_shape_attributes"][i])
             x=x+(w/2)
@@ -158,10 +158,10 @@ def create_yolo_labels(is_dummy:bool = False, annotation_type:str = "aabb"):
                 if(attributes[0]): object_class = "1"
 
             write_aabb_label(df_all["filename"][i], all_labels_dir, x, y, w, h, object_class)
-    elif(annotation_type == "obb"):
+    elif(annotation_type == "obb" or annotation_type == "ocobb"):
         delete_files_in_directory(all_labels_dir)
         delete_files_in_directory(vis_obb_dir)
-        df_all = pd.read_csv(os.path.join(os.path.abspath(os.getcwd()), settings.slapi_dir, "raw", "annotations", "obb.csv"))
+        df_all = pd.read_csv(os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", "raw", "annotations", "obb.csv"))
         for i in range(len(df_all)):
             all_points_x, all_points_y = get_obb_from_string(df_all["region_shape_attributes"][i])
             if(not is_dummy):
@@ -170,7 +170,13 @@ def create_yolo_labels(is_dummy:bool = False, annotation_type:str = "aabb"):
                 height, width, _ = image.shape
                 for x in range(len(all_points_x)): all_points_x[x] /= width
                 for y in range(len(all_points_y)): all_points_y[y] /= height
-            write_obb_label(df_all["filename"][i], all_labels_dir, all_points_x, all_points_y)
+
+            object_class = "0"
+            if(annotation_type == "ocobb"):
+                attributes = get_attributes_from_string(df_all["region_attributes"][i])
+                if(attributes[0]): object_class = "1"
+
+            write_obb_label(df_all["filename"][i], all_labels_dir, all_points_x, all_points_y, object_class)
     else:
         print("unknown annotation type")
 
