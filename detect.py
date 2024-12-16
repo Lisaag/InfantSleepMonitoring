@@ -108,7 +108,7 @@ def track_vid_aabb(relative_weights_path:str, annotation_type:str="aabb"):
                     track_ids = obbs.id.int().cpu().tolist()
 
                     for obb, track_id in zip(obbs, track_ids):
-                        conf = obb.conf[0]  # Confidence score
+                        conf = float(obb.conf[0])  # Confidence score
                         points = list(chain.from_iterable(obb.xyxyxyxy.cpu().data.numpy()))
                         pts = np.array([[points[0][0], points[0][1]], [points[1][0], points[1][1]], [points[2][0], points[2][1]], [points[3][0], points[3][1]]], np.int32)
                         track_history[track_id].append(conf)
