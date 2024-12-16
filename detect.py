@@ -8,7 +8,7 @@ from collections import defaultdict
 import statistics
 
 
-def track_vid_aabb(relative_weights_path:str):
+def track_vid_aabb(relative_weights_path:str, annotation_type:str="aabb"):
     weights_path = os.path.join(os.path.abspath(os.getcwd()), relative_weights_path)
     model = YOLO(weights_path)
     IN_directory = os.path.join(os.path.abspath(os.getcwd()), "vid", "IN")
@@ -51,8 +51,6 @@ def track_vid_aabb(relative_weights_path:str):
             # Draw predictions on the frame
             for result in results:  # Iterate through detections
 
-                boxes = result.boxes  # Get bounding boxes
-
 #TODO add a check if current_track_epoch does not exist anymore in following epoch..
                 if (current_track_epoch == max_track_epoch):
                     #if currently tracked object does not exist in current epoch, set to -1
@@ -90,17 +88,28 @@ def track_vid_aabb(relative_weights_path:str):
                     track_history = defaultdict(lambda: [])
                     current_track_epoch = 0
 
+                if(annotation_type ==  "aabb" or annotation_type == "ocaabb"):
+                    boxes = result.boxes  # Get bounding boxes
+                    if(boxes.id == None): continue
 
-                if(boxes.id == None): continue
-                
-                track_ids = boxes.id.int().cpu().tolist()
+                    track_ids = boxes.id.int().cpu().tolist()
 
-                for box, track_id in zip(boxes, track_ids):
-                    conf = float(box.conf[0])  # Confidence score
-                    x1, y1, x2, y2 = map(int, box.xyxy[0]) 
-                    track_history[track_id].append(conf)
-                    box_history[track_id][current_frame] = [x1,y1,x2,y2]
-                    
+                    for box, track_id in zip(boxes, track_ids):
+                        conf = float(box.conf[0])  # Confidence score
+                        x1, y1, x2, y2 = map(int, box.xyxy[0]) 
+                        track_history[track_id].append(conf)
+                        box_history[track_id][current_frame] = [x1,y1,x2,y2]
+
+                elif(annotation_type ==  "obb" or annotation_type == "ocobb"):
+                    obbs = result.obb  # Get bounding boxes
+                    for obb in obbs:
+                        conf = obb.conf[0]  # Confidence score
+                        points = list(chain.from_iterable(obb.xyxyxyxy.cpu().data.numpy()))
+                        pts = np.array([[points[0][0], points[0][1]], [points[1][0], points[1][1]], [points[2][0], points[2][1]], [points[3][0], points[3][1]]], np.int32)
+                        track_history[track_id].append(conf)
+                        box_history[track_id][current_frame] = pts
+
+
                 current_track_epoch += 1
                 current_frame += 1             
 
@@ -160,11 +169,52 @@ def detect_vid_aabb_filter(box:defaultdict):
         cv2.destroyAllWindows()
         print(f"Processed video saved at {video_output_path}")
 
+def detect_vid_obb_filter(box:defaultdict):
+    IN_directory = os.path.join(os.path.abspath(os.getcwd()), "vid", "IN")
+    OUT_directory = os.path.join(os.path.abspath(os.getcwd()), "vid", "OUT")
+    for filename in os.listdir(IN_directory):
+        video_output_path =  os.path.join(os.path.abspath(os.getcwd()), "vid", "OUT", "OUT"+str(filename))
+        video_input_path =  os.path.join(os.path.abspath(os.getcwd()), "vid", "IN", filename)
+        # Open the video file
+        cap = cv2.VideoCapture(video_input_path)
+
+        # Get video properties
+        frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+        frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        fps = int(cap.get(cv2.CAP_PROP_FPS))
+
+        # Define the codec and create VideoWriter object
+        fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+        out = cv2.VideoWriter(video_output_path, fourcc, fps, (frame_width, frame_height))
+
+        current_frame = 0
+        # Process each frame
+        while cap.isOpened():
+            ret, frame = cap.read()
+            if not ret:
+                break
+
+            if filename in box:
+                if box[filename].get(current_frame) != None:
+                    points = box[filename][current_frame]
+                    pts = points.reshape((-1,1,2))
+                    cv2.polylines(frame,[pts],True,(0, 255, 0), thickness=20)
+                    cv2.circle(frame,(int(points[0][0]), int(points[0][1])), 10, (0,0,255), -1)                    
+
+            out.write(frame)
+
+            current_frame += 1
+
+        # Release resources
+        cap.release()
+        out.release()
+        cv2.destroyAllWindows()
+        print(f"Processed video saved at {video_output_path}")
+
 
 
 
 def detect_vid_aabb(relative_weights_path:str):
-
     weights_path = os.path.join(os.path.abspath(os.getcwd()), relative_weights_path)
     model = YOLO(weights_path)
     IN_directory = os.path.join(os.path.abspath(os.getcwd()), "vid", "IN")
@@ -323,10 +373,12 @@ def detect_vid_obb(relative_weights_path:str):
 def detect_vid(annotation_type:str, relative_weights_path:str):
     if(annotation_type == "aabb" or annotation_type == "ocaabb"):
         #detect_vid_aabb(relative_weights_path)
-        all_boxes = track_vid_aabb(relative_weights_path)
+        all_boxes = track_vid_aabb(relative_weights_path, annotation_type)
         detect_vid_aabb_filter(all_boxes)
-    elif(annotation_type == "obb"):
-        detect_vid_obb(relative_weights_path)
+    elif(annotation_type == "obb" or annotation_type == "ocobb"):
+        #detect_vid_obb(relative_weights_path)
+        all_boxes = track_vid_aabb(relative_weights_path, annotation_type)
+        detect_vid_obb_filter(all_boxes)
     else:
         print("annotation type [" + annotation_type + "] not recognized")
 
