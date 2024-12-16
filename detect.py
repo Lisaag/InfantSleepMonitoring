@@ -145,8 +145,8 @@ def detect_vid_aabb_filter(box:defaultdict):
                     height = abs(x1 - x2)
                     width = height * ratio
                     y_center = (y1 + y2) / 2
-                    y1 = y_center - width / 2
-                    y2 = y_center + width / 2
+                    y1 = int(y_center - width / 2)
+                    y2 = int(y_center + width / 2)
                     
                     cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
 
