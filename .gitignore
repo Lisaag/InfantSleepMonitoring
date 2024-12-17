@@ -1,5 +1,6 @@
 # Custom
 datasets/*
+vid/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
