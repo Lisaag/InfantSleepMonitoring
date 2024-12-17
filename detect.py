@@ -200,7 +200,7 @@ def detect_vid_obb_filter(box:defaultdict):
                 break
 
             if filename in box:
-                if box[filename].get(current_frame) != None:
+                if current_frame in box[filename]:
                     points = box[filename][current_frame]
                     pts = points.reshape((-1,1,2))
                     cv2.polylines(frame,[pts],True,(0, 255, 0), thickness=20)
