@@ -203,7 +203,7 @@ def detect_vid_obb_filter(box:defaultdict):
                 if current_frame in box[filename]:
                     points = box[filename][current_frame]
                     pts = points.reshape((-1,1,2))
-                    cv2.polylines(frame,[pts],True,(0, 255, 0), thickness=20)
+                    cv2.polylines(frame,[pts],True,(0, 255, 0), thickness=5)
                     cv2.circle(frame,(int(points[0][0]), int(points[0][1])), 10, (0,0,255), -1)                    
 
             out.write(frame)
