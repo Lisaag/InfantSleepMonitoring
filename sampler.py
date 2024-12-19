@@ -59,4 +59,4 @@ for subdir, dirs, files in os.walk(root_directory):
     for file in files:
         # Full path to the file
         file_path = os.path.join(subdir, file)
-        saved_count = extract_frames(subdir_name, file_path, outdir_name, 900, saved_count)
+        saved_count = extract_frames(subdir_name, file_path, outdir_name, 1800, saved_count)
