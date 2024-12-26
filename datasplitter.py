@@ -173,32 +173,32 @@ def train_val_split():
         update_sample_properties(train_val_dic[key], attributes, df_all["filename"][i])
 
 
-    q1_samples = dict()
-    q2_samples = dict()
-    q3_samples = dict()
+    # q1_samples = dict()
+    # q2_samples = dict()
+    # q3_samples = dict()
 
-    open_counts = [0, 0, 0]
-    closed_counts = [0, 0, 0]
+    # open_counts = [0, 0, 0]
+    # closed_counts = [0, 0, 0]
 
-    for key in train_val_dic:
-        quality_median = int(statistics.median(train_val_dic[key].qualities))
-        if(quality_median == 1):
-            q1_samples[key] = train_val_dic[key]
-            open_counts[0] += q1_samples[key].open_count
-            closed_counts[0] += q1_samples[key].closed_count
-        elif(quality_median == 2):
-            q2_samples[key] = train_val_dic[key]
-            open_counts[1] += q2_samples[key].open_count
-            closed_counts[1] += q2_samples[key].closed_count
-        elif(quality_median >= 3):
-            q3_samples[key] = train_val_dic[key]
-            open_counts[2] += q3_samples[key].open_count
-            closed_counts[2] += q3_samples[key].closed_count
+    # for key in train_val_dic:
+    #     quality_median = int(statistics.median(train_val_dic[key].qualities))
+    #     if(quality_median == 1):
+    #         q1_samples[key] = train_val_dic[key]
+    #         open_counts[0] += q1_samples[key].open_count
+    #         closed_counts[0] += q1_samples[key].closed_count
+    #     elif(quality_median == 2):
+    #         q2_samples[key] = train_val_dic[key]
+    #         open_counts[1] += q2_samples[key].open_count
+    #         closed_counts[1] += q2_samples[key].closed_count
+    #     elif(quality_median >= 3):
+    #         q3_samples[key] = train_val_dic[key]
+    #         open_counts[2] += q3_samples[key].open_count
+    #         closed_counts[2] += q3_samples[key].closed_count
 
 
-    divide_train_val(q1_samples, int(open_counts[0] * 0.2), int(closed_counts[0] * 0.2))
-    divide_train_val(q2_samples, int(open_counts[1] * 0.2), int(closed_counts[1] * 0.2))
-    divide_train_val(q3_samples, int(open_counts[2] * 0.2), int(closed_counts[2] * 0.2))
+    divide_train_val(train_val_dic, int(total_open_count * 0.2), int(total_closed_count * 0.2))
+    # divide_train_val(q2_samples, int(open_counts[1] * 0.2), int(closed_counts[1] * 0.2))
+    # divide_train_val(q3_samples, int(open_counts[2] * 0.2), int(closed_counts[2] * 0.2))
         
     print(len(train_val_dic))
 
