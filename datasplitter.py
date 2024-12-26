@@ -270,8 +270,8 @@ def split_dataset(annotation_type:str = "aabb"):
             print("PATIENT DATA NOT IN ANY SET!!! " + df_info["file"][i])
 
 
-    print('train set open={:d}, closed={:d}, q1={:d},q2={:d},q3={:d},q4={:d},q5={:d}, occlusion={:d}'.format(train_info.open_count, train_info.closed_count))
-    print('val set open={:d}, closed={:d}, q1={:d},q2={:d},q3={:d},q4={:d},q5={:d}, occlusion={:d}'.format(val_info.open_count, val_info.closed_count))
-    print('test set open={:d}, closed={:d}, q1={:d},q2={:d},q3={:d},q4={:d},q5={:d}, occlusion={:d}'.format(test_info.open_count, test_info.closed_count))
+    print('train set open={:d}, closed={:d}'.format(train_info.open_count, train_info.closed_count))
+    print('val set open={:d}, closed={:d}'.format(val_info.open_count, val_info.closed_count))
+    print('test set open={:d}, closed={:d}'.format(test_info.open_count, test_info.closed_count))
 
 ##########################################
