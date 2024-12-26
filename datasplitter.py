@@ -121,8 +121,8 @@ def update_set_properties(set_info, attributes):
     if(open_value): set_info.open_count += 1
     else: set_info.closed_count += 1
 
-    if(occlusion_value[0] != 'none'):
-        set_info.occlusion_count += 1
+    # if(occlusion_value[0] != 'none'):
+    #     set_info.occlusion_count += 1
 
 def update_sample_properties(sample_info, attributes, file_name):
     open_value, occlusion_value = attributes
