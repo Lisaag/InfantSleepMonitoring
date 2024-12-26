@@ -270,14 +270,8 @@ def split_dataset(annotation_type:str = "aabb"):
             print("PATIENT DATA NOT IN ANY SET!!! " + df_info["file"][i])
 
 
-    print('train set open={:d}, closed={:d}, q1={:d},q2={:d},q3={:d},q4={:d},q5={:d}, occlusion={:d}'.format(train_info.open_count, train_info.closed_count,
-                                                                                              train_info.q1_count, train_info.q2_count, train_info.q3_count, train_info.q4_count, train_info.q5_count,
-                                                                                              train_info.occlusion_count))
-    print('val set open={:d}, closed={:d}, q1={:d},q2={:d},q3={:d},q4={:d},q5={:d}, occlusion={:d}'.format(val_info.open_count, val_info.closed_count,
-                                                                                           val_info.q1_count, val_info.q2_count, val_info.q3_count, val_info.q4_count, val_info.q5_count,
-                                                                                           val_info.occlusion_count))
-    print('test set open={:d}, closed={:d}, q1={:d},q2={:d},q3={:d},q4={:d},q5={:d}, occlusion={:d}'.format(test_info.open_count, test_info.closed_count,
-                                                                                            test_info.q1_count, test_info.q2_count, test_info.q3_count, test_info.q4_count, test_info.q5_count,
-                                                                                            test_info.occlusion_count))
+    print('train set open={:d}, closed={:d}, q1={:d},q2={:d},q3={:d},q4={:d},q5={:d}, occlusion={:d}'.format(train_info.open_count, train_info.closed_count))
+    print('val set open={:d}, closed={:d}, q1={:d},q2={:d},q3={:d},q4={:d},q5={:d}, occlusion={:d}'.format(val_info.open_count, val_info.closed_count))
+    print('test set open={:d}, closed={:d}, q1={:d},q2={:d},q3={:d},q4={:d},q5={:d}, occlusion={:d}'.format(test_info.open_count, test_info.closed_count))
 
 ##########################################
