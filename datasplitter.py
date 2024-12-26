@@ -78,7 +78,22 @@ def copy_files(old_image_path:str, new_image_path:str, new_label_path:str, file_
 
 def copy_to_split(file_name:str, attributes):
     label_file = re.sub(r'\.jpg$', '', file_name) + ".txt"
-    key = re.sub(r'_\d+\.jpg$', '', file_name)
+
+    # Regular expression to extract the desired part
+    pattern = r"^frame_(.*?)-\d+\.jpg$"
+
+    # Perform the match
+    match = re.search(pattern, file_name)
+    # key = re.sub(r'_\d+\.jpg$', '', df_all["filename"][i])
+    # print(key)
+
+    if not match:
+        print("no match found")
+        return
+
+    key = match.group(1)
+    print(key)
+    #key = re.sub(r'_\d+\.jpg$', '', file_name)
 
     if(train.get(key) != None):
         copy_files(all_images_dir, train_images_dir, train_labels_dir, file_name, label_file)
