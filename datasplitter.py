@@ -26,11 +26,6 @@ all_csv = ""
 class SetInfo:
     open_count = 0
     closed_count = 0
-    q1_count = 0
-    q2_count = 0
-    q3_count = 0
-    q4_count = 0
-    q5_count = 0
     occlusion_count = 0
 
 @dataclass
@@ -38,8 +33,6 @@ class SampleInfo:
     file_names: List[str] = field(default_factory=list)
     open_count = 0
     closed_count = 0
-    qualities: List[int] = field(default_factory=list)
-
 
 all_data:dict = dict()
 train:dict = dict()
@@ -66,21 +59,18 @@ def delete_files_in_directory(directory_path):
 
 def get_attributes_from_string(input_string: str):
     open_pattern = r'"open":"(true|false)"'
-    quality_pattern = r'"quality":"([1-5])"'
     occlusion_pattern = r'"occlusion":{(.*?)}'
 
     open_match = re.search(open_pattern, input_string)
-    quality_match = re.search(quality_pattern, input_string)
     occlusion_match = re.search(occlusion_pattern, input_string)
 
     open_value = open_match.group(1) if open_match else None
     open_value = str_to_bool(open_value)
-    quality_value = int(quality_match.group(1)) if quality_match else None
     occlusion_value = (
         re.findall(r'"(\w+)":(?:true|false)', occlusion_match.group(1)) if occlusion_match else []
     )
 
-    return [open_value, quality_value, occlusion_value]
+    return [open_value, occlusion_value]
 
 def copy_files(old_image_path:str, new_image_path:str, new_label_path:str, file_name:str, label_file:str, prefix:str = ""):
     shutil.copy(os.path.join(old_image_path, file_name), os.path.join(new_image_path, prefix+file_name))
@@ -105,32 +95,18 @@ def copy_to_split(file_name:str, attributes):
         update_set_properties(val_info, attributes)
 
 def update_set_properties(set_info, attributes):
-    open_value, quality_value, occlusion_value = attributes
+    open_value, occlusion_value = attributes
 
     if(open_value): set_info.open_count += 1
     else: set_info.closed_count += 1
-
-    if(quality_value==1):       
-            set_info.q1_count+=1
-    elif(quality_value==2): 
-            set_info.q2_count+=1
-    elif(quality_value==3): 
-            set_info.q3_count+=1
-    elif(quality_value==4): 
-            set_info.q4_count+=1
-    elif(quality_value==5): 
-            set_info.q5_count+=1
-    else:
-        print("something went wrong")
 
     if(occlusion_value[0] != 'none'):
         set_info.occlusion_count += 1
 
 def update_sample_properties(sample_info, attributes, file_name):
-    open_value, quality_value, occlusion_value = attributes
+    open_value, occlusion_value = attributes
 
     sample_info.file_names.append(file_name)
-    sample_info.qualities.append(attributes[1])
 
     if(open_value): sample_info.open_count += 1
     else: sample_info.closed_count += 1
@@ -139,6 +115,7 @@ def divide_train_val(sample_dict:dict, open_val, closed_val):
     val_open_count = 0 #how many open samples are in the validation set currently
     val_closed_count = 0 #how many closed samples are in the validation set currently
     for key in sample_dict:
+        print(f'key {key}')
         # print(int(statistics.median(train_val_dic[key].qualities)))
         if(val_open_count < open_val and sample_dict[key].open_count != 0):
             val[key] = 1
