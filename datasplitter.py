@@ -85,14 +85,20 @@ def copy_to_split(file_name:str, attributes):
         # copy_files(os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", "raw", "augmentations", "brightness"), train_images_dir, train_labels_dir, file_name, label_file, "BR") #brightness increase
         # copy_files(os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", "raw", "augmentations", "brightness_decrease"), train_images_dir, train_labels_dir, file_name, label_file, "DBR")#brightness decrease
         update_set_properties(train_info, attributes)
+        print("COPY train")
+
     if(test.get(key) != None):
         shutil.copy(os.path.join(all_images_dir, file_name), test_images_dir)
         shutil.copy(os.path.join(all_labels_dir, label_file), test_labels_dir)
         update_set_properties(test_info, attributes)
+        print("COPY test")
+
     if(val.get(key) != None):
         shutil.copy(os.path.join(all_images_dir, file_name), val_images_dir)
         shutil.copy(os.path.join(all_labels_dir, label_file), val_labels_dir)
         update_set_properties(val_info, attributes)
+        print("COPY val")
+
 
 def update_set_properties(set_info, attributes):
     open_value, occlusion_value = attributes
