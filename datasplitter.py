@@ -160,6 +160,7 @@ def train_val_split():
 
     for i in range(len(df_all)):
         key = re.sub(r'_\d+\.jpg$', '', df_all["filename"][i])
+        print(key)
         if key in test: continue
 
         if key not in train_val_dic:
@@ -236,8 +237,6 @@ def split_dataset(annotation_type:str = "aabb"):
 
     for i in range(len(df_info)):
         all_data[df_info["file"][i]] = df_info["annotated"][i]
-
-        pma = int(df_info["PMA"][i][:2])
 
         if(df_info["annotated"][i]): #add to test set if annotated with (OR/CR/C/O)
             test[df_info["file"][i]] = 1#df_info["annotated"][i]
