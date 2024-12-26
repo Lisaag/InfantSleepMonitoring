@@ -159,8 +159,21 @@ def train_val_split():
     total_closed_count = 0
 
     for i in range(len(df_all)):
-        key = re.sub(r'_\d+\.jpg$', '', df_all["filename"][i])
+        # Regular expression to extract the desired part
+        pattern = r"^frame_(.*?)-\d+\.jpg$"
+
+        # Perform the match
+        match = re.search(pattern, df_all["filename"][i])
+        # key = re.sub(r'_\d+\.jpg$', '', df_all["filename"][i])
+        # print(key)
+
+        if not match:
+            print("no match found")
+            continue
+
+        key = match.group(1)
         print(key)
+
         if key in test: continue
 
         if key not in train_val_dic:
