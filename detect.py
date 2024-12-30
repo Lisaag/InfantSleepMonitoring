@@ -375,15 +375,19 @@ def detect_vid_obb(relative_weights_path:str):
         print(f"Processed video saved at {video_output_path}")
 
 
-def detect_vid(annotation_type:str, relative_weights_path:str):
+def detect_vid(annotation_type:str, relative_weights_path:str, detection_type:str):
     if(annotation_type == "aabb" or annotation_type == "ocaabb"):
-        #detect_vid_aabb(relative_weights_path)
-        all_boxes = track_vid_aabb(relative_weights_path, annotation_type)
-        detect_vid_aabb_filter(all_boxes)
+        if (detection_type == "detect"):
+            detect_vid_aabb(relative_weights_path)
+        elif (detection_type == "track"):
+            all_boxes = track_vid_aabb(relative_weights_path, annotation_type)
+            detect_vid_aabb_filter(all_boxes)
     elif(annotation_type == "obb" or annotation_type == "ocobb"):
-        #detect_vid_obb(relative_weights_path)
-        all_boxes = track_vid_aabb(relative_weights_path, annotation_type)
-        detect_vid_obb_filter(all_boxes)
+        if (detection_type == "detect"):
+            detect_vid_obb(relative_weights_path)
+        elif (detection_type == "track"):
+            all_boxes = track_vid_aabb(relative_weights_path, annotation_type)
+            detect_vid_obb_filter(all_boxes)
     else:
         print("annotation type [" + annotation_type + "] not recognized")
 
