@@ -73,8 +73,8 @@ def get_attributes_from_string(input_string: str):
     return [open_value, occlusion_value]
 
 def copy_files(old_image_path:str, old_label_path, new_image_path:str, new_label_path:str, image_filename:str, label_filename:str, prefix:str = ""):
-    shutil.copy(os.path.join(old_image_path, image_filename), os.path.join(new_image_path, prefix+image_filename))
-    shutil.copy(os.path.join(old_label_path, label_filename), os.path.join(new_label_path, prefix+label_filename))
+    shutil.copy(os.path.join(old_image_path, prefix+image_filename), os.path.join(new_image_path, prefix+image_filename))
+    shutil.copy(os.path.join(old_label_path, prefix+label_filename), os.path.join(new_label_path, prefix+label_filename))
 
 def copy_to_split(file_name:str, attributes):
     aug_labels_dir = os.path.join(os.path.abspath(os.getcwd()), "datasets","SLAPI", "raw", "aug", "labels")
