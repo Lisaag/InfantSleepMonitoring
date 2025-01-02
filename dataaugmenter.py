@@ -12,9 +12,6 @@ aug_images_dir = os.path.join(os.path.abspath(os.getcwd()), "datasets","SLAPI", 
 aug_vis_dir = os.path.join(os.path.abspath(os.getcwd()), "datasets","SLAPI", "raw", "aug", "vis")
 destination_dir = os.path.join(os.path.abspath(os.getcwd()), "datasets","SLAPI", "raw")
 
-def augment_all_images():
-    augment_albumentation()
-
 
 #Draw aabb on image to check if implementation is correct
 def test_aabb(file_name, x_n, y_n, w_n, h_n):
@@ -66,10 +63,20 @@ def augment_albumentation():
 
         for bbox in transformed_bboxes:
             with open(os.path.join(aug_labels_dir, aug_filename + ".txt"), "a") as file:
-                file.write(str(bbox[4]) + " " + str(bbox[0]) + " " + str(bbox[1]) + " " + str(bbox[2]) + " " + str(bbox[3]) + " " + "\n")
-            test_aabb(file_name, bbox[0], bbox[1], bbox[2], bbox[3])
+                file.write(str(int(bbox[4])) + " " + str(bbox[0]) + " " + str(bbox[1]) + " " + str(bbox[2]) + " " + str(bbox[3]) + " " + "\n")
+            # test_aabb(file_name, bbox[0], bbox[1], bbox[2], bbox[3])
         #TODO write transformed labels to file
         #TODO draw images with transformed bbox, to check validity of transformed bbox (make new directory to save these (vis))
 
+def test_transformed_bboxes():
+    for img in glob.glob(aug_images_dir + "/*.jpg"):
+        file_name = re.sub(r'\.jpg$', '', os.path.basename(img))
 
-augment_albumentation()
+        with open(os.path.join(aug_labels_dir, file_name + ".txt"), 'r') as file:  # Open the file in read mode
+            content = file.read()
+            label_data = [list(map(float, line.split())) for line in content.strip().split("\n")]
+
+        for label in label_data:
+            print(label)
+
+        
