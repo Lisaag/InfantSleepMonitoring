@@ -11,32 +11,12 @@ aug_labels_dir = os.path.join(os.path.abspath(os.getcwd()), "datasets","SLAPI", 
 aug_images_dir = os.path.join(os.path.abspath(os.getcwd()), "datasets","SLAPI", "raw", "aug", "images")
 destination_dir = os.path.join(os.path.abspath(os.getcwd()), "datasets","SLAPI", "raw")
 
-def augment_increase_brightness():
-    print("augment_brightness() called")
-    for img in glob.glob(images_dir + "/*.jpg"):
-        file_name = os.path.basename(img)
-        image = cv2.imread(img)
-        bright = np.ones(image.shape, dtype="uint8") * 70
-        brightincrease = cv2.add(image,bright)
-        cv2.imwrite(os.path.join(destination_dir, "augmentations", "brightness", file_name), brightincrease)
-
-def augment_decrease_brightness():
-    print("augment_brightness() called")
-    for img in glob.glob(images_dir + "/*.jpg"):
-        file_name = os.path.basename(img)
-        image = cv2.imread(img)
-        bright = np.ones(image.shape, dtype="uint8") * 70
-        brightincrease = cv2.subtract(image,bright)
-        cv2.imwrite(os.path.join(destination_dir, "augmentations", "brightness_decrease", file_name), brightincrease)
-
 def augment_all_images():
-    # augment_increase_brightness()
-    # augment_decrease_brightness()
     augment_albumentation()
 
 def augment_albumentation():
     transform = A.Compose([
-        A.RandomCrop(width=450, height=450),
+        A.RandomCrop(width=750, height=550),
         A.RandomBrightnessContrast(p=0.2),
     ], bbox_params=A.BboxParams(format='yolo'))
 
@@ -56,9 +36,10 @@ def augment_albumentation():
         aug_filename = "AUG" + file_name + ".jpg"
         cv2.imwrite(os.path.join(aug_images_dir, aug_filename), transformed_image)
 
+        print(transformed_bboxes)
+
         #TODO write transformed labels to file
+        #TODO draw images with transformed bbox, to check validity of transformed bbox (make new directory to save these (vis))
 
-
-       # print(file_name)
 
 augment_albumentation()
