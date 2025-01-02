@@ -72,11 +72,14 @@ def get_attributes_from_string(input_string: str):
 
     return [open_value, occlusion_value]
 
-def copy_files(old_image_path:str, new_image_path:str, new_label_path:str, file_name:str, label_file:str, prefix:str = ""):
-    shutil.copy(os.path.join(old_image_path, file_name), os.path.join(new_image_path, prefix+file_name))
-    shutil.copy(os.path.join(all_labels_dir, label_file), os.path.join(new_label_path, prefix+label_file))
+def copy_files(old_image_path:str, old_label_path, new_image_path:str, new_label_path:str, image_filename:str, label_filename:str, prefix:str = ""):
+    shutil.copy(os.path.join(old_image_path, image_filename), os.path.join(new_image_path, prefix+image_filename))
+    shutil.copy(os.path.join(old_label_path, label_filename), os.path.join(new_label_path, prefix+label_filename))
 
 def copy_to_split(file_name:str, attributes):
+    aug_labels_dir = os.path.join(os.path.abspath(os.getcwd()), "datasets","SLAPI", "raw", "aug", "labels")
+    aug_images_dir = os.path.join(os.path.abspath(os.getcwd()), "datasets","SLAPI", "raw", "aug", "images")
+
     label_file = re.sub(r'\.jpg$', '', file_name) + ".txt"
 
     # Regular expression to extract the desired part
@@ -96,21 +99,23 @@ def copy_to_split(file_name:str, attributes):
     #key = re.sub(r'_\d+\.jpg$', '', file_name)
 
     if(train.get(key) != None):
-        copy_files(all_images_dir, train_images_dir, train_labels_dir, file_name, label_file)
-        # copy_files(os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", "raw", "augmentations", "brightness"), train_images_dir, train_labels_dir, file_name, label_file, "BR") #brightness increase
-        # copy_files(os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", "raw", "augmentations", "brightness_decrease"), train_images_dir, train_labels_dir, file_name, label_file, "DBR")#brightness decrease
+        copy_files(all_images_dir, all_labels_dir, train_images_dir, train_labels_dir, file_name, label_file)
+        copy_files(aug_images_dir, aug_labels_dir, train_images_dir, train_labels_dir, file_name, label_file, prefix="CLAHE_")
+        copy_files(aug_images_dir, aug_labels_dir, train_images_dir, train_labels_dir, file_name, label_file, prefix="ROT_")
+        copy_files(aug_images_dir, aug_labels_dir, train_images_dir, train_labels_dir, file_name, label_file, prefix="CROP_")
         update_set_properties(train_info, attributes)
         print("COPY train")
 
-    if(test.get(key) != None):
-        shutil.copy(os.path.join(all_images_dir, file_name), test_images_dir)
-        shutil.copy(os.path.join(all_labels_dir, label_file), test_labels_dir)
+    elif(test.get(key) != None):
+        copy_files(all_images_dir, all_labels_dir, test_images_dir, test_labels_dir, file_name, label_file)
         update_set_properties(test_info, attributes)
         print("COPY test")
 
-    if(val.get(key) != None):
-        shutil.copy(os.path.join(all_images_dir, file_name), val_images_dir)
-        shutil.copy(os.path.join(all_labels_dir, label_file), val_labels_dir)
+    elif(val.get(key) != None):
+        copy_files(all_images_dir, all_labels_dir, val_images_dir, val_labels_dir, file_name, label_file)
+        copy_files(aug_images_dir, aug_labels_dir, val_images_dir, val_labels_dir, file_name, label_file, prefix="CLAHE_")
+        copy_files(aug_images_dir, aug_labels_dir, val_images_dir, val_labels_dir, file_name, label_file, prefix="ROT_")
+        copy_files(aug_images_dir, aug_labels_dir, val_images_dir, val_labels_dir, file_name, label_file, prefix="CROP_")
         update_set_properties(val_info, attributes)
         print("COPY val")
 
