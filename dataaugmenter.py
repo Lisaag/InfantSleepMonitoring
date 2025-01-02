@@ -12,6 +12,17 @@ aug_images_dir = os.path.join(os.path.abspath(os.getcwd()), "datasets","SLAPI", 
 aug_vis_dir = os.path.join(os.path.abspath(os.getcwd()), "datasets","SLAPI", "raw", "aug", "vis")
 destination_dir = os.path.join(os.path.abspath(os.getcwd()), "datasets","SLAPI", "raw")
 
+##Delete all files in directory
+def delete_files_in_directory(directory_path):
+   try:
+     files = os.listdir(directory_path)
+     for file in files:
+       file_path = os.path.join(directory_path, file)
+       if os.path.isfile(file_path):
+         os.remove(file_path)
+     print("All files deleted successfully.")
+   except OSError:
+     print("Error occurred while deleting files.")
 
 #Draw aabb on image to check if implementation is correct
 def test_aabb(file_name, x_n, y_n, w_n, h_n):
@@ -37,6 +48,10 @@ def test_aabb(file_name, x_n, y_n, w_n, h_n):
         print("imwrite failed")
 
 def augment_albumentation():
+    delete_files_in_directory(aug_labels_dir)
+    delete_files_in_directory(aug_images_dir)
+    delete_files_in_directory(aug_vis_dir)
+
     transform = A.Compose([
         A.RandomCrop(width=750, height=550),
         A.RandomBrightnessContrast(p=0.2),
