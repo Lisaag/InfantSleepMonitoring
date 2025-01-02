@@ -4,6 +4,7 @@ import glob
 import numpy as np
 import albumentations as A
 import re
+import random
 
 images_dir = os.path.join(os.path.abspath(os.getcwd()), "datasets","SLAPI", "raw", "images")
 labels_dir = os.path.join(os.path.abspath(os.getcwd()), "datasets","SLAPI", "raw", "labels", "ocaabb")
@@ -79,6 +80,28 @@ def augment_crop(file_name, transform_crop, prefix):
     aug_filename = prefix + file_name
     write_augmented(aug_filename, transformed_image, transformed_bboxes)
 
+def augment_rotate(file_name, prefix):
+    random_bit = random.randint(0, 1)
+    random_range = [-30, -15] if random_bit == 0 else [15, 30]
+
+    transform_rotate = A.Compose([
+        A.Rotate(limit=random_range),
+    ], bbox_params=A.BboxParams(format='yolo', min_visibility=0.8))
+
+    image = cv2.imread(os.path.join(images_dir, file_name + ".jpg"))
+    aug_labels = albumentation_label(file_name)
+
+    for i in range(30):
+        transformed = transform_rotate(image=image, bboxes=aug_labels)
+        transformed_image = transformed['image']
+        transformed_bboxes = transformed['bboxes']
+
+        if len(transformed_bboxes) > 0:
+            break
+
+    aug_filename = prefix + file_name
+    write_augmented(aug_filename, transformed_image, transformed_bboxes)
+
 
 def augment_albumentation():
     delete_files_in_directory(aug_labels_dir)
@@ -92,10 +115,8 @@ def augment_albumentation():
     for img in glob.glob(images_dir + "/*.jpg"):
         file_name = re.sub(r'\.jpg$', '', os.path.basename(img))
         augment_crop(file_name, transform_crop, "CROP_")
+        augment_rotate(file_name, "ROT_")
 
-            # test_aabb(file_name, bbox[0], bbox[1], bbox[2], bbox[3])
-        #TODO write transformed labels to file
-        #TODO draw images with transformed bbox, to check validity of transformed bbox (make new directory to save these (vis))
 
 def test_transformed_bboxes():
     for img in glob.glob(aug_images_dir + "/*.jpg"):
