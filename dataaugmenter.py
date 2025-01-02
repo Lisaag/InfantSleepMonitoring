@@ -33,10 +33,16 @@ def augment_albumentation():
         transformed_image = transformed['image']
         transformed_bboxes = transformed['bboxes']
 
-        aug_filename = "AUG" + file_name + ".jpg"
-        cv2.imwrite(os.path.join(aug_images_dir, aug_filename), transformed_image)
+        aug_filename = "AUG" + file_name
+        cv2.imwrite(os.path.join(aug_images_dir, aug_filename + ".jpg"), transformed_image)
 
-        print(transformed_bboxes)
+        with open(os.path.join(aug_labels_dir, aug_filename + ".txt"), "a") as file:
+            pass
+
+        for bbox in transformed_bboxes:
+            with open(os.path.join(aug_labels_dir, aug_filename + ".txt"), "a") as file:
+                file.write(bbox[4] + " " + bbox[0] + " " + bbox[1] + " " + bbox[2] + " " + bbox[3] + " " + "\n")
+
 
         #TODO write transformed labels to file
         #TODO draw images with transformed bbox, to check validity of transformed bbox (make new directory to save these (vis))
