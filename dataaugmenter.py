@@ -65,7 +65,7 @@ def albumentation_label(file_name):
     return aug_labels
 
 def augment_crop(file_name, transform_crop, prefix):   
-    image = cv2.imread(file_name + ".jpg")
+    image = cv2.imread(os.path.join(images_dir, file_name + ".jpg"))
     aug_labels = albumentation_label(file_name)
 
     for i in range(30):
