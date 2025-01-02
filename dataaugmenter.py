@@ -110,7 +110,7 @@ def augment_CLAHE(file_name, prefix):
     image = cv2.imread(os.path.join(images_dir, file_name + ".jpg"))
     aug_labels = albumentation_label(file_name)
 
-    transformed = transform_CLAHE(image=image, bboxes=aug_labels)
+    transformed = transform_CLAHE(image=image)
     transformed_image = transformed['image']
 
     aug_filename = prefix + file_name
@@ -128,7 +128,7 @@ def augment_albumentation():
 
     for img in glob.glob(images_dir + "/*.jpg"):
         file_name = re.sub(r'\.jpg$', '', os.path.basename(img))
-        
+
         augment_CLAHE(file_name, "CLAHE_")
         augment_crop(file_name, transform_crop, "CROP_")
         augment_rotate(file_name, "ROT_")
