@@ -41,7 +41,7 @@ def augment_albumentation():
 
         for bbox in transformed_bboxes:
             with open(os.path.join(aug_labels_dir, aug_filename + ".txt"), "a") as file:
-                file.write(bbox[4] + " " + bbox[0] + " " + bbox[1] + " " + bbox[2] + " " + bbox[3] + " " + "\n")
+                file.write(str(bbox[4]) + " " + str(bbox[0]) + " " + str(bbox[1]) + " " + str(bbox[2]) + " " + str(bbox[3]) + " " + "\n")
 
 
         #TODO write transformed labels to file
