@@ -92,6 +92,6 @@ def test_transformed_bboxes():
             label_data = [list(map(float, line.split())) for line in content.strip().split("\n")]
 
         for bbox in label_data:
-            #test_aabb(file_name, bbox[1], bbox[2], bbox[3], bbox[4])
-            print(len(bbox))
+            if(len(bbox) != 0):
+                test_aabb(file_name, bbox[1], bbox[2], bbox[3], bbox[4])
         
