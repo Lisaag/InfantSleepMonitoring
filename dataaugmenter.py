@@ -104,7 +104,7 @@ def augment_rotate(file_name, prefix):
 
 def augment_CLAHE(file_name, prefix):
     transform_CLAHE = A.Compose([
-        A.CLAHE(clip_limit=2.0, tile_grid_size=(8, 8), always_apply=True)
+        A.CLAHE(clip_limit=4.0, tile_grid_size=(8, 8), always_apply=True)
     ])
 
     image = cv2.imread(os.path.join(images_dir, file_name + ".jpg"))
@@ -115,7 +115,6 @@ def augment_CLAHE(file_name, prefix):
 
     aug_filename = prefix + file_name
     write_augmented(aug_filename, transformed_image, aug_labels)
-    
 
 def augment_albumentation():
     delete_files_in_directory(aug_labels_dir)
