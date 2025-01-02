@@ -9,10 +9,35 @@ images_dir = os.path.join(os.path.abspath(os.getcwd()), "datasets","SLAPI", "raw
 labels_dir = os.path.join(os.path.abspath(os.getcwd()), "datasets","SLAPI", "raw", "labels", "ocaabb")
 aug_labels_dir = os.path.join(os.path.abspath(os.getcwd()), "datasets","SLAPI", "raw", "aug", "labels")
 aug_images_dir = os.path.join(os.path.abspath(os.getcwd()), "datasets","SLAPI", "raw", "aug", "images")
+aug_vis_dir = os.path.join(os.path.abspath(os.getcwd()), "datasets","SLAPI", "raw", "aug", "vis")
 destination_dir = os.path.join(os.path.abspath(os.getcwd()), "datasets","SLAPI", "raw")
 
 def augment_all_images():
     augment_albumentation()
+
+
+#Draw aabb on image to check if implementation is correct
+def test_aabb(file_name, x_n, y_n, w_n, h_n):
+    im_path = os.path.join(aug_vis_dir, file_name + ".jpg")
+    
+    if(os.path.exists(im_path)):
+        image = cv2.imread(im_path, cv2.IMREAD_COLOR)
+    else: 
+        im_path = os.path.join(aug_images_dir, file_name) + ".jpg"
+        image = cv2.imread(im_path, cv2.IMREAD_COLOR)
+
+    height, width, _ = image.shape
+    x = x_n * width
+    y = y_n * height
+    w = w_n * width
+    h = h_n * height
+
+
+    #To draw a rectangle, you need top-left corner and bottom-right corner of rectangle.
+    cv2.rectangle(image, (int(x-(w/2)), int(y-(h/2))), (int(x+(w/2)), int(y+(h/2))), (0,255,0), 3)
+    cv2.circle(image,(int(x-(w/2)), int(y-(h/2))), 10, (255,0,0), -1)
+    if not cv2.imwrite( os.path.join(aug_vis_dir, file_name + ".jpg"), image):
+        print("imwrite failed")
 
 def augment_albumentation():
     transform = A.Compose([
@@ -44,6 +69,7 @@ def augment_albumentation():
                 file.write(str(bbox[4]) + " " + str(bbox[0]) + " " + str(bbox[1]) + " " + str(bbox[2]) + " " + str(bbox[3]) + " " + "\n")
 
 
+        test_aabb(file_name, bbox[0], bbox[1], bbox[2], bbox[3])
         #TODO write transformed labels to file
         #TODO draw images with transformed bbox, to check validity of transformed bbox (make new directory to save these (vis))
 
