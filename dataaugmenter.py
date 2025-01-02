@@ -23,7 +23,7 @@ def test_aabb(file_name, x_n, y_n, w_n, h_n):
     if(os.path.exists(im_path)):
         image = cv2.imread(im_path, cv2.IMREAD_COLOR)
     else: 
-        im_path = os.path.join(aug_images_dir, file_name) + ".jpg"
+        im_path = os.path.join(aug_images_dir, file_name + ".jpg")
         image = cv2.imread(im_path, cv2.IMREAD_COLOR)
 
     height, width, _ = image.shape
