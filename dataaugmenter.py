@@ -47,6 +47,7 @@ def test_aabb(file_name, x_n, y_n, w_n, h_n):
     if not cv2.imwrite( os.path.join(aug_vis_dir, file_name + ".jpg"), image):
         print("imwrite failed")
 
+
 def augment_albumentation():
     delete_files_in_directory(aug_labels_dir)
     delete_files_in_directory(aug_images_dir)
@@ -66,9 +67,13 @@ def augment_albumentation():
         
         image = cv2.imread(img)
 
-        transformed = transform(image=image, bboxes=aug_labels)
-        transformed_image = transformed['image']
-        transformed_bboxes = transformed['bboxes']
+        for i in range(30):
+            transformed = transform(image=image, bboxes=aug_labels)
+            transformed_image = transformed['image']
+            transformed_bboxes = transformed['bboxes']
+
+            if len(transformed_bboxes) > 0:
+                break
 
         aug_filename = "AUG" + file_name
         cv2.imwrite(os.path.join(aug_images_dir, aug_filename + ".jpg"), transformed_image)
