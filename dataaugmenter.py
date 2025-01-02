@@ -82,7 +82,7 @@ def augment_crop(file_name, transform_crop, prefix):
 
 def augment_rotate(file_name, prefix):
     random_bit = random.randint(0, 1)
-    random_range = [-30, -15] if random_bit == 0 else [15, 30]
+    random_range = [-35, -25] if random_bit == 0 else [25, 35]
 
     transform_rotate = A.Compose([
         A.Rotate(limit=random_range),
@@ -102,6 +102,20 @@ def augment_rotate(file_name, prefix):
     aug_filename = prefix + file_name
     write_augmented(aug_filename, transformed_image, transformed_bboxes)
 
+def augment_CLAHE(file_name, prefix):
+    transform_CLAHE = A.Compose([
+        A.CLAHE(clip_limit=2.0, tile_grid_size=(8, 8), always_apply=True)
+    ])
+
+    image = cv2.imread(os.path.join(images_dir, file_name + ".jpg"))
+    aug_labels = albumentation_label(file_name)
+
+    transformed = transform_CLAHE(image=image, bboxes=aug_labels)
+    transformed_image = transformed['image']
+
+    aug_filename = prefix + file_name
+    write_augmented(aug_filename, transformed_image, aug_labels)
+    
 
 def augment_albumentation():
     delete_files_in_directory(aug_labels_dir)
@@ -114,6 +128,8 @@ def augment_albumentation():
 
     for img in glob.glob(images_dir + "/*.jpg"):
         file_name = re.sub(r'\.jpg$', '', os.path.basename(img))
+        
+        augment_CLAHE(file_name, "CLAHE_")
         augment_crop(file_name, transform_crop, "CROP_")
         augment_rotate(file_name, "ROT_")
 
