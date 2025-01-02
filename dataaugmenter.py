@@ -55,7 +55,7 @@ def augment_albumentation():
     transform = A.Compose([
         A.RandomCrop(width=750, height=550),
         A.RandomBrightnessContrast(p=0.2),
-    ], bbox_params=A.BboxParams(format='yolo'))
+    ], bbox_params=A.BboxParams(format='yolo', min_visibility=0.8))
 
     for img in glob.glob(images_dir + "/*.jpg"):
         file_name = re.sub(r'\.jpg$', '', os.path.basename(img))
