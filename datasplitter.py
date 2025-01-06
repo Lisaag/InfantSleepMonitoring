@@ -77,6 +77,8 @@ def copy_files(old_image_path:str, old_label_path, new_image_path:str, new_label
     shutil.copy(os.path.join(old_label_path, prefix+label_filename), os.path.join(new_label_path, prefix+label_filename))
 
 def copy_to_split(file_name:str, attributes):
+    print(attributes)
+
     aug_labels_dir = os.path.join(os.path.abspath(os.getcwd()), "datasets","SLAPI", "raw", "aug", "labels")
     aug_images_dir = os.path.join(os.path.abspath(os.getcwd()), "datasets","SLAPI", "raw", "aug", "images")
 
@@ -95,7 +97,7 @@ def copy_to_split(file_name:str, attributes):
         return
 
     key = match.group(1)
-    print(key)
+    #print(key)
     #key = re.sub(r'_\d+\.jpg$', '', file_name)
 
     if(train.get(key) != None):
