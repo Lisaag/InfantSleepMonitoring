@@ -85,7 +85,8 @@ def augment_rotate(file_name, prefix):
     random_range = [-35, -25] if random_bit == 0 else [25, 35]
 
     transform_rotate = A.Compose([
-        A.Rotate(limit=random_range),
+        A.Rotate(limit=random_range, p=1.0),
+        A.HueSaturationValue(hue_shift_limit=0.0, sat_shift_limit=[-60,60], val_shift_limit=[40, 80], p=1.0)
     ], bbox_params=A.BboxParams(format='yolo', min_visibility=0.8))
 
     image = cv2.imread(os.path.join(images_dir, file_name + ".jpg"))
@@ -122,13 +123,14 @@ def augment_albumentation():
     delete_files_in_directory(aug_vis_dir)
 
     transform_crop = A.Compose([
-        A.RandomCrop(width=750, height=550),
+        A.RandomCrop(width=750, height=550, p=1.0),
+        A.HueSaturationValue(hue_shift_limit=0.0, sat_shift_limit=[-60,60], val_shift_limit=[40, 80], p=1.0)
     ], bbox_params=A.BboxParams(format='yolo', min_visibility=0.8))
 
     for img in glob.glob(images_dir + "/*.jpg"):
         file_name = re.sub(r'\.jpg$', '', os.path.basename(img))
 
-        augment_CLAHE(file_name, "CLAHE_")
+        #augment_CLAHE(file_name, "CLAHE_")
         augment_crop(file_name, transform_crop, "CROP_")
         augment_rotate(file_name, "ROT_")
 
