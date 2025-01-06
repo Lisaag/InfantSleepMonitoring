@@ -100,7 +100,7 @@ def copy_to_split(file_name:str, attributes):
 
     if(train.get(key) != None):
         copy_files(all_images_dir, all_labels_dir, train_images_dir, train_labels_dir, file_name, label_file)
-        copy_files(aug_images_dir, aug_labels_dir, train_images_dir, train_labels_dir, file_name, label_file, prefix="CLAHE_")
+        #copy_files(aug_images_dir, aug_labels_dir, train_images_dir, train_labels_dir, file_name, label_file, prefix="CLAHE_")
         copy_files(aug_images_dir, aug_labels_dir, train_images_dir, train_labels_dir, file_name, label_file, prefix="ROT_")
         copy_files(aug_images_dir, aug_labels_dir, train_images_dir, train_labels_dir, file_name, label_file, prefix="CROP_")
         update_set_properties(train_info, attributes)
@@ -113,7 +113,7 @@ def copy_to_split(file_name:str, attributes):
 
     elif(val.get(key) != None):
         copy_files(all_images_dir, all_labels_dir, val_images_dir, val_labels_dir, file_name, label_file)
-        copy_files(aug_images_dir, aug_labels_dir, val_images_dir, val_labels_dir, file_name, label_file, prefix="CLAHE_")
+        #copy_files(aug_images_dir, aug_labels_dir, val_images_dir, val_labels_dir, file_name, label_file, prefix="CLAHE_")
         copy_files(aug_images_dir, aug_labels_dir, val_images_dir, val_labels_dir, file_name, label_file, prefix="ROT_")
         copy_files(aug_images_dir, aug_labels_dir, val_images_dir, val_labels_dir, file_name, label_file, prefix="CROP_")
         update_set_properties(val_info, attributes)
