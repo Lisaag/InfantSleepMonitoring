@@ -60,24 +60,29 @@ def delete_files_in_directory(directory_path):
 def get_attributes_from_string(input_string: str):
     open_pattern = r'"open":"(true|false)"'
     occlusion_pattern = r'"occlusion":{(.*?)}'
+    side_pattern = r'"side":"(true|false)"'
 
     open_match = re.search(open_pattern, input_string)
     occlusion_match = re.search(occlusion_pattern, input_string)
+    side_match = re.search(side_pattern, input_string)
 
     open_value = open_match.group(1) if open_match else None
     open_value = str_to_bool(open_value)
     occlusion_value = (
         re.findall(r'"(\w+)":(?:true|false)', occlusion_match.group(1)) if occlusion_match else []
     )
+    side_value = side_match.group(1) if side_match else None
+    side_value = str_to_bool(side_value)
 
-    return [open_value, occlusion_value]
+    return [open_value, occlusion_value, side_value]
 
 def copy_files(old_image_path:str, old_label_path, new_image_path:str, new_label_path:str, image_filename:str, label_filename:str, prefix:str = ""):
     shutil.copy(os.path.join(old_image_path, prefix+image_filename), os.path.join(new_image_path, prefix+image_filename))
     shutil.copy(os.path.join(old_label_path, prefix+label_filename), os.path.join(new_label_path, prefix+label_filename))
 
 def copy_to_split(file_name:str, attributes):
-    print(attributes)
+    open_value, occlusion_value, side_value = attributes
+    print(f'side {side_value} {type(side_value)}')
 
     aug_labels_dir = os.path.join(os.path.abspath(os.getcwd()), "datasets","SLAPI", "raw", "aug", "labels")
     aug_images_dir = os.path.join(os.path.abspath(os.getcwd()), "datasets","SLAPI", "raw", "aug", "images")
@@ -123,7 +128,7 @@ def copy_to_split(file_name:str, attributes):
 
 
 def update_set_properties(set_info, attributes):
-    open_value, occlusion_value = attributes
+    open_value, occlusion_value, side_value = attributes
 
     if(open_value): set_info.open_count += 1
     else: set_info.closed_count += 1
@@ -132,7 +137,7 @@ def update_set_properties(set_info, attributes):
     #     set_info.occlusion_count += 1
 
 def update_sample_properties(sample_info, attributes, file_name):
-    open_value, occlusion_value = attributes
+    open_value, occlusion_value, side_value = attributes
 
     sample_info.file_names.append(file_name)
 
