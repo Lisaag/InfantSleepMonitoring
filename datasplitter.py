@@ -82,7 +82,8 @@ def copy_files(old_image_path:str, old_label_path, new_image_path:str, new_label
 
 def copy_to_split(file_name:str, attributes):
     open_value, occlusion_value, side_value = attributes
-    print(f'side {side_value} {type(side_value)}')
+    if(side_value == True):
+        return
 
     aug_labels_dir = os.path.join(os.path.abspath(os.getcwd()), "datasets","SLAPI", "raw", "aug", "labels")
     aug_images_dir = os.path.join(os.path.abspath(os.getcwd()), "datasets","SLAPI", "raw", "aug", "images")
