@@ -11,7 +11,6 @@ import statistics
 def track_vid_aabb(relative_weights_path:str, annotation_type:str="aabb"):
     weights_path = os.path.join(os.path.abspath(os.getcwd()), relative_weights_path)
     model = YOLO(weights_path)
-    print(model)
     IN_directory = os.path.join(os.path.abspath(os.getcwd()), "vid", "IN")
 
     tracking_data = defaultdict(lambda: [])
@@ -223,7 +222,7 @@ def detect_vid_obb_filter(box:defaultdict):
 def detect_vid_aabb(relative_weights_path:str):
     weights_path = os.path.join(os.path.abspath(os.getcwd()), relative_weights_path)
     model = YOLO(weights_path)
-    print(model)
+
     IN_directory = os.path.join(os.path.abspath(os.getcwd()), "vid", "IN")
     OUT_directory = os.path.join(os.path.abspath(os.getcwd()), "vid", "OUT")
     for filename in os.listdir(IN_directory):
