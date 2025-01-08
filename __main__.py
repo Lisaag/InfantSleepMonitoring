@@ -31,7 +31,7 @@ if __name__ == '__main__':
         elif args.augment[0] == 'test':
             dataaugmenter.test_transformed_bboxes()
     elif(args.rotate):
-        imgtransformer(args.rotate[0], args.rotate[1])
+        imgtransformer.rotate_img(args.rotate[0], args.rotate[1], args.rotate[2])
 
        
 
