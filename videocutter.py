@@ -11,7 +11,7 @@ def cut_video(file_name:str, patient_id:str, start_time:str):
         video = VideoFileClip(input_file)
         start_time=float(start_time)
 
-        end_time = start_time + 1  # 1 second after the start time
+        end_time = start_time + 1.5  # 1 second after the start time
 
         if start_time < 0 or end_time > video.duration:
             raise ValueError("Start time is out of the video duration range.")
