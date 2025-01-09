@@ -76,12 +76,12 @@ def track_vid_aabb(relative_weights_path:str, annotation_type:str="aabb"):
                     tracking_data[filename].append(current_track_id)
                     tracked_boxes = box_history[current_track_id]
                     for key in tracked_boxes:
+                        test+=1
+
                         all_boxes[filename][key] = tracked_boxes[key]
                     box_history = defaultdict(lambda: {})
                     track_history = defaultdict(lambda: [])
                     current_track_epoch = 0
-
-                test+=1
 
 
                 #Save bboxes
