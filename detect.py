@@ -133,13 +133,12 @@ def detect_vid_aabb_filter(box:defaultdict):
         current_frame = 0
         num_boxes = 0
         frame_count = 0
+        frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
         # Process each frame
         while cap.isOpened():
             ret, frame = cap.read()
             if not ret:
                 break
-
-            frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
 
             if filename in box:
                 if box[filename].get(current_frame) != None:
