@@ -46,6 +46,19 @@ def track_vid_aabb(relative_weights_path:str, annotation_type:str="aabb"):
             # Draw predictions on the frame
             for result in results:  # Iterate through detections
 
+                               #Save bboxes
+
+                boxes = result.boxes  # Get bounding boxes
+                if(boxes.id == None): continue
+
+                track_ids = boxes.id.int().cpu().tolist()
+
+                for box, track_id in zip(boxes, track_ids):
+                    conf = float(box.conf[0])  # Confidence score
+                    x1, y1, x2, y2 = map(int, box.xyxy[0]) 
+                    track_history[track_id].append(conf)
+                    box_history[track_id][current_frame] = [x1,y1,x2,y2]
+
                 if (current_track_epoch == max_track_epoch or current_frame == frame_count-1):
                     #if currently tracked object does not exist in current epoch, set to -1
                     if(current_track_id not in track_history): current_track_id = -1
@@ -84,20 +97,6 @@ def track_vid_aabb(relative_weights_path:str, annotation_type:str="aabb"):
                     box_history = defaultdict(lambda: {})
                     track_history = defaultdict(lambda: [])
                     current_track_epoch = 0
-
-
-                #Save bboxes
-
-                boxes = result.boxes  # Get bounding boxes
-                if(boxes.id == None): continue
-
-                track_ids = boxes.id.int().cpu().tolist()
-
-                for box, track_id in zip(boxes, track_ids):
-                    conf = float(box.conf[0])  # Confidence score
-                    x1, y1, x2, y2 = map(int, box.xyxy[0]) 
-                    track_history[track_id].append(conf)
-                    box_history[track_id][current_frame] = [x1,y1,x2,y2]
 
 
                 current_track_epoch += 1
