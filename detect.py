@@ -39,15 +39,14 @@ def track_vid_aabb(relative_weights_path:str, annotation_type:str="aabb"):
             if not ret:
                 break      
             
-            length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-            print(f'length {length}')  
+            frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
 
             results = model.track(frame, verbose=False, persist=True)
 
             # Draw predictions on the frame
             for result in results:  # Iterate through detections
 
-                if (current_track_epoch == max_track_epoch):
+                if (current_track_epoch == max_track_epoch or current_frame == frame_count-1):
                     #if currently tracked object does not exist in current epoch, set to -1
                     if(current_track_id not in track_history): current_track_id = -1
                     for key in track_history.keys():
@@ -82,6 +81,8 @@ def track_vid_aabb(relative_weights_path:str, annotation_type:str="aabb"):
                     track_history = defaultdict(lambda: [])
                     current_track_epoch = 0
 
+
+                #Save bboxes
 
                 boxes = result.boxes  # Get bounding boxes
                 if(boxes.id == None): continue
