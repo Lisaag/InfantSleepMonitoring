@@ -37,7 +37,10 @@ def track_vid_aabb(relative_weights_path:str, annotation_type:str="aabb"):
         while cap.isOpened():
             ret, frame = cap.read()
             if not ret:
-                break        
+                break      
+            
+            length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+            print(f'length {length}')  
 
             results = model.track(frame, verbose=False, persist=True)
 
