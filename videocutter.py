@@ -19,7 +19,7 @@ def cut_video(file_name:str, patient_id:str, start_time:str):
         cut_clip = video.subclip(start_time, end_time)
 
 
-        output_file = output_dir = os.path.join(output_dir, file_name+"T"+str(start_time))
+        output_file = output_dir = os.path.join(output_dir, "T"+str(start_time)+file_name)
         cut_clip.write_videofile(output_file, codec="libx264", audio_codec="aac")
 
         print(f"Video segment saved to {output_file}")
