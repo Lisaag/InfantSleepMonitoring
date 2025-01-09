@@ -141,11 +141,25 @@ def detect_vid_aabb_filter(box:defaultdict):
         else:
             print(f'Tracking info of file {filename} not found!!')
 
+
+        # Convert keys to a list (or use values depending on your need)
+        keys = list(box[filename].keys())
+
+        # Find the center index
+        center_index = len(keys) // 2  # Integer division
+
+        # Get the center key (or value)
+        center_key = keys[center_index]
+
+        print(f'CENTER KEY {center_key}')
+
         # Process each frame
         while cap.isOpened():
             ret, frame = cap.read()
             if not ret:
                 break
+
+            
 
             if box[filename].get(current_frame) != None:
                 num_boxes+=1
