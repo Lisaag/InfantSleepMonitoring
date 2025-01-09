@@ -30,7 +30,7 @@ def track_vid_aabb(relative_weights_path:str, annotation_type:str="aabb"):
         current_track_id = -1
         previous_track_id = -1
         max_track_epoch = 15
-        current_track_epoch = 0
+        current_track_epoch = 1
         test = 0
         current_frame = 0
         # Process each frame
