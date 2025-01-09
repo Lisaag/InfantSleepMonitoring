@@ -75,7 +75,7 @@ def track_vid_aabb(relative_weights_path:str, annotation_type:str="aabb"):
                     previous_track_id = current_track_id
                     tracking_data[filename].append(current_track_id)
                     tracked_boxes = box_history[current_track_id]
-                    print(len(tracked_boxes))
+                    print(f'num tb{len(tracked_boxes)}')
                     for key in tracked_boxes:
                         print(current_frame)
                         test+=1
