@@ -134,23 +134,29 @@ def detect_vid_aabb_filter(box:defaultdict):
         num_boxes = 0
         frame_count = 0
         frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+
+
+        if filename in box:
+            print(box[filename])
+        else:
+            print(f'Tracking info of file {filename} not found!!')
+
         # Process each frame
         while cap.isOpened():
             ret, frame = cap.read()
             if not ret:
                 break
 
-            if filename in box:
-                if box[filename].get(current_frame) != None:
-                    num_boxes+=1
-                    x1, y1, x2, y2 = box[filename][current_frame]
-                    height = abs(y1 - y2)
-                    width = height * ratio
-                    x_center = (x1 + x2) / 2
-                    x1 = int(x_center - width / 2)
-                    x2 = int(x_center + width / 2)
-                    
-                    cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
+            if box[filename].get(current_frame) != None:
+                num_boxes+=1
+                x1, y1, x2, y2 = box[filename][current_frame]
+                height = abs(y1 - y2)
+                width = height * ratio
+                x_center = (x1 + x2) / 2
+                x1 = int(x_center - width / 2)
+                x2 = int(x_center + width / 2)
+                
+                cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
 
             out.write(frame)
 
