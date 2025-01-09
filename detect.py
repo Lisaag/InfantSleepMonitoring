@@ -127,14 +127,19 @@ def detect_vid_aabb_filter(box:defaultdict):
         out = cv2.VideoWriter(video_output_path, fourcc, fps, (frame_width, frame_height))
 
         current_frame = 0
+        num_boxes = 0
+        frame_count = 0
         # Process each frame
         while cap.isOpened():
             ret, frame = cap.read()
             if not ret:
                 break
 
+            frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+
             if filename in box:
                 if box[filename].get(current_frame) != None:
+                    num_boxes+=1
                     x1, y1, x2, y2 = box[filename][current_frame]
                     height = abs(y1 - y2)
                     width = height * ratio
@@ -147,7 +152,9 @@ def detect_vid_aabb_filter(box:defaultdict):
             out.write(frame)
 
             current_frame += 1
-
+        
+        print(f'Frame count: ' + frame_count)
+        print(f'Num boxes: ' + num_boxes)
         # Release resources
         cap.release()
         out.release()
