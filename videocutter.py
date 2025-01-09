@@ -3,7 +3,7 @@ import os
 
 def cut_video(file_name:str, patient_id:str, start_time:str):
     input_file =  os.path.join(os.path.abspath(os.getcwd()), "vid", "frag", "IN", file_name)
-    output_file = os.path.join(os.path.abspath(os.getcwd()), "vid", "frag", patient_id, file_name+"T"+start_time)
+    output_file = os.path.join(os.path.abspath(os.getcwd()), "vid", "frag", patient_id, file_name)
     if not os.path.exists(output_file):
         os.makedirs(output_file)
     try:
