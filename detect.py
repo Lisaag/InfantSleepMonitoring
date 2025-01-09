@@ -46,7 +46,7 @@ def track_vid_aabb(relative_weights_path:str, annotation_type:str="aabb"):
             # Draw predictions on the frame
             for result in results:  # Iterate through detections
 
-                if (current_track_epoch == max_track_epoch or current_frame == frame_count-1):
+                if (current_track_epoch == max_track_epoch or current_frame == frame_count):
                     #if currently tracked object does not exist in current epoch, set to -1
                     if(current_track_id not in track_history): current_track_id = -1
                     for key in track_history.keys():
