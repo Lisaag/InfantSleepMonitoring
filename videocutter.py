@@ -4,9 +4,9 @@ import os
 def cut_video(file_name:str, patient_id:str, start_time:str):
     print('a')
     input_file =  os.path.join(os.path.abspath(os.getcwd()), "vid", "frag", "IN", file_name)
-    output_file = os.path.join(os.path.abspath(os.getcwd()), "vid", "frag", patient_id, file_name)
-    if not os.path.exists(output_file):
-        os.makedirs(output_file)
+    output_dir = os.path.join(os.path.abspath(os.getcwd()), "vid", "frag", patient_id)
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
     try:
         video = VideoFileClip(input_file)
         start_time=float(start_time)
@@ -18,6 +18,8 @@ def cut_video(file_name:str, patient_id:str, start_time:str):
 
         cut_clip = video.subclip(start_time, end_time)
 
+
+        output_file = output_dir = os.path.join(output_dir, file_name+"T"+str(start_time))
         cut_clip.write_videofile(output_file, codec="libx264", audio_codec="aac")
 
         print(f"Video segment saved to {output_file}")
