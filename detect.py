@@ -31,7 +31,7 @@ def track_vid_aabb(relative_weights_path:str, annotation_type:str="aabb"):
         previous_track_id = -1
         max_track_epoch = 15
         current_track_epoch = 0
-
+        test = 0
         current_frame = 0
         # Process each frame
         while cap.isOpened():
@@ -43,7 +43,6 @@ def track_vid_aabb(relative_weights_path:str, annotation_type:str="aabb"):
 
             results = model.track(frame, verbose=False, persist=True)
 
-            print(len(results))
             # Draw predictions on the frame
             for result in results:  # Iterate through detections
 
@@ -82,6 +81,8 @@ def track_vid_aabb(relative_weights_path:str, annotation_type:str="aabb"):
                     track_history = defaultdict(lambda: [])
                     current_track_epoch = 0
 
+                test+=1
+
 
                 #Save bboxes
 
@@ -105,6 +106,7 @@ def track_vid_aabb(relative_weights_path:str, annotation_type:str="aabb"):
         cv2.destroyAllWindows()
        
         print(f"Finish processing {video_output_path}")
+        print(f'TEST {test}')
     print(all_boxes)
     return all_boxes
 
