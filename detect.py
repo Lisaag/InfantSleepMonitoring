@@ -150,7 +150,7 @@ def detect_vid_aabb_filter(box:defaultdict):
             print(f'Tracking info of file {filename} not found!!')
 
         
-        out2 = cv2.VideoWriter(os.path.join(os.path.abspath(os.getcwd()), "vid", "OUT", "OUTCROP"+str(filename)), fourcc, fps, (width, height))
+        out2 = cv2.VideoWriter(os.path.join(os.path.abspath(os.getcwd()), "vid", "OUT", "OUTCROP"+str(filename)), fourcc, fps, (x2-x1, y2-y1))
 
 
         # Process each frame
