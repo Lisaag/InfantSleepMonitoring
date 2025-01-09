@@ -153,8 +153,8 @@ def detect_vid_aabb_filter(box:defaultdict):
 
             current_frame += 1
         
-        print(f'Frame count: ' + frame_count)
-        print(f'Num boxes: ' + num_boxes)
+        print(f'Frame count: {frame_count}')
+        print(f'Num boxes: {num_boxes}')
         # Release resources
         cap.release()
         out.release()
