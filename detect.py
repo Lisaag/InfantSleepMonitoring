@@ -159,7 +159,6 @@ def detect_vid_aabb_filter(box:defaultdict):
             if not ret:
                 break
 
-
             if box[filename].get(current_frame) != None:
                 num_boxes+=1
 
@@ -167,7 +166,9 @@ def detect_vid_aabb_filter(box:defaultdict):
                 cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
 
             out.write(frame)
-            out2.write(frame[y1:y2+1, x1:x2+1])
+            out2.write(frame[y1:y2+10, x1:x2+10])
+
+
 
             current_frame += 1
         
