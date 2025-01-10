@@ -7,6 +7,21 @@ from itertools import chain
 from collections import defaultdict
 import statistics
 
+def extract_evenly_spaced_elements(arr):
+    n = len(arr)
+    
+    # If array size is less than 6, return all elements.
+    if n <= 6:
+        return arr
+
+    # Calculate the step size for evenly spaced elements.
+    step = (n - 1) / 5
+
+    # Extract 6 evenly spaced elements including the first and last.
+    extracted = [arr[round(i * step)] for i in range(6)]
+
+    return extracted
+
 
 def track_vid_aabb(relative_weights_path:str, annotation_type:str="aabb"):
     weights_path = os.path.join(os.path.abspath(os.getcwd()), relative_weights_path)
@@ -118,6 +133,7 @@ def detect_vid_aabb_filter(box:defaultdict):
     for filename in os.listdir(IN_directory):
         video_output_path =  os.path.join(os.path.abspath(os.getcwd()), "vid", "OUT", "OUT"+str(filename))
         video_input_path =  os.path.join(os.path.abspath(os.getcwd()), "vid", "IN", filename)
+        frame_output_path =  os.path.join(os.path.abspath(os.getcwd()), "vid", "frag", filename[0:len(filename)-4])
         # Open the video file
         cap = cv2.VideoCapture(video_input_path)
 
@@ -132,8 +148,9 @@ def detect_vid_aabb_filter(box:defaultdict):
 
         current_frame = 0
         num_boxes = 0
-        frame_count = 0
         frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+
+        frame_indices = np.linspace(0, frame_count, 6, dtype=int)
 
 
         if filename in box:
@@ -151,6 +168,7 @@ def detect_vid_aabb_filter(box:defaultdict):
 
         
         out2 = cv2.VideoWriter(os.path.join(os.path.abspath(os.getcwd()), "vid", "OUT", "OUTCROP"+str(filename)), fourcc, fps, (x2-x1+1, y2-y1+1))
+        out2.write(frame[y1:y2+1, x1:x2+1])
 
 
         # Process each frame
@@ -159,21 +177,21 @@ def detect_vid_aabb_filter(box:defaultdict):
             if not ret:
                 break
 
-            if box[filename].get(current_frame) != None:
-                num_boxes+=1
+            if np.isin(current_frame, frame_indices):
+                cv2.imwrite(os.path.join(frame_output_path, "FRAME", current_frame + ".jpg"), frame[y1:y2+1, x1:x2+1])
 
+
+
+            if box[filename].get(current_frame) != None:
                 # top-left corner and bottom-right corner of rectangle
                 cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
 
             out.write(frame)
-            out2.write(frame[y1:y2+1, x1:x2+1])
-
-
 
             current_frame += 1
         
+
         print(f'Frame count: {frame_count}')
-        print(f'Num boxes: {num_boxes}')
         # Release resources
         cap.release()
         out.release()
