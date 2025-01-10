@@ -134,6 +134,9 @@ def detect_vid_aabb_filter(box:defaultdict):
         video_output_path =  os.path.join(os.path.abspath(os.getcwd()), "vid", "OUT", "OUT"+str(filename))
         video_input_path =  os.path.join(os.path.abspath(os.getcwd()), "vid", "IN", filename)
         frame_output_path =  os.path.join(os.path.abspath(os.getcwd()), "vid", "frag", filename[0:len(filename)-4])
+
+        if not os.path.exists(frame_output_path):
+            os.makedirs(frame_output_path)
         # Open the video file
         cap = cv2.VideoCapture(video_input_path)
 
@@ -150,7 +153,7 @@ def detect_vid_aabb_filter(box:defaultdict):
         num_boxes = 0
         frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
 
-        frame_indices = np.linspace(0, frame_count, 6, dtype=int)
+        frame_indices = np.linspace(0, frame_count-1, 6, dtype=int)
 
 
         if filename in box:
