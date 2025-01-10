@@ -168,7 +168,6 @@ def detect_vid_aabb_filter(box:defaultdict):
 
         
         out2 = cv2.VideoWriter(os.path.join(os.path.abspath(os.getcwd()), "vid", "OUT", "OUTCROP"+str(filename)), fourcc, fps, (x2-x1+1, y2-y1+1))
-        out2.write(frame[y1:y2+1, x1:x2+1])
 
 
         # Process each frame
@@ -176,9 +175,11 @@ def detect_vid_aabb_filter(box:defaultdict):
             ret, frame = cap.read()
             if not ret:
                 break
+            
+            out2.write(frame[y1:y2+1, x1:x2+1])
 
             if np.isin(current_frame, frame_indices):
-                cv2.imwrite(os.path.join(frame_output_path, "FRAME", current_frame + ".jpg"), frame)
+                cv2.imwrite(os.path.join(frame_output_path, "FRAME", current_frame + ".jpg"), frame[y1:y2+1, x1:x2+1])
 
 
 
