@@ -178,7 +178,7 @@ def detect_vid_aabb_filter(box:defaultdict):
                 break
 
             if np.isin(current_frame, frame_indices):
-                cv2.imwrite(os.path.join(frame_output_path, "FRAME", current_frame + ".jpg"), frame[y1:y2+1, x1:x2+1])
+                cv2.imwrite(os.path.join(frame_output_path, "FRAME", current_frame + ".jpg"), frame)
 
 
 
