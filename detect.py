@@ -256,6 +256,7 @@ def detect_vid_aabb(relative_weights_path:str):
             # Draw predictions on the frame
             for result in results:  # Iterate through detections
                 boxes = result.boxes  # Get bounding boxes
+                print(len(boxes))
                 for box in boxes:
                     x1, y1, x2, y2 = map(int, box.xyxy[0])  # Bounding box coordinates
                     conf = box.conf[0]  # Confidence score
