@@ -201,7 +201,7 @@ def detect_vid(annotation_type:str, relative_weights_path:str, patient_nr:str):
         for eye_state_folder in os.listdir(root_dir):
             fragment_dir:str = os.path.join(root_dir, eye_state_folder, "raw")
             for fragment_file in os.listdir(fragment_dir):
-                all_boxes = track_vid_aabb(relative_weights_path, annotation_type)
+                all_boxes = track_vid_aabb(relative_weights_path, os.path.join(root_dir, eye_state_folder), fragment_file)
                 print("ALL BOXES")
                 print(all_boxes)
                 detect_vid_aabb_filter(all_boxes, os.path.join(root_dir, eye_state_folder), fragment_file)
