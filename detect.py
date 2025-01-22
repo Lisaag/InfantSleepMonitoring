@@ -167,14 +167,14 @@ def detect_vid_aabb_filter(box:defaultdict, root_dir:str, file_name:str):
         print(f'Tracking info of file {file_name} not found!!')
 
     
-    out2 = cv2.VideoWriter(os.path.join(os.path.abspath(os.getcwd()), "vid", "OUT", "OUTCROP"+str(file_name)), fourcc, fps, (x2-x1+1, y2-y1+1))
+   # out2 = cv2.VideoWriter(os.path.join(os.path.abspath(os.getcwd()), "vid", "OUT", "OUTCROP"+str(file_name)), fourcc, fps, (x2-x1+1, y2-y1+1))
 
     while cap.isOpened():
         ret, frame = cap.read()
         if not ret:
             break
 
-        out2.write(frame[y1:y2+1, x1:x2+1])
+        #out2.write(frame[y1:y2+1, x1:x2+1])
 
         #save sequence of frames
         if np.isin(current_frame, frame_indices):
