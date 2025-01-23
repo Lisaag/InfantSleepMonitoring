@@ -176,7 +176,7 @@ def detect_vid_aabb_filter(box:defaultdict, root_dir:str, file_name:str):
 
         if box[file_name].get(current_frame) != None:
             # top-left corner and bottom-right corner of rectangle
-            cv2.rectangle(frame, (x1, 0), (x1+width, 0+height), (0, 255, 0), 2)
+            cv2.rectangle(frame, (x1, y1), (x1+width, y1+height), (0, 255, 0), 2)
 
         out_cropped.write(frame[y1:y1+width+1, x1:x1+height+1])
 
