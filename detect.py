@@ -118,6 +118,7 @@ def track_vid_aabb(relative_weights_path:str, root_dir:str, file_name:str):
     return all_boxes
 
 def detect_vid_aabb_filter(box:defaultdict, root_dir:str, file_name:str):
+    ratio = 9/16
     cropped_video_output_path =  os.path.join(root_dir, "cropped", file_name)
     if not os.path.exists(os.path.join(root_dir, "bbox")):
         os.makedirs(os.path.join(root_dir, "bbox"))
@@ -151,10 +152,13 @@ def detect_vid_aabb_filter(box:defaultdict, root_dir:str, file_name:str):
         center_key = keys[center_index]
         x1, y1, x2, y2 = box[file_name][center_key]
         width = abs(x1 - x2)
-        height = width
+        height = width * ratio
         x_center = (x1 + x2) / 2
         x1 = int(x_center - width / 2)
         x2 = int(x_center + width / 2)
+        y_center = (y1 + height) / 2
+        y1 = int(y_center - width / 2)
+        y2 = int(y_center + width / 2)
     else:
         print(f'Tracking info of file {file_name} not found!!')
     
