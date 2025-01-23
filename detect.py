@@ -35,7 +35,6 @@ def track_vid_aabb(relative_weights_path:str, root_dir:str, file_name:str):
     cap = cv2.VideoCapture(video_input_path)
 
     # Store the track history
-    track_history = defaultdict(lambda: [])
     box_history = defaultdict(lambda: {})
     current_track_id = -1
     previous_track_id = -1
@@ -55,57 +54,54 @@ def track_vid_aabb(relative_weights_path:str, root_dir:str, file_name:str):
         # Draw predictions on the frame
         for result in results:  # Iterate through detections
 
-                           #Save bboxes
-
             boxes = result.boxes  # Get bounding boxes
             if(boxes.id == None): continue
 
             track_ids = boxes.id.int().cpu().tolist()
 
-            for box, track_id in zip(boxes, track_ids):
-                conf = float(box.conf[0])  # Confidence score
-                x1, y1, x2, y2 = map(int, box.xyxy[0]) 
-                track_history[track_id].append(conf)
-                box_history[track_id][current_frame] = [x1,y1,x2,y2]
+            print("TRACK IDS")
+            print(track_ids)
 
-            if (current_track_epoch == max_track_epoch or current_frame == frame_count-1):
-                #if currently tracked object does not exist in current epoch, set to -1
-                if(current_track_id not in track_history): current_track_id = -1
-                for key in track_history.keys():
-                    if(current_track_id == -1):
-                        current_track_id = key
-                        continue
-                    if(current_track_id == key):
-                        continue
-                    highest_length = len(track_history[current_track_id])
-                    current_length = len(track_history[key])
-                    #First determine the initial object to be detected
-                    if(previous_track_id == -1):
-                        #Track the one with the highest number of detections within max_track_epoch epochs
-                        if(current_length > highest_length):
-                            current_track_id = key
-                        #If the number of detections is the same, pick the one with the highest mean confidence score
-                        elif(current_length == highest_length):
-                                if(statistics.mean(track_history[key]) > statistics.mean(track_history[current_track_id])):
-                                    current_track_id = key
-                    #For following detections..
-                    else:
-                        #if current track length is higher than previous highest, then switch
-                        if(current_length > highest_length + (highest_length * 0.2)):
-                            current_track_id = key
-
-                previous_track_id = current_track_id
-                tracked_boxes = box_history[current_track_id]
-                for key in tracked_boxes:
-
-                    all_boxes[key] = tracked_boxes[key]
-                box_history = defaultdict(lambda: {})
-                track_history = defaultdict(lambda: [])
-                current_track_epoch = 0
+            # for box, track_id in zip(boxes, track_ids):
+            #     x1, y1, x2, y2 = map(int, box.xyxy[0]) 
+            #     box_history[track_id][current_frame] = [x1,y1,x2,y2]
 
 
-            current_track_epoch += 1
-            current_frame += 1             
+
+            # if (current_track_epoch == max_track_epoch or current_frame == frame_count-1):
+            #     #if currently tracked object does not exist in current epoch, set to -1
+            #     if(current_track_id not in track_history): current_track_id = -1
+            #     for key in track_history.keys():
+            #         if(current_track_id == -1):
+            #             current_track_id = key
+            #             continue
+            #         if(current_track_id == key):
+            #             continue
+            #         highest_length = len(track_history[current_track_id])
+            #         current_length = len(track_history[key])
+            #         #First determine the initial object to be detected
+            #         if(previous_track_id == -1):
+            #             #Track the one with the highest number of detections within max_track_epoch epochs
+            #             if(current_length > highest_length):
+            #                 current_track_id = key
+            #         #For following detections..
+            #         else:
+            #             #if current track length is higher than previous highest, then switch
+            #             if(current_length > highest_length + (highest_length * 0.2)):
+            #                 current_track_id = key
+
+            #     previous_track_id = current_track_id
+            #     tracked_boxes = box_history[current_track_id]
+            #     for key in tracked_boxes:
+
+            #         all_boxes[key] = tracked_boxes[key]
+            #     box_history = defaultdict(lambda: {})
+            #     track_history = defaultdict(lambda: [])
+            #     current_track_epoch = 0
+
+
+            # current_track_epoch += 1
+            # current_frame += 1             
 
     # Release resources
     cap.release()
@@ -203,6 +199,6 @@ def detect_vid(relative_weights_path:str, patient_nr:str):
             for fragment_file in os.listdir(fragment_dir):
                 all_boxes = track_vid_aabb(relative_weights_path, os.path.join(patient_dir, eye_state_dir), fragment_file)
 
-                detect_vid_aabb_filter(all_boxes, os.path.join(patient_dir, eye_state_dir), fragment_file)
+                # detect_vid_aabb_filter(all_boxes, os.path.join(patient_dir, eye_state_dir), fragment_file)
 
 
