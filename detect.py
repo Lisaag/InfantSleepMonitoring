@@ -36,6 +36,9 @@ def track_vid_aabb(relative_weights_path:str, root_dir:str, file_name:str):
     box_history = defaultdict(lambda: {})
 
     current_frame = 0
+
+    frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    
     # Process each frame
     while cap.isOpened():
         ret, frame = cap.read()
@@ -60,6 +63,7 @@ def track_vid_aabb(relative_weights_path:str, root_dir:str, file_name:str):
         
     for key in box_history.keys():
         print(f'KEY {key}')
+        print(f'LEN {len(box_history[key])}')
 
                 # print(f'track id {track_id}')
                 # print(boxes)
