@@ -57,6 +57,9 @@ def track_vid_aabb(relative_weights_path:str, root_dir:str, file_name:str):
 
 
         current_frame += 1   
+        
+    for key in box_history.keys():
+        print(f'KEY {key}')
 
                 # print(f'track id {track_id}')
                 # print(boxes)
