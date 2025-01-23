@@ -118,8 +118,6 @@ def track_vid_aabb(relative_weights_path:str, root_dir:str, file_name:str):
     return all_boxes
 
 def detect_vid_aabb_filter(box:defaultdict, root_dir:str, file_name:str):
-    ratio = 16/9
-
     cropped_video_output_path =  os.path.join(root_dir, "cropped", file_name)
     if not os.path.exists(os.path.join(root_dir, "bbox")):
         os.makedirs(os.path.join(root_dir, "bbox"))
@@ -139,7 +137,7 @@ def detect_vid_aabb_filter(box:defaultdict, root_dir:str, file_name:str):
 
     # Define the codec and create VideoWriter object
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    out_cropped = cv2.VideoWriter(cropped_video_output_path, fourcc, fps, (frame_width, frame_height))
+    out_bbox = cv2.VideoWriter(bbox_video_output_path, fourcc, fps, (frame_width, frame_height))
 
     current_frame = 0
     frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
@@ -161,33 +159,30 @@ def detect_vid_aabb_filter(box:defaultdict, root_dir:str, file_name:str):
         print(f'Tracking info of file {file_name} not found!!')
 
     
-    out_bbox = cv2.VideoWriter(bbox_video_output_path, fourcc, fps, (x2-x1+1, y2-y1+1))
+    out_cropped = cv2.VideoWriter(cropped_video_output_path, fourcc, fps, (x2-x1+1, y2-y1+1))
 
     while cap.isOpened():
         ret, frame = cap.read()
         if not ret:
             break
 
-        out_bbox.write(frame[y1:y2+1, x1:x2+1])
+        out_cropped.write(frame[y1:y2+1, x1:x2+1])
 
         #save sequence of frames
         if np.isin(current_frame, frame_indices):
             print(os.path.join(frame_output_path, "FRAME" + str(current_frame) + ".jpg"))
             cv2.imwrite(os.path.join(frame_output_path, "FRAME" + str(current_frame) + ".jpg"), frame[y1:y2+1, x1:x2+1])
 
-
-
         if box[file_name].get(current_frame) != None:
-            # top-left corner and bottom-right corner of rectangle
             cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
 
-        out_cropped.write(frame)
+        out_bbox.write(frame)
 
         current_frame += 1
     
     # Release resources
     cap.release()
-    out_cropped.release()
+    out_bbox.release()
     cv2.destroyAllWindows()
 
 
