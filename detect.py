@@ -118,7 +118,7 @@ def track_vid_aabb(relative_weights_path:str, root_dir:str, file_name:str):
     return all_boxes
 
 def detect_vid_aabb_filter(box:defaultdict, root_dir:str, file_name:str):
-    ratio = 9/16
+    ratio = 1/1
     cropped_video_output_path =  os.path.join(root_dir, "cropped", file_name)
     if not os.path.exists(os.path.join(root_dir, "bbox")):
         os.makedirs(os.path.join(root_dir, "bbox"))
