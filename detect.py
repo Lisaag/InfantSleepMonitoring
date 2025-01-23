@@ -147,7 +147,7 @@ def detect_vid_aabb_filter(box:defaultdict, root_dir:str, file_name:str):
 
     if file_name in box:
         keys = list(box[file_name].keys())
-        center_index = len(keys) // 2  # Integer division
+        center_index = len(keys) // 2 
         center_key = keys[center_index]
         x1, y1, x2, y2 = box[file_name][center_key]
         width = abs(x1 - x2)
@@ -157,24 +157,24 @@ def detect_vid_aabb_filter(box:defaultdict, root_dir:str, file_name:str):
         x2 = int(x_center + width / 2)
     else:
         print(f'Tracking info of file {file_name} not found!!')
-
     
-    out_cropped = cv2.VideoWriter(cropped_video_output_path, fourcc, fps, (x2-x1+1, y2-y1+1))
+    out_cropped = cv2.VideoWriter(cropped_video_output_path, fourcc, fps, (width, height))
 
     while cap.isOpened():
         ret, frame = cap.read()
         if not ret:
             break
 
-        out_cropped.write(frame[y1:y2+1, x1:x2+1])
-
         #save sequence of frames
         if np.isin(current_frame, frame_indices):
             print(os.path.join(frame_output_path, "FRAME" + str(current_frame) + ".jpg"))
-            cv2.imwrite(os.path.join(frame_output_path, "FRAME" + str(current_frame) + ".jpg"), frame[y1:y2+1, x1:x2+1])
+            cv2.imwrite(os.path.join(frame_output_path, "FRAME" + str(current_frame) + ".jpg"), frame[y1:y1+height, x1:x1+width])
 
         if box[file_name].get(current_frame) != None:
-            cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
+            # top-left corner and bottom-right corner of rectangle
+            cv2.rectangle(frame, (x1, y1), (x1+width, y1+height), (0, 255, 0), 2)
+
+        out_cropped.write(frame[y1:y1+width, x1:x1+height])
 
         out_bbox.write(frame)
 
