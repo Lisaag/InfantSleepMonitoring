@@ -38,7 +38,7 @@ def track_vid_aabb(relative_weights_path:str, root_dir:str, file_name:str):
     current_frame = 0
 
     frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-    
+
     # Process each frame
     while cap.isOpened():
         ret, frame = cap.read()
@@ -62,8 +62,8 @@ def track_vid_aabb(relative_weights_path:str, root_dir:str, file_name:str):
         current_frame += 1   
         
     for key in box_history.keys():
-        print(f'KEY {key}')
-        print(f'LEN {len(box_history[key])}')
+        if(len(box_history[key]) < frame_count / 2):
+            del box_history[key]
 
                 # print(f'track id {track_id}')
                 # print(boxes)
@@ -116,75 +116,82 @@ def track_vid_aabb(relative_weights_path:str, root_dir:str, file_name:str):
     print(box_history)
     return box_history
 
-def detect_vid_aabb_filter(box:defaultdict, root_dir:str, file_name:str):
-    ratio = 1/1
-    cropped_video_output_path =  os.path.join(root_dir, "cropped", file_name)
-    if not os.path.exists(os.path.join(root_dir, "bbox")):
-        os.makedirs(os.path.join(root_dir, "bbox"))
-    bbox_video_output_path =  os.path.join(root_dir, "bbox", file_name)
-    video_input_path =  os.path.join(root_dir, "raw", file_name)
-    frame_output_path =  os.path.join(root_dir, "frames", file_name[0:len(file_name)-4])
+def detect_vid_aabb_filter(boxes:defaultdict, root_dir:str, file_name:str):
+    box_index = 0
+    for box in boxes.items():
+        box_index += 1
+        ratio = 1/1
+        if not os.path.exists(os.path.join(root_dir, str(box_index), "cropped")):
+            os.makedirs(os.path.join(root_dir, "cropped"))
+        cropped_video_output_path =  os.path.join(root_dir, str(box_index),"cropped", file_name)
+        if not os.path.exists(os.path.join(root_dir, str(box_index), "bbox")):
+            os.makedirs(os.path.join(root_dir, "bbox"))
+        bbox_video_output_path =  os.path.join(root_dir, str(box_index),"bbox", file_name)
+        video_input_path =  os.path.join(root_dir, "raw", file_name)
+        if not os.path.exists(os.path.join(root_dir, str(box_index), "frames")):
+            os.makedirs(os.path.join(root_dir, "frames"))
+        frame_output_path =  os.path.join(root_dir, str(box_index), "frames", file_name[0:len(file_name)-4])
 
-    if not os.path.exists(frame_output_path):
-        os.makedirs(frame_output_path)
-    # Open the video file
-    cap = cv2.VideoCapture(video_input_path)
+        if not os.path.exists(frame_output_path):
+            os.makedirs(frame_output_path)
+        # Open the video file
+        cap = cv2.VideoCapture(video_input_path)
 
-    # Get video properties
-    frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-    frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-    fps = int(cap.get(cv2.CAP_PROP_FPS))
+        # Get video properties
+        frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+        frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        fps = int(cap.get(cv2.CAP_PROP_FPS))
 
-    # Define the codec and create VideoWriter object
-    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    out_bbox = cv2.VideoWriter(bbox_video_output_path, fourcc, fps, (frame_width, frame_height))
+        # Define the codec and create VideoWriter object
+        fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+        out_bbox = cv2.VideoWriter(bbox_video_output_path, fourcc, fps, (frame_width, frame_height))
 
-    current_frame = 0
-    frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+        current_frame = 0
+        frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
 
-    frame_indices = np.linspace(0, frame_count-1, 6, dtype=int)
+        frame_indices = np.linspace(0, frame_count-1, 6, dtype=int)
 
 
-    keys = list(box.keys())
-    center_index = len(keys) // 2 
-    center_key = keys[center_index]
-    x1, y1, x2, y2 = box[center_key]
-    width = int(abs(x1 - x2))
-    height = int(width * ratio)
-    x_center = (x1 + x2) / 2
-    x1 = int(x_center - width / 2)
-    x2 = int(x_center + width / 2)
-    y_center = (y1 + y2) / 2
-    y1 = int(y_center - height / 2)
-    y2 = int(y_center + height / 2)
+        keys = list(box.keys())
+        center_index = len(keys) // 2 
+        center_key = keys[center_index]
+        x1, y1, x2, y2 = box[center_key]
+        width = int(abs(x1 - x2))
+        height = int(width * ratio)
+        x_center = (x1 + x2) / 2
+        x1 = int(x_center - width / 2)
+        x2 = int(x_center + width / 2)
+        y_center = (y1 + y2) / 2
+        y1 = int(y_center - height / 2)
+        y2 = int(y_center + height / 2)
 
     
-    out_cropped = cv2.VideoWriter(cropped_video_output_path, fourcc, fps, (width, height))
+        out_cropped = cv2.VideoWriter(cropped_video_output_path, fourcc, fps, (width, height))
 
-    while cap.isOpened():
-        ret, frame = cap.read()
-        if not ret:
-            break
+        while cap.isOpened():
+            ret, frame = cap.read()
+            if not ret:
+                break
 
-        #save sequence of frames
-        if np.isin(current_frame, frame_indices):
-            print(f'saved frame {os.path.join(frame_output_path, "FRAME" + str(current_frame) + ".jpg")}, size {width} x {height}')
-            cv2.imwrite(os.path.join(frame_output_path, "FRAME" + str(current_frame) + ".jpg"), frame[y1:y1+height, x1:x1+width])
+            #save sequence of frames
+            if np.isin(current_frame, frame_indices):
+                print(f'saved frame {os.path.join(frame_output_path, "FRAME" + str(current_frame) + ".jpg")}, size {width} x {height}')
+                cv2.imwrite(os.path.join(frame_output_path, "FRAME" + str(current_frame) + ".jpg"), frame[y1:y1+height, x1:x1+width])
 
-        if box.get(current_frame) != None:
-            # top-left corner and bottom-right corner of rectangle
-            cv2.rectangle(frame, (x1, y1), (x1+width, y1+height), (0, 255, 0), 2)
+            if box.get(current_frame) != None:
+                # top-left corner and bottom-right corner of rectangle
+                cv2.rectangle(frame, (x1, y1), (x1+width, y1+height), (0, 255, 0), 2)
 
-        out_cropped.write(frame[y1:y1+width, x1:x1+height])
+            out_cropped.write(frame[y1:y1+width, x1:x1+height])
 
-        out_bbox.write(frame)
+            out_bbox.write(frame)
 
-        current_frame += 1
-    
-    # Release resources
-    cap.release()
-    out_bbox.release()
-    cv2.destroyAllWindows()
+            current_frame += 1
+
+        # Release resources
+        cap.release()
+        out_bbox.release()
+        cv2.destroyAllWindows()
 
 
 
@@ -205,6 +212,6 @@ def detect_vid(relative_weights_path:str, patient_nr:str):
             for fragment_file in os.listdir(fragment_dir):
                 all_boxes = track_vid_aabb(relative_weights_path, os.path.join(patient_dir, eye_state_dir), fragment_file)
 
-                # detect_vid_aabb_filter(all_boxes, os.path.join(patient_dir, eye_state_dir), fragment_file)
+                detect_vid_aabb_filter(all_boxes, os.path.join(patient_dir, eye_state_dir), fragment_file)
 
 
