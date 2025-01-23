@@ -46,9 +46,6 @@ def track_vid_aabb(relative_weights_path:str, root_dir:str, file_name:str):
 
         # Draw predictions on the frame
         for result in results:  # Iterate through detections
-
-            print("RESULT")
-            print(result)
             boxes = result.boxes  # Get bounding boxes
             if(boxes.id == None): continue
 
