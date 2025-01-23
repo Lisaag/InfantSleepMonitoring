@@ -119,8 +119,7 @@ def track_vid_aabb(relative_weights_path:str, root_dir:str, file_name:str):
 def detect_vid_aabb_filter(boxes:defaultdict, root_dir:str, file_name:str):
     box_index = 0
     for box in boxes.items():
-        print("BOX")
-        print(box)
+        box = defaultdict(box)
         box_index += 1
         ratio = 1/1
         if not os.path.exists(os.path.join(root_dir, str(box_index), "cropped")):
