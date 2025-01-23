@@ -27,8 +27,6 @@ def track_vid_aabb(relative_weights_path:str, root_dir:str, file_name:str):
     weights_path = os.path.join(os.path.abspath(os.getcwd()), relative_weights_path)
     model = YOLO(weights_path)
 
-    all_boxes = defaultdict()
-
     print(f'Processing {file_name} from dir {root_dir}')
     video_input_path =  os.path.join(root_dir, "raw", file_name)
     # Open the video file
@@ -36,10 +34,7 @@ def track_vid_aabb(relative_weights_path:str, root_dir:str, file_name:str):
 
     # Store the track history
     box_history = defaultdict(lambda: {})
-    current_track_id = -1
-    previous_track_id = -1
-    max_track_epoch = 15
-    current_track_epoch = 1
+
     current_frame = 0
     # Process each frame
     while cap.isOpened():
@@ -47,8 +42,6 @@ def track_vid_aabb(relative_weights_path:str, root_dir:str, file_name:str):
         if not ret:
             break      
         
-        frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-
         results = model.track(frame, verbose=False, persist=True)
 
         # Draw predictions on the frame
@@ -61,7 +54,13 @@ def track_vid_aabb(relative_weights_path:str, root_dir:str, file_name:str):
 
             track_ids = boxes.id.int().cpu().tolist()
 
-           # for box, track_id in zip(boxes, track_ids):
+            for box, track_id in zip(boxes, track_ids):
+                x1, y1, x2, y2 = map(int, box.xyxy[0])
+                box_history[track_id][current_frame] = [x1,y1,x2,y2]
+
+
+        current_frame += 1   
+
                 # print(f'track id {track_id}')
                 # print(boxes)
 
@@ -110,8 +109,8 @@ def track_vid_aabb(relative_weights_path:str, root_dir:str, file_name:str):
     cap.release()
     cv2.destroyAllWindows()
     
-    print(all_boxes)
-    return all_boxes
+    print(box_history)
+    return box_history
 
 def detect_vid_aabb_filter(box:defaultdict, root_dir:str, file_name:str):
     ratio = 1/1
