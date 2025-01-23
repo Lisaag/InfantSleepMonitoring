@@ -118,8 +118,7 @@ def track_vid_aabb(relative_weights_path:str, root_dir:str, file_name:str):
 
 def detect_vid_aabb_filter(boxes:defaultdict, root_dir:str, file_name:str):
     box_index = 0
-    for box in boxes.items():
-        box = defaultdict(box)
+    for key in boxes.keys():
         box_index += 1
         ratio = 1/1
         if not os.path.exists(os.path.join(root_dir, str(box_index), "cropped")):
@@ -153,10 +152,10 @@ def detect_vid_aabb_filter(boxes:defaultdict, root_dir:str, file_name:str):
         frame_indices = np.linspace(0, frame_count-1, 6, dtype=int)
 
 
-        keys = list(box.keys())
+        keys = list(boxes[key].keys())
         center_index = len(keys) // 2 
         center_key = keys[center_index]
-        x1, y1, x2, y2 = box[center_key]
+        x1, y1, x2, y2 = boxes[key][center_key]
         width = int(abs(x1 - x2))
         height = int(width * ratio)
         x_center = (x1 + x2) / 2
@@ -179,7 +178,7 @@ def detect_vid_aabb_filter(boxes:defaultdict, root_dir:str, file_name:str):
                 print(f'saved frame {os.path.join(frame_output_path, "FRAME" + str(current_frame) + ".jpg")}, size {width} x {height}')
                 cv2.imwrite(os.path.join(frame_output_path, "FRAME" + str(current_frame) + ".jpg"), frame[y1:y1+height, x1:x1+width])
 
-            if box.get(current_frame) != None:
+            if boxes[key].get(current_frame) != None:
                 # top-left corner and bottom-right corner of rectangle
                 cv2.rectangle(frame, (x1, y1), (x1+width, y1+height), (0, 255, 0), 2)
 
