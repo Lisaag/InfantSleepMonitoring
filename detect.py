@@ -43,7 +43,6 @@ def track_vid_aabb(relative_weights_path:str, root_dir:str, file_name:str):
     previous_track_id = -1
     max_track_epoch = 15
     current_track_epoch = 1
-    test = 0
     current_frame = 0
     # Process each frame
     while cap.isOpened():
@@ -100,10 +99,7 @@ def track_vid_aabb(relative_weights_path:str, root_dir:str, file_name:str):
                 previous_track_id = current_track_id
                 tracking_data[file_name].append(current_track_id)
                 tracked_boxes = box_history[current_track_id]
-                print(f'num tb{len(tracked_boxes)}')
                 for key in tracked_boxes:
-                    print(current_frame)
-                    test+=1
 
                     all_boxes[file_name][key] = tracked_boxes[key]
                 box_history = defaultdict(lambda: {})
@@ -118,14 +114,14 @@ def track_vid_aabb(relative_weights_path:str, root_dir:str, file_name:str):
     cap.release()
     cv2.destroyAllWindows()
     
-    print(f'TEST {test}')
     print(all_boxes)
     return all_boxes
 
 def detect_vid_aabb_filter(box:defaultdict, root_dir:str, file_name:str):
     ratio = 16/9
 
-    video_output_path =  os.path.join(root_dir, "cropped", file_name)
+    cropped_video_output_path =  os.path.join(root_dir, "cropped", file_name)
+    bbox_video_output_path =  os.path.join(root_dir, "bbox", file_name)
     video_input_path =  os.path.join(root_dir, "raw", file_name)
     frame_output_path =  os.path.join(root_dir, "frames", file_name[0:len(file_name)-4])
 
@@ -141,7 +137,7 @@ def detect_vid_aabb_filter(box:defaultdict, root_dir:str, file_name:str):
 
     # Define the codec and create VideoWriter object
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    out = cv2.VideoWriter(video_output_path, fourcc, fps, (frame_width, frame_height))
+    out_cropped = cv2.VideoWriter(cropped_video_output_path, fourcc, fps, (frame_width, frame_height))
 
     current_frame = 0
     frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
@@ -163,14 +159,14 @@ def detect_vid_aabb_filter(box:defaultdict, root_dir:str, file_name:str):
         print(f'Tracking info of file {file_name} not found!!')
 
     
-   # out2 = cv2.VideoWriter(os.path.join(os.path.abspath(os.getcwd()), "vid", "OUT", "OUTCROP"+str(file_name)), fourcc, fps, (x2-x1+1, y2-y1+1))
+    out_bbox = cv2.VideoWriter(bbox_video_output_path, fourcc, fps, (x2-x1+1, y2-y1+1))
 
     while cap.isOpened():
         ret, frame = cap.read()
         if not ret:
             break
 
-        #out2.write(frame[y1:y2+1, x1:x2+1])
+        out_bbox.write(frame[y1:y2+1, x1:x2+1])
 
         #save sequence of frames
         if np.isin(current_frame, frame_indices):
@@ -183,28 +179,34 @@ def detect_vid_aabb_filter(box:defaultdict, root_dir:str, file_name:str):
             # top-left corner and bottom-right corner of rectangle
             cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
 
-        out.write(frame)
+        out_cropped.write(frame)
 
         current_frame += 1
     
     # Release resources
     cap.release()
-    out.release()
+    out_cropped.release()
     cv2.destroyAllWindows()
-    print(f"Processed video saved at {video_output_path}")
 
 
 
-def detect_vid(annotation_type:str, relative_weights_path:str, patient_nr:str):
-    if(annotation_type == "aabb" or annotation_type == "ocaabb"):
-        root_dir:str = os.path.join(os.path.abspath(os.getcwd()), "frags", patient_nr)
-        for eye_state_folder in os.listdir(root_dir):
-            fragment_dir:str = os.path.join(root_dir, eye_state_folder, "raw")
-            for fragment_file in os.listdir(fragment_dir):
-                all_boxes = track_vid_aabb(relative_weights_path, os.path.join(root_dir, eye_state_folder), fragment_file)
-                print("ALL BOXES")
-                print(all_boxes)
-                detect_vid_aabb_filter(all_boxes, os.path.join(root_dir, eye_state_folder), fragment_file)
+def detect_vid(relative_weights_path:str, patient_nr:str):
+    if(patient_nr == "all"):
+        root_dir:str = os.path.join(os.path.abspath(os.getcwd()), "frags")
+        for patient in os.listdir(root_dir):
+            patient_dir:str = os.path.join(os.path.abspath(os.getcwd()), "frags", patient)
+            for eye_state_dir in os.listdir(patient_dir):
+                fragment_dir:str = os.path.join(patient_dir, eye_state_dir, "raw")
+                for fragment_file in os.listdir(fragment_dir):
+                    all_boxes = track_vid_aabb(relative_weights_path, os.path.join(patient_dir, eye_state_dir), fragment_file)
+                    detect_vid_aabb_filter(all_boxes, os.path.join(patient_dir, eye_state_dir), fragment_file)
     else:
-        print("annotation type [" + annotation_type + "] not recognized")
+        patient_dir:str = os.path.join(os.path.abspath(os.getcwd()), "frags", patient_nr)
+        for eye_state_dir in os.listdir(patient_dir):
+            fragment_dir:str = os.path.join(patient_dir, eye_state_dir, "raw")
+            for fragment_file in os.listdir(fragment_dir):
+                all_boxes = track_vid_aabb(relative_weights_path, os.path.join(patient_dir, eye_state_dir), fragment_file)
+
+                detect_vid_aabb_filter(all_boxes, os.path.join(patient_dir, eye_state_dir), fragment_file)
+
 
