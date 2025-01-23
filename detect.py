@@ -156,13 +156,13 @@ def detect_vid_aabb_filter(box:defaultdict, root_dir:str, file_name:str):
         x_center = (x1 + x2) / 2
         x1 = int(x_center - width / 2)
         x2 = int(x_center + width / 2)
-        y_center = (y1 + (y1 + height)) / 2
+        y_center = (y1 + y2) / 2
         y1 = int(y_center - height / 2)
         y2 = int(y_center + height / 2)
     else:
         print(f'Tracking info of file {file_name} not found!!')
     
-    out_cropped = cv2.VideoWriter(cropped_video_output_path, fourcc, fps, (width, height))
+    out_cropped = cv2.VideoWriter(cropped_video_output_path, fourcc, fps, (int(width), int(height)))
 
     while cap.isOpened():
         ret, frame = cap.read()
