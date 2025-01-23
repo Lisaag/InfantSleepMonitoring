@@ -155,7 +155,7 @@ def detect_vid_aabb_filter(box:defaultdict, root_dir:str, file_name:str):
         center_key = keys[center_index]
         x1, y1, x2, y2 = box[file_name][center_key]
         height = abs(y1 - y2)
-        width = height * ratio
+        width = height# * ratio
         x_center = (x1 + x2) / 2
         x1 = int(x_center - width / 2)
         x2 = int(x_center + width / 2)
