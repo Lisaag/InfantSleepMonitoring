@@ -156,9 +156,9 @@ def detect_vid_aabb_filter(box:defaultdict, root_dir:str, file_name:str):
         x_center = (x1 + x2) / 2
         x1 = int(x_center - width / 2)
         x2 = int(x_center + width / 2)
-        y_center = (y1 + height) / 2
-        y1 = int(y_center - width / 2)
-        y2 = int(y_center + width / 2)
+        y_center = (y1 + (y1 + height)) / 2
+        y1 = int(y_center - height / 2)
+        y2 = int(y_center + height / 2)
     else:
         print(f'Tracking info of file {file_name} not found!!')
     
