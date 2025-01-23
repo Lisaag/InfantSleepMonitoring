@@ -29,7 +29,7 @@ def track_vid_aabb(relative_weights_path:str, root_dir:str, file_name:str):
 
     all_boxes = defaultdict()
 
-    print(f'Processing {file_name}')
+    print(f'Processing {file_name} from dir {root_dir}')
     video_input_path =  os.path.join(root_dir, "raw", file_name)
     # Open the video file
     cap = cv2.VideoCapture(video_input_path)
