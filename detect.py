@@ -27,9 +27,7 @@ def track_vid_aabb(relative_weights_path:str, root_dir:str, file_name:str):
     weights_path = os.path.join(os.path.abspath(os.getcwd()), relative_weights_path)
     model = YOLO(weights_path)
 
-    tracking_data = defaultdict(lambda: [])
-
-    all_boxes = defaultdict(lambda: {})
+    all_boxes = defaultdict()
 
     print(f'Processing {file_name}')
     video_input_path =  os.path.join(root_dir, "raw", file_name)
@@ -97,11 +95,10 @@ def track_vid_aabb(relative_weights_path:str, root_dir:str, file_name:str):
                             current_track_id = key
 
                 previous_track_id = current_track_id
-                tracking_data[file_name].append(current_track_id)
                 tracked_boxes = box_history[current_track_id]
                 for key in tracked_boxes:
 
-                    all_boxes[file_name][key] = tracked_boxes[key]
+                    all_boxes[key] = tracked_boxes[key]
                 box_history = defaultdict(lambda: {})
                 track_history = defaultdict(lambda: [])
                 current_track_epoch = 0
@@ -146,21 +143,19 @@ def detect_vid_aabb_filter(box:defaultdict, root_dir:str, file_name:str):
     frame_indices = np.linspace(0, frame_count-1, 6, dtype=int)
 
 
-    if file_name in box:
-        keys = list(box[file_name].keys())
-        center_index = len(keys) // 2 
-        center_key = keys[center_index]
-        x1, y1, x2, y2 = box[file_name][center_key]
-        width = int(abs(x1 - x2))
-        height = int(width * ratio)
-        x_center = (x1 + x2) / 2
-        x1 = int(x_center - width / 2)
-        x2 = int(x_center + width / 2)
-        y_center = (y1 + y2) / 2
-        y1 = int(y_center - height / 2)
-        y2 = int(y_center + height / 2)
-    else:
-        print(f'Tracking info of file {file_name} not found!!')
+    keys = list(box.keys())
+    center_index = len(keys) // 2 
+    center_key = keys[center_index]
+    x1, y1, x2, y2 = box[center_key]
+    width = int(abs(x1 - x2))
+    height = int(width * ratio)
+    x_center = (x1 + x2) / 2
+    x1 = int(x_center - width / 2)
+    x2 = int(x_center + width / 2)
+    y_center = (y1 + y2) / 2
+    y1 = int(y_center - height / 2)
+    y2 = int(y_center + height / 2)
+
     
     out_cropped = cv2.VideoWriter(cropped_video_output_path, fourcc, fps, (width, height))
 
@@ -174,7 +169,7 @@ def detect_vid_aabb_filter(box:defaultdict, root_dir:str, file_name:str):
             print(f'saved frame {os.path.join(frame_output_path, "FRAME" + str(current_frame) + ".jpg")}, size {width} x {height}')
             cv2.imwrite(os.path.join(frame_output_path, "FRAME" + str(current_frame) + ".jpg"), frame[y1:y1+height, x1:x1+width])
 
-        if box[file_name].get(current_frame) != None:
+        if box.get(current_frame) != None:
             # top-left corner and bottom-right corner of rectangle
             cv2.rectangle(frame, (x1, y1), (x1+width, y1+height), (0, 255, 0), 2)
 
