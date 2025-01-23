@@ -54,14 +54,15 @@ def track_vid_aabb(relative_weights_path:str, root_dir:str, file_name:str):
         # Draw predictions on the frame
         for result in results:  # Iterate through detections
 
+            print("RESULT")
             boxes = result.boxes  # Get bounding boxes
             if(boxes.id == None): continue
 
             track_ids = boxes.id.int().cpu().tolist()
 
             for box, track_id in zip(boxes, track_ids):
-                print(f'track id {track_id}')
-                print(boxes)
+                # print(f'track id {track_id}')
+                # print(boxes)
 
             # for box, track_id in zip(boxes, track_ids):
             #     x1, y1, x2, y2 = map(int, box.xyxy[0]) 
