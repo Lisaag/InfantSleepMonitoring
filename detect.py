@@ -60,7 +60,7 @@ def track_vid_aabb(relative_weights_path:str, root_dir:str, file_name:str):
 
             track_ids = boxes.id.int().cpu().tolist()
 
-            for box, track_id in zip(boxes, track_ids):
+           # for box, track_id in zip(boxes, track_ids):
                 # print(f'track id {track_id}')
                 # print(boxes)
 
