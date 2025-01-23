@@ -121,6 +121,8 @@ def detect_vid_aabb_filter(box:defaultdict, root_dir:str, file_name:str):
     ratio = 16/9
 
     cropped_video_output_path =  os.path.join(root_dir, "cropped", file_name)
+    if not os.path.exists(os.path.join(root_dir, "bbox")):
+        os.makedirs(os.path.join(root_dir, "bbox"))
     bbox_video_output_path =  os.path.join(root_dir, "bbox", file_name)
     video_input_path =  os.path.join(root_dir, "raw", file_name)
     frame_output_path =  os.path.join(root_dir, "frames", file_name[0:len(file_name)-4])
@@ -150,8 +152,8 @@ def detect_vid_aabb_filter(box:defaultdict, root_dir:str, file_name:str):
         center_index = len(keys) // 2  # Integer division
         center_key = keys[center_index]
         x1, y1, x2, y2 = box[file_name][center_key]
-        height = abs(y1 - y2)
-        width = height# * ratio
+        width = abs(x1 - x2)
+        height = width
         x_center = (x1 + x2) / 2
         x1 = int(x_center - width / 2)
         x2 = int(x_center + width / 2)
