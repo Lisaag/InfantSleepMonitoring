@@ -172,7 +172,9 @@ def detect_vid_aabb_filter(box:defaultdict, root_dir:str, file_name:str):
         #save sequence of frames
         if np.isin(current_frame, frame_indices):
             print(f'saved frame {os.path.join(frame_output_path, "FRAME" + str(current_frame) + ".jpg")}, size {width} x {height}')
-            cv2.imwrite(os.path.join(frame_output_path, "FRAME" + str(current_frame) + ".jpg"), frame[y1:y1+height+1, x1:x1+width+1])
+            tmp = frame[y1:y1+height, x1:x1+width]
+            print(f'rows {len(tmp)} cols {len(tmp[0])}')
+            cv2.imwrite(os.path.join(frame_output_path, "FRAME" + str(current_frame) + ".jpg"), frame[y1:y1+height, x1:x1+width])
 
         if box[file_name].get(current_frame) != None:
             # top-left corner and bottom-right corner of rectangle
