@@ -61,9 +61,13 @@ def track_vid_aabb(relative_weights_path:str, root_dir:str, file_name:str):
 
         current_frame += 1   
         
+    to_del = list()
     for key in box_history.keys():
         if(len(box_history[key]) < frame_count / 2):
-            del box_history[key]
+            to_del.append(key)
+
+    for index in to_del:       
+        del box_history[index]
 
                 # print(f'track id {track_id}')
                 # print(boxes)
