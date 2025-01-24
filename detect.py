@@ -165,11 +165,11 @@ def write_bbox(boxes:defaultdict, root_dir:str, file_name:str):
         # top-left corner and bottom-right corner of rectangle
         box_idx = 0
         for box in box_data:
-            box_idx += 1
             cv2.putText(frame, str(box_idx), (x1,   y1 - 20), cv2.FONT_HERSHEY_SIMPLEX, 
                1.5, (0, 255, 0), 2, cv2.LINE_AA)
             x1, y1, width, height = box
             cv2.rectangle(frame, (x1, y1), (x1+width, y1+height), (0, 255, 0), 2)
+            box_idx += 1
 
         out_bbox.write(frame)
 
@@ -184,7 +184,6 @@ def write_bbox(boxes:defaultdict, root_dir:str, file_name:str):
 def write_cropped_frames(boxes:defaultdict, root_dir:str, fragment_name:str):
     box_index = 0
     for box in boxes:
-        box_index += 1
         ratio = 1/1
         cropped_dir = os.path.join(root_dir, "data", fragment_name, str(box_index))
         frames_dir = os.path.join(root_dir, "data", fragment_name, str(box_index), "frames")
@@ -241,6 +240,8 @@ def write_cropped_frames(boxes:defaultdict, root_dir:str, fragment_name:str):
         cap.release()
         out_cropped.release()
         cv2.destroyAllWindows()
+        box_index += 1
+
 
 
 def make_dataset(patient_nr:str):
