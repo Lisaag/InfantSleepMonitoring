@@ -88,11 +88,11 @@ def save_boxes_csv(boxes:defaultdict, root_dir:str, file_name:str):
 
     if not os.path.exists(fragement_dir):
         os.makedirs(fragement_dir)
-    
+
     for key in boxes.keys():
         dir = os.path.join(fragement_dir, str(box_index) + ".csv")
 
-        with open(dir, "a") as file:
+        with open(dir, "w") as file:
             file.write("frame;box" + "\n")
 
         for k in boxes[key].keys():
