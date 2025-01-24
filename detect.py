@@ -99,9 +99,8 @@ def save_boxes_csv(boxes:defaultdict, root_dir:str, file_name:str):
 
         box_index += 1
 
-def read_boxes_csv(root_dir:str, file_name:str):
-    fragement_dir = os.path.join(root_dir, "data", file_name.replace(".mp4", ""))
-    box_csv_files = [file for file in os.listdir(fragement_dir) if file.endswith('.csv')]
+def read_boxes_csv(fragment_dir:str):
+    box_csv_files = [file for file in os.listdir(fragment_dir) if file.endswith('.csv')]
 
     boxes = list(lambda: {})
 
@@ -259,6 +258,22 @@ def detect_vid_aabb_filter(boxes:defaultdict, root_dir:str, file_name:str):
         out_bbox.release()
         cv2.destroyAllWindows()
 
+
+def make_dataset(patient_nr:str):
+    if(patient_nr == "all"):
+        root_dir:str = os.path.join(os.path.abspath(os.getcwd()), "frags")
+        for patient in os.listdir(root_dir):
+            patient_dir:str = os.path.join(os.path.abspath(os.getcwd()), "frags", patient)
+            for eye_state_dir in os.listdir(patient_dir):
+                fragment_dir:str = os.path.join(patient_dir, eye_state_dir, "data")
+                for fragment_dir in os.listdir(fragment_dir):
+                    read_boxes_csv(fragment_dir)
+    else:
+        patient_dir:str = os.path.join(os.path.abspath(os.getcwd()), "frags", patient_nr)
+        for eye_state_dir in os.listdir(patient_dir):
+            fragment_dir:str = os.path.join(patient_dir, eye_state_dir, "data")
+            for fragment_dir in os.listdir(fragment_dir):
+                read_boxes_csv(fragment_dir)
 
 
 def detect_vid(relative_weights_path:str, patient_nr:str):
