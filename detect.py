@@ -93,11 +93,11 @@ def save_boxes_csv(boxes:defaultdict, root_dir:str, file_name:str):
         dir = os.path.join(fragement_dir, str(box_index) + ".csv")
 
         with open(dir, "a") as file:
-            file.write("frame,box" + "\n")
+            file.write("frame;box" + "\n")
 
         for k in boxes[key].keys():
             with open(dir, "a") as file:
-                file.write(str(k) + "," + str(boxes[key][k]) + "\n")
+                file.write(str(k) + ";" + str(boxes[key][k]) + "\n")
 
         box_index += 1
 
@@ -109,7 +109,7 @@ def read_boxes_csv(fragment_dir:str):
     for c in box_csv_files:
         box = defaultdict(lambda: [])
         with open(os.path.join(fragment_dir, c), newline='') as csvfile:
-            reader = csv.DictReader(csvfile)
+            reader = csv.DictReader(csvfile, delimiter=';')
             for row in reader:
                 box[int(row['frame'])] = ast.literal_eval(row['box'])
         boxes.append(box)
