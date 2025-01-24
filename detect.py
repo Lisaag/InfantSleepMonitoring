@@ -79,15 +79,22 @@ def track_vid_aabb(relative_weights_path:str, root_dir:str, file_name:str):
 def save_boxes_csv(boxes:defaultdict, root_dir:str, file_name:str):
     box_index = 0
 
+    fragement_dir = os.path.join(root_dir, "data", file_name.replace(".mp4", ""))
+
+    print(f'WRITING TO {fragement_dir}')
+
+    if not os.path.exists(fragement_dir):
+        os.makedirs(fragement_dir)
+    
     for key in boxes.keys():
-        dir = os.path.join(root_dir, "data", file_name.replace(".mp4", ""), str(box_index) + ".csv")
+        dir = os.path.join(fragement_dir, str(box_index) + ".csv")
 
         with open(dir, "a") as file:
             file.write("frame,box" + "\n")
 
         for k in boxes[key].keys():
             with open(dir, "a") as file:
-                file.write(str(k) + ", " + str(boxes[key][k]) + "\n")
+                file.write(str(k) + "," + str(boxes[key][k]) + "\n")
 
         box_index += 1
 
