@@ -269,8 +269,8 @@ def make_dataset(patient_nr:str):
                 if not os.path.exists(fragment_dir):
                     print(f'No fragments in {os.path.join(patient_dir, eye_state_dir)}')
                     continue
-                for fragment_dir in os.listdir(fragment_dir):
-                    read_boxes_csv(fragment_dir)
+                for fragment in os.listdir(fragment_dir):
+                    read_boxes_csv(os.path.join(fragment_dir, fragment))
     else:
         patient_dir:str = os.path.join(os.path.abspath(os.getcwd()), "frags", patient_nr)
         for eye_state_dir in os.listdir(patient_dir):
@@ -278,8 +278,8 @@ def make_dataset(patient_nr:str):
             if not os.path.exists(fragment_dir):
                 print(f'No fragments in {os.path.join(patient_dir, eye_state_dir)}')
                 continue
-            for fragment_dir in os.listdir(fragment_dir):
-                read_boxes_csv(fragment_dir)
+            for fragment in os.listdir(fragment_dir):
+                    read_boxes_csv(os.path.join(fragment_dir, fragment))
 
 
 def detect_vid(relative_weights_path:str, patient_nr:str):
