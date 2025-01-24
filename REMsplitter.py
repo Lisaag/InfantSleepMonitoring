@@ -23,8 +23,9 @@ def split_REM_set():
                                 destination_file = os.path.join(REM_dir, frame)
                                                                 # Load the image
                                 image = cv2.imread(source_file)  # Replace with the path to your image
-                                print(image)
                                 # Resize the image to 64x64
+                                if(image == None):
+                                    print(f'NONE {source_file}')
                                 resized_image = cv2.resize(image, dsize=(64, 64))
 
                                 # Save or display the resized image
