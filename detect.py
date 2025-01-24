@@ -7,6 +7,8 @@ from itertools import chain
 from collections import defaultdict
 import statistics
 
+import csv
+
 def extract_evenly_spaced_elements(arr):
     n = len(arr)
     
@@ -73,7 +75,6 @@ def track_vid_aabb(relative_weights_path:str, root_dir:str, file_name:str):
     cap.release()
     cv2.destroyAllWindows()
     
-    print(box_history)
     return box_history
 
 def save_boxes_csv(boxes:defaultdict, root_dir:str, file_name:str):
@@ -97,6 +98,22 @@ def save_boxes_csv(boxes:defaultdict, root_dir:str, file_name:str):
                 file.write(str(k) + "," + str(boxes[key][k]) + "\n")
 
         box_index += 1
+
+def read_boxes_csv(root_dir:str, file_name:str):
+    fragement_dir = os.path.join(root_dir, "data", file_name.replace(".mp4", ""))
+    box_csv_files = [file for file in os.listdir(fragement_dir) if file.endswith('.csv')]
+
+    boxes = list(lambda: {})
+
+    for csv in box_csv_files:
+        box = defaultdict(lambda: [])
+        with open(csv, newline='') as csvfile:
+            reader = csv.DictReader(csvfile)
+            for row in reader:
+                box[row['frame']] = row['box']
+        boxes.append(box)
+
+    print(boxes)
 
 def write_bbox(boxes:defaultdict, root_dir:str, file_name:str):
     box_data = list()
