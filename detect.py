@@ -98,6 +98,70 @@ def save_boxes_csv(boxes:defaultdict, root_dir:str, file_name:str):
 
         box_index += 1
 
+def write_bbox(boxes:defaultdict, root_dir:str, file_name:str):
+    box_data = list()
+
+    for key in boxes.keys():
+        ratio = 1/1
+
+        bbox_folder = os.path.join(root_dir, "data", file_name.replace(".mp4", ""))
+        if not os.path.exists(bbox_folder): os.makedirs(bbox_folder)
+        bbox_video_output_path =  os.path.join(bbox_folder, file_name)
+        video_input_path =  os.path.join(root_dir, "raw", file_name)
+
+        cap = cv2.VideoCapture(video_input_path)
+
+        # Get video properties
+        frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+        frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        fps = int(cap.get(cv2.CAP_PROP_FPS))
+
+        # Define the codec and create VideoWriter object
+        fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+        out_bbox = cv2.VideoWriter(bbox_video_output_path, fourcc, fps, (frame_width, frame_height))
+
+        current_frame = 0
+        frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+
+        frame_indices = np.linspace(0, frame_count-1, 6, dtype=int)
+
+        keys = list(boxes[key].keys())
+        center_index = len(keys) // 2 
+        center_key = keys[center_index]
+        x1, y1, x2, y2 = boxes[key][center_key]
+        width = int(abs(x1 - x2))
+        height = int(width * ratio)
+        x_center = (x1 + x2) / 2
+        x1 = int(x_center - width / 2)
+        x2 = int(x_center + width / 2)
+        y_center = (y1 + y2) / 2
+        y1 = int(y_center - height / 2)
+        y2 = int(y_center + height / 2)
+
+        box_data.append([x1, y1, width, height])
+    
+
+    while cap.isOpened():
+        ret, frame = cap.read()
+        if not ret:
+            break
+
+        if boxes[key].get(current_frame) != None:
+            # top-left corner and bottom-right corner of rectangle
+            for box in box_data:
+                x1, y1, width, height = box
+                cv2.rectangle(frame, (x1, y1), (x1+width, y1+height), (0, 255, 0), 2)
+
+        out_bbox.write(frame)
+
+        current_frame += 1
+
+    # Release resources
+    cap.release()
+    out_bbox.release()
+    cv2.destroyAllWindows()
+
+
 def detect_vid_aabb_filter(boxes:defaultdict, root_dir:str, file_name:str):
     box_index = 0
     for key in boxes.keys():
@@ -146,7 +210,6 @@ def detect_vid_aabb_filter(boxes:defaultdict, root_dir:str, file_name:str):
         y_center = (y1 + y2) / 2
         y1 = int(y_center - height / 2)
         y2 = int(y_center + height / 2)
-
     
         out_cropped = cv2.VideoWriter(cropped_video_output_path, fourcc, fps, (width, height))
 
@@ -188,6 +251,8 @@ def detect_vid(relative_weights_path:str, patient_nr:str):
                     all_boxes = track_vid_aabb(relative_weights_path, os.path.join(patient_dir, eye_state_dir), fragment_file)
                     #detect_vid_aabb_filter(all_boxes, os.path.join(patient_dir, eye_state_dir), fragment_file)
                     save_boxes_csv(all_boxes, os.path.join(patient_dir, eye_state_dir), fragment_file)
+                    write_bbox(all_boxes, os.path.join(patient_dir, eye_state_dir), fragment_file)
+
     else:
         patient_dir:str = os.path.join(os.path.abspath(os.getcwd()), "frags", patient_nr)
         for eye_state_dir in os.listdir(patient_dir):
@@ -195,6 +260,7 @@ def detect_vid(relative_weights_path:str, patient_nr:str):
             for fragment_file in os.listdir(fragment_dir):
                 all_boxes = track_vid_aabb(relative_weights_path, os.path.join(patient_dir, eye_state_dir), fragment_file)
                 save_boxes_csv(all_boxes, os.path.join(patient_dir, eye_state_dir), fragment_file)
+                write_bbox(all_boxes, os.path.join(patient_dir, eye_state_dir), fragment_file)
 
                 #detect_vid_aabb_filter(all_boxes, os.path.join(patient_dir, eye_state_dir), fragment_file)
 
