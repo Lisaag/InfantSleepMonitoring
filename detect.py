@@ -77,13 +77,19 @@ def track_vid_aabb(relative_weights_path:str, root_dir:str, file_name:str):
     return box_history
 
 def save_boxes_csv(boxes:defaultdict, root_dir:str, file_name:str):
-    dir = os.path.join(root_dir, "data", file_name.replace(".mp4", ""), "boxes.csv")
     box_index = 0
 
     for key in boxes.keys():
+        dir = os.path.join(root_dir, "data", file_name.replace(".mp4", ""), str(box_index) + ".csv")
+
         with open(dir, "a") as file:
-            file.write(box_index + ", " +boxes[key] + "\n")
-    box_index += 1
+            file.write("frame,box" + "\n")
+
+        for k in boxes[key].keys():
+            with open(dir, "a") as file:
+                file.write(str(k) + ", " + str(boxes[key][k]) + "\n")
+
+        box_index += 1
 
 def detect_vid_aabb_filter(boxes:defaultdict, root_dir:str, file_name:str):
     box_index = 0
