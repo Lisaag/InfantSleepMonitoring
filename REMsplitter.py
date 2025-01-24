@@ -1,5 +1,6 @@
 import os
 import shutil
+import cv2
 
 def split_REM_set():
     root_dir:str = os.path.join(os.path.abspath(os.getcwd()), "frags")
@@ -20,12 +21,12 @@ def split_REM_set():
                                 source_file = os.path.join(frames_dir, frame)
                                 if not os.path.exists(REM_dir): os.makedirs(REM_dir)
                                 destination_file = os.path.join(REM_dir, frame)
-                                try:
-                                    shutil.copy(source_file, destination_file)
-                                    print(f"File copied successfully as {destination_file}")
-                                except FileNotFoundError:
-                                    print("Source file not found. Please check the file path.")
-                                except PermissionError:
-                                    print("Permission denied. Please check your permissions.")
-                                except Exception as e:
-                                    print(f"An error occurred: {e}")
+                                                                # Load the image
+                                image = cv2.imread(source_file)  # Replace with the path to your image
+
+                                # Resize the image to 64x64
+                                resized_image = cv2.resize(image, (64, 64))
+
+                                # Save or display the resized image
+                                cv2.imwrite(destination_file, resized_image)  # Save the resized image
+
