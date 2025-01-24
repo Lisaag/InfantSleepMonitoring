@@ -104,9 +104,9 @@ def read_boxes_csv(fragment_dir:str):
 
     boxes = list()
 
-    for csv in box_csv_files:
+    for c in box_csv_files:
         box = defaultdict(lambda: [])
-        with open(os.path.join(fragment_dir, csv), newline='') as csvfile:
+        with open(os.path.join(fragment_dir, c), newline='') as csvfile:
             reader = csv.DictReader(csvfile)
             for row in reader:
                 box[row['frame']] = row['box']
