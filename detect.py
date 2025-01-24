@@ -119,30 +119,27 @@ def read_boxes_csv(fragment_dir:str):
 def write_bbox(boxes:defaultdict, root_dir:str, file_name:str):
     box_data = list()
 
+    ratio = 1/1
+
+    bbox_folder = os.path.join(root_dir, "data", file_name.replace(".mp4", ""))
+    if not os.path.exists(bbox_folder): os.makedirs(bbox_folder)
+    bbox_video_output_path =  os.path.join(bbox_folder, file_name)
+    video_input_path =  os.path.join(root_dir, "raw", file_name)
+
+    cap = cv2.VideoCapture(video_input_path)
+
+    # Get video properties
+    frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    fps = int(cap.get(cv2.CAP_PROP_FPS))
+
+    # Define the codec and create VideoWriter object
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    out_bbox = cv2.VideoWriter(bbox_video_output_path, fourcc, fps, (frame_width, frame_height))
+
+    current_frame = 0
+
     for key in boxes.keys():
-        ratio = 1/1
-
-        bbox_folder = os.path.join(root_dir, "data", file_name.replace(".mp4", ""))
-        if not os.path.exists(bbox_folder): os.makedirs(bbox_folder)
-        bbox_video_output_path =  os.path.join(bbox_folder, file_name)
-        video_input_path =  os.path.join(root_dir, "raw", file_name)
-
-        cap = cv2.VideoCapture(video_input_path)
-
-        # Get video properties
-        frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-        frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-        fps = int(cap.get(cv2.CAP_PROP_FPS))
-
-        # Define the codec and create VideoWriter object
-        fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-        out_bbox = cv2.VideoWriter(bbox_video_output_path, fourcc, fps, (frame_width, frame_height))
-
-        current_frame = 0
-        frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-
-        frame_indices = np.linspace(0, frame_count-1, 6, dtype=int)
-
         keys = list(boxes[key].keys())
         center_index = len(keys) // 2 
         center_key = keys[center_index]
