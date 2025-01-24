@@ -11,6 +11,7 @@ def split_REM_set():
                     print(f'{data_dir} DOES NOT EXIST')
                     continue
                 for fragment_dir in os.listdir(data_dir):
-                    for root, dirs, files in os.walk(os.path.join(data_dir, fragment_dir)):
-                        for directory in dirs:
-                            print(directory)
+                    for eye_data_dir in os.listdir(os.path.join(data_dir, fragment_dir)):
+                        if(os.path.isdir(os.listdir(os.path.join(data_dir, fragment_dir, eye_data_dir)))):
+                           frames_dir = os.path.join(data_dir, fragment_dir, eye_data_dir, eye_data_dir, "frames", fragment_dir)
+                           print(frames_dir)
