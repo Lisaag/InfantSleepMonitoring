@@ -102,7 +102,7 @@ def save_boxes_csv(boxes:defaultdict, root_dir:str, file_name:str):
 def read_boxes_csv(fragment_dir:str):
     box_csv_files = [file for file in os.listdir(fragment_dir) if file.endswith('.csv')]
 
-    boxes = list(lambda: {})
+    boxes = list()
 
     for csv in box_csv_files:
         box = defaultdict(lambda: [])
