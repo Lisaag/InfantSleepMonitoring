@@ -148,7 +148,11 @@ def write_bbox(boxes:defaultdict, root_dir:str, file_name:str):
 
         if boxes[key].get(current_frame) != None:
             # top-left corner and bottom-right corner of rectangle
+            box_idx = 0
             for box in box_data:
+                box_idx += 1
+                cv2.putText(frame, str(box_idx), (x1 -20,   y1 - 20), cv2.FONT_HERSHEY_SIMPLEX, 
+                   1, (255, 0, 0), 2, cv2.LINE_AA)
                 x1, y1, width, height = box
                 cv2.rectangle(frame, (x1, y1), (x1+width, y1+height), (0, 255, 0), 2)
 
