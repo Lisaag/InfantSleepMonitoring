@@ -13,5 +13,5 @@ def split_REM_set():
                 for fragment_dir in os.listdir(data_dir):
                     for eye_data_dir in os.listdir(os.path.join(data_dir, fragment_dir)):
                         if(os.path.isdir(os.path.join(data_dir, fragment_dir, eye_data_dir))):
-                           frames_dir = os.path.join(data_dir, fragment_dir, eye_data_dir, eye_data_dir, "frames", fragment_dir)
+                           frames_dir = os.path.join(data_dir, fragment_dir, eye_data_dir, "frames", fragment_dir)
                            print(frames_dir)
