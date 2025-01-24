@@ -112,7 +112,7 @@ def read_boxes_csv(fragment_dir:str):
                 box[row['frame']] = row['box']
         boxes.append(box)
 
-    print(boxes)
+    return boxes
 
 def write_bbox(boxes:defaultdict, root_dir:str, file_name:str):
     box_data = list()
@@ -182,46 +182,37 @@ def write_bbox(boxes:defaultdict, root_dir:str, file_name:str):
     cv2.destroyAllWindows()
 
 
-def detect_vid_aabb_filter(boxes:defaultdict, root_dir:str, file_name:str):
+def write_cropped_frames(boxes:defaultdict, root_dir:str, fragment_name:str):
     box_index = 0
-    for key in boxes.keys():
+    for box in boxes:
         box_index += 1
         ratio = 1/1
-        if not os.path.exists(os.path.join(root_dir, str(box_index), "cropped")):
-            os.makedirs(os.path.join(root_dir, str(box_index), "cropped"))
-        cropped_video_output_path =  os.path.join(root_dir, str(box_index),"cropped", file_name)
-        if not os.path.exists(os.path.join(root_dir, str(box_index), "bbox")):
-            os.makedirs(os.path.join(root_dir, str(box_index), "bbox"))
-        bbox_video_output_path =  os.path.join(root_dir, str(box_index),"bbox", file_name)
-        video_input_path =  os.path.join(root_dir, "raw", file_name)
-        if not os.path.exists(os.path.join(root_dir, str(box_index), "frames")):
-            os.makedirs(os.path.join(root_dir, str(box_index), "frames"))
-        frame_output_path =  os.path.join(root_dir, str(box_index), "frames", file_name[0:len(file_name)-4])
+        cropped_dir = os.path.join(root_dir, "data", fragment_name, str(box_index), "cropped")
+        frames_dir = os.path.join(root_dir, "data", fragment_name, str(box_index), "frames")
 
-        if not os.path.exists(frame_output_path):
-            os.makedirs(frame_output_path)
+        video_input_path =  os.path.join(root_dir, "raw", fragment_name+".mp4")
+        if not os.path.exists(cropped_dir): os.makedirs(cropped_dir)
+        cropped_video_output_path =  os.path.join(cropped_dir, fragment_name+".mp4")
+        frame_output_path =  os.path.join(frames_dir, fragment_name)
+        if not os.path.exists(frame_output_path): os.makedirs(frame_output_path)
         # Open the video file
         cap = cv2.VideoCapture(video_input_path)
 
         # Get video properties
-        frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-        frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
         fps = int(cap.get(cv2.CAP_PROP_FPS))
 
         # Define the codec and create VideoWriter object
         fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-        out_bbox = cv2.VideoWriter(bbox_video_output_path, fourcc, fps, (frame_width, frame_height))
 
         current_frame = 0
         frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
 
         frame_indices = np.linspace(0, frame_count-1, 6, dtype=int)
 
-
-        keys = list(boxes[key].keys())
+        keys = list(box.keys())
         center_index = len(keys) // 2 
         center_key = keys[center_index]
-        x1, y1, x2, y2 = boxes[key][center_key]
+        x1, y1, x2, y2 = box[center_key]
         width = int(abs(x1 - x2))
         height = int(width * ratio)
         x_center = (x1 + x2) / 2
@@ -243,19 +234,13 @@ def detect_vid_aabb_filter(boxes:defaultdict, root_dir:str, file_name:str):
                 print(f'saved frame {os.path.join(frame_output_path, "FRAME" + str(current_frame) + ".jpg")}, size {width} x {height}')
                 cv2.imwrite(os.path.join(frame_output_path, "FRAME" + str(current_frame) + ".jpg"), frame[y1:y1+height, x1:x1+width])
 
-            if boxes[key].get(current_frame) != None:
-                # top-left corner and bottom-right corner of rectangle
-                cv2.rectangle(frame, (x1, y1), (x1+width, y1+height), (0, 255, 0), 2)
-
             out_cropped.write(frame[y1:y1+width, x1:x1+height])
-
-            out_bbox.write(frame)
 
             current_frame += 1
 
         # Release resources
         cap.release()
-        out_bbox.release()
+        out_cropped.release()
         cv2.destroyAllWindows()
 
 
@@ -270,7 +255,8 @@ def make_dataset(patient_nr:str):
                     print(f'No fragments in {os.path.join(patient_dir, eye_state_dir)}')
                     continue
                 for fragment in os.listdir(fragment_dir):
-                    read_boxes_csv(os.path.join(fragment_dir, fragment))
+                    boxes = read_boxes_csv(os.path.join(fragment_dir, fragment))
+                    write_cropped_frames(boxes, os.path.join(patient_dir, eye_state_dir), fragment)
     else:
         patient_dir:str = os.path.join(os.path.abspath(os.getcwd()), "frags", patient_nr)
         for eye_state_dir in os.listdir(patient_dir):
@@ -279,7 +265,9 @@ def make_dataset(patient_nr:str):
                 print(f'No fragments in {os.path.join(patient_dir, eye_state_dir)}')
                 continue
             for fragment in os.listdir(fragment_dir):
-                    read_boxes_csv(os.path.join(fragment_dir, fragment))
+                    boxes = read_boxes_csv(os.path.join(fragment_dir, fragment))
+                    write_cropped_frames(boxes, os.path.join(patient_dir, eye_state_dir), fragment)
+
 
 
 def detect_vid(relative_weights_path:str, patient_nr:str):
