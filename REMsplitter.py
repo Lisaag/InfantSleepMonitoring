@@ -20,7 +20,7 @@ def split_REM_set():
                                 source_file = os.path.join(frames_dir, frame)
                                 if not os.path.exists(REM_dir): os.makedirs(REM_dir)
                                 destination_file = os.path.join(REM_dir, frame)
-                                new_file_name:str = str(patient_dir)+"-"+str(fragment_dir)
+                                new_file_name:str = str(fragment_dir)
                                 print(os.path.join(os.path.abspath(os.getcwd()),"REM-dataset", eye_state_dir, new_file_name))
                                 print(destination_file)
                                 # try:
