@@ -16,19 +16,16 @@ def split_REM_set():
                         if(os.path.isdir(os.path.join(data_dir, fragment_dir, eye_data_dir))):
                            frames_dir = os.path.join(data_dir, fragment_dir, eye_data_dir, "frames", fragment_dir)
                            for frame in os.listdir(frames_dir):
-                                REM_dir = os.path.join(os.path.abspath(os.getcwd()),"REM-dataset", eye_state_dir, str(patient_dir)+"-"+fragment_dir)
+                                REM_dir = os.path.join(os.path.abspath(os.getcwd()),"REM-dataset", eye_state_dir, str(patient)+"-"+fragment_dir)
                                 source_file = os.path.join(frames_dir, frame)
                                 if not os.path.exists(REM_dir): os.makedirs(REM_dir)
                                 destination_file = os.path.join(REM_dir, frame)
-                                new_file_name:str = str(fragment_dir)
-                                print(os.path.join(os.path.abspath(os.getcwd()),"REM-dataset", eye_state_dir, new_file_name))
-                                print(destination_file)
-                                # try:
-                                #     shutil.copy(source_file, destination_file)
-                                #     print(f"File copied successfully as {destination_file}")
-                                # except FileNotFoundError:
-                                #     print("Source file not found. Please check the file path.")
-                                # except PermissionError:
-                                #     print("Permission denied. Please check your permissions.")
-                                # except Exception as e:
-                                #     print(f"An error occurred: {e}")
+                                try:
+                                    shutil.copy(source_file, destination_file)
+                                    print(f"File copied successfully as {destination_file}")
+                                except FileNotFoundError:
+                                    print("Source file not found. Please check the file path.")
+                                except PermissionError:
+                                    print("Permission denied. Please check your permissions.")
+                                except Exception as e:
+                                    print(f"An error occurred: {e}")
