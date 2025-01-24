@@ -189,7 +189,7 @@ def write_cropped_frames(boxes:defaultdict, root_dir:str, fragment_name:str):
     for box in boxes:
         box_index += 1
         ratio = 1/1
-        cropped_dir = os.path.join(root_dir, "data", fragment_name, str(box_index), "cropped")
+        cropped_dir = os.path.join(root_dir, "data", fragment_name, str(box_index))
         frames_dir = os.path.join(root_dir, "data", fragment_name, str(box_index), "frames")
 
         video_input_path =  os.path.join(root_dir, "raw", fragment_name+".mp4")
