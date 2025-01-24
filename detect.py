@@ -266,12 +266,18 @@ def make_dataset(patient_nr:str):
             patient_dir:str = os.path.join(os.path.abspath(os.getcwd()), "frags", patient)
             for eye_state_dir in os.listdir(patient_dir):
                 fragment_dir:str = os.path.join(patient_dir, eye_state_dir, "data")
+                if not os.path.exists(fragment_dir):
+                    print(f'No fragments in {os.path.join(patient_dir, eye_state_dir)}')
+                    continue
                 for fragment_dir in os.listdir(fragment_dir):
                     read_boxes_csv(fragment_dir)
     else:
         patient_dir:str = os.path.join(os.path.abspath(os.getcwd()), "frags", patient_nr)
         for eye_state_dir in os.listdir(patient_dir):
             fragment_dir:str = os.path.join(patient_dir, eye_state_dir, "data")
+            if not os.path.exists(fragment_dir):
+                print(f'No fragments in {os.path.join(patient_dir, eye_state_dir)}')
+                continue
             for fragment_dir in os.listdir(fragment_dir):
                 read_boxes_csv(fragment_dir)
 
