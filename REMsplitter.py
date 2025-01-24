@@ -20,7 +20,7 @@ def split_REM_set():
                                 source_file = os.path.join(frames_dir, frame)
                                 if not os.path.exists(REM_dir): os.makedirs(REM_dir)
                                 destination_file = os.path.join(REM_dir, frame)
-                                print(os.path.join(os.path.abspath(os.getcwd()),"REM-dataset"))
+                                print(os.path.join(os.path.abspath(os.getcwd()),"REM-dataset", eye_state_dir))
                                 print(destination_file)
                                 # try:
                                 #     shutil.copy(source_file, destination_file)
