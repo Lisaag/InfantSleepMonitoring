@@ -6,6 +6,8 @@ import numpy as np
 from itertools import chain 
 from collections import defaultdict
 import statistics
+import ast
+
 
 import csv
 
@@ -109,7 +111,7 @@ def read_boxes_csv(fragment_dir:str):
         with open(os.path.join(fragment_dir, c), newline='') as csvfile:
             reader = csv.DictReader(csvfile)
             for row in reader:
-                box[row['frame']] = row['box']
+                box[int(row['frame'])] = ast.literal_eval(row['box'])
         boxes.append(box)
 
     return boxes
