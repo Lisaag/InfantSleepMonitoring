@@ -12,6 +12,8 @@ def split_REM_set():
     root_dir:str = os.path.join(os.path.abspath(os.getcwd()), "frags")
     for patient in os.listdir(root_dir):
         patient_dir:str = os.path.join(os.path.abspath(os.getcwd()), "frags", patient)
+
+        print(f'patient {patient}')
         for eye_state_dir in os.listdir(patient_dir):
             if(eye_state_dir == "C" or eye_state_dir == "CR"):
                 data_dir =  os.path.join(root_dir, patient_dir, eye_state_dir, "data")
