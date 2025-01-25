@@ -46,3 +46,5 @@ def REMtrain():
     # X_train shape: (num_samples, 6, 64, 64, 3)
     # y_train shape: (num_samples,)
     # model.fit(X_train, y_train, validation_data=(X_val, y_val), epochs=10, batch_size=32)
+
+REMtrain()
