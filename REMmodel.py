@@ -32,7 +32,7 @@ def create_3dcnn_model(input_shape=(6, 64, 64, 1), num_classes=2):
 # Example usage
 def REMtrain():
     # Define input shape (6 frames, 64x64 grayscale images)
-    input_shape = (6, 64, 64, 3)
+    input_shape = (6, 64, 64, 1)
 
     # Number of classes
     num_classes = 2
