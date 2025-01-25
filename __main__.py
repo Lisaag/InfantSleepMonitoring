@@ -12,7 +12,7 @@ PARSER.add_argument('--YOLOlabel', nargs=2, type=str, help="convert annotation c
 PARSER.add_argument('--datasplit', nargs=1, type=str, help="split the data into train, validation, and test sets. arg1['aabb', 'obb', 'ocaabb', 'ocobb']")
 PARSER.add_argument('--detect', nargs=2, type=str, help="detect on videos, using trained model. arg1[RELATIVE PATH TO WEIGHTS], arg2['all', '000_00-00-00]")
 PARSER.add_argument('--REMset', nargs=1, type=str, help="construct REM dataset. arg1['all', '000_00-00-00]")
-PARSER.add_argument('--REMsplit', action="store_const", const=True, help="make REM dataset split")
+PARSER.add_argument('--REMsplit', nargs=1, type=str, help="make REM dataset split")
 PARSER.add_argument('--augment',nargs=1, type=str, help="add augmented images to dataset arg1['aug', 'test']")
 PARSER.add_argument('--rotate', nargs=3, type=str, help="rotate img. arg1[RELATIVE PATH TO VID], arg2[VIDEO FILE NAME], arg3['90', '180', '270']")
 PARSER.add_argument('--frag', nargs=3, type=str, help="cut x sec fragment for REM dataset. arg1[video file name], arg2[patient id], arg3[start time]")
@@ -42,7 +42,7 @@ if __name__ == '__main__':
     elif(args.REMset):
         detect.make_dataset(args.REMset[0])
     elif(args.REMsplit):
-        REMsplitter.split_REM_set()
+        REMsplitter.split_REM_set(args.REMsplit[0])
 
        
 

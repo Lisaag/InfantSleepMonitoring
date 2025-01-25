@@ -1,6 +1,7 @@
 import os
 import shutil
 import cv2
+import ast
 
 def is_jpg(file_path):
     # Get the file extension
@@ -8,12 +9,15 @@ def is_jpg(file_path):
     # Check if the extension is .jpg (case insensitive)
     return file_extension.lower() == '.jpg'
 
-def split_REM_set():
+def split_REM_set(val_patients:list):
     root_dir:str = os.path.join(os.path.abspath(os.getcwd()), "frags")
     for patient in os.listdir(root_dir):
         patient_dir:str = os.path.join(os.path.abspath(os.getcwd()), "frags", patient)
 
-        print(f'patient {patient[0:3]}')
+        patient_nr = patient[0:3]
+        if patient_nr in ast.literal_eval(val_patients):
+            print(f'patient {patient[0:3]}')
+
         for eye_state_dir in os.listdir(patient_dir):
             if(eye_state_dir == "C" or eye_state_dir == "CR"):
                 data_dir =  os.path.join(root_dir, patient_dir, eye_state_dir, "data")
