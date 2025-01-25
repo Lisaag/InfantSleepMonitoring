@@ -14,9 +14,10 @@ def split_REM_set(val_patients:list):
     for patient in os.listdir(root_dir):
         patient_dir:str = os.path.join(os.path.abspath(os.getcwd()), "frags", patient)
 
+        set_split = "train"
         patient_nr = int(patient[0:3])
         if patient_nr in val_patients:
-            print(f'patient {patient[0:3]}')
+            set_split = "val"
 
         for eye_state_dir in os.listdir(patient_dir):
             if(eye_state_dir == "C" or eye_state_dir == "CR"):
@@ -29,7 +30,7 @@ def split_REM_set(val_patients:list):
                         if(os.path.isdir(os.path.join(data_dir, fragment_dir, eye_data_dir))):
                            frames_dir = os.path.join(data_dir, fragment_dir, eye_data_dir, "frames", fragment_dir)
                            for frame in os.listdir(frames_dir):
-                                REM_dir = os.path.join(os.path.abspath(os.getcwd()),"REM-dataset", eye_state_dir, str(patient)+"-"+fragment_dir)
+                                REM_dir = os.path.join(os.path.abspath(os.getcwd()),"REM-dataset", set_split, eye_state_dir, str(patient)+"-"+fragment_dir)
                                 source_file = os.path.join(frames_dir, frame)
                                 if not os.path.exists(REM_dir): os.makedirs(REM_dir)
                                 destination_file = os.path.join(REM_dir, frame)
