@@ -31,8 +31,8 @@ def delete_contents(directory):
 def split_REM_set(val_patients:list):
     root_dir:str = os.path.join(os.path.abspath(os.getcwd()), "frags")
     REM_dataset_dir = os.path.join(os.path.abspath(os.getcwd()),"REM-dataset")
-    delete_contents(REM_dataset_dir
-                    )
+    delete_contents(REM_dataset_dir)
+    
     for patient in os.listdir(root_dir):
         patient_dir:str = os.path.join(os.path.abspath(os.getcwd()), "frags", patient)
 
