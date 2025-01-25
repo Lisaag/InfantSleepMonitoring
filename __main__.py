@@ -6,6 +6,7 @@ import dataaugmenter
 import imgtransformer
 import videocutter
 import REMsplitter
+import REMmodel
 
 PARSER = argparse.ArgumentParser(prog='EyDetector')
 PARSER.add_argument('--YOLOlabel', nargs=2, type=str, help="convert annotation csv to yolo labels. arg1['real', 'dummy'], arg2['aabb', 'obb', 'ocaabb', 'ocobb']")
@@ -16,6 +17,8 @@ PARSER.add_argument('--REMsplit', nargs="+", type=int, help="make REM dataset sp
 PARSER.add_argument('--augment',nargs=1, type=str, help="add augmented images to dataset arg1['aug', 'test']")
 PARSER.add_argument('--rotate', nargs=3, type=str, help="rotate img. arg1[RELATIVE PATH TO VID], arg2[VIDEO FILE NAME], arg3['90', '180', '270']")
 PARSER.add_argument('--frag', nargs=3, type=str, help="cut x sec fragment for REM dataset. arg1[video file name], arg2[patient id], arg3[start time]")
+
+PARSER.add_argument('--REMtrain', action="store_const", const=True, help="train REM model")
 
 if __name__ == '__main__':
     args = PARSER.parse_args() # type: ignore
@@ -43,6 +46,8 @@ if __name__ == '__main__':
         detect.make_dataset(args.REMset[0])
     elif(args.REMsplit):
         REMsplitter.split_REM_set(args.REMsplit)
+    elif(args.REMtrain):
+        REMmodel.REMtrain()
 
        
 
