@@ -14,8 +14,8 @@ def split_REM_set(val_patients:list):
     for patient in os.listdir(root_dir):
         patient_dir:str = os.path.join(os.path.abspath(os.getcwd()), "frags", patient)
 
-        patient_nr = patient[0:3]
-        if patient_nr in ast.literal_eval(val_patients):
+        patient_nr = int(patient[0:3])
+        if patient_nr in val_patients:
             print(f'patient {patient[0:3]}')
 
         for eye_state_dir in os.listdir(patient_dir):
