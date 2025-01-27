@@ -59,8 +59,8 @@ def REMtrain():
         for sample in os.listdir(eye_state_dir):
             sample_dir = os.path.join(eye_state_dir, sample)
             for frame in sample_dir:
-                print(os.path.join(sample_dir, frame))
-                image = cv2.imread(os.path.join(sample_dir, frame)) 
+                print(frame)
+                #image = cv2.imread(os.path.join(sample_dir, frame)) 
                 #print(image.shape())
 
 
