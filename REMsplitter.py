@@ -65,5 +65,7 @@ def split_REM_set(val_patients:list):
 
                                 resized_image = cv2.resize(image, dsize=(64, 64))
 
-                                cv2.imwrite(destination_file, resized_image) 
+                                gray_image = cv2.cvtColor(resized_image, cv2.COLOR_BGR2GRAY)
+
+                                cv2.imwrite(destination_file, gray_image) 
 
