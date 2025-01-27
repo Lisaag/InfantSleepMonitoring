@@ -102,7 +102,7 @@ def REMtrain():
     print(f'VAL SHAPE {val_samples_stacked.shape}')
     print(f'VAL LABELS {len(val_labels)}')
 
-    model.fit(train_samples_stacked, train_labels_numpy, validation_data=(val_samples_stacked, val_labels_numpy), epochs=10, batch_size=32)
+    model.fit(train_samples_stacked, train_labels_numpy, validation_data=(val_samples_stacked, val_labels_numpy), epochs=50, batch_size=32)
 
 
 
