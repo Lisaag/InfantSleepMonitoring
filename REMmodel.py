@@ -73,6 +73,7 @@ def REMtrain():
 
     train_samples_stacked = np.stack(train_samples, axis=0)
     print(f'TRAIN SHAPE {train_samples_stacked.shape}')
+    print(f'TRAIN LABELS {len(train_labels)}')
 
 
     val_samples = list()
@@ -94,6 +95,7 @@ def REMtrain():
 
     val_samples_stacked = np.stack(val_samples, axis=0)
     print(f'VAL SHAPE {val_samples_stacked.shape}')
+    print(f'VAL LABELS {len(val_labels)}')
 
 
 
