@@ -69,7 +69,8 @@ def REMtrain():
             expanded_stack = np.expand_dims(stacked_images, axis=0) 
 
             train_samples.append(expanded_stack)
-            train_labels.append(eye_state)
+            label = 0 if eye_state == "C" else 1
+            train_labels.append(label)
 
     train_samples_stacked = np.stack(train_samples, axis=0)
     print(f'TRAIN SHAPE {train_samples_stacked.shape}')
@@ -91,7 +92,8 @@ def REMtrain():
             expanded_stack = np.expand_dims(stacked_images, axis=0) 
 
             val_samples.append(expanded_stack)
-            val_labels.append(eye_state)
+            label = 0 if eye_state == "C" else 1
+            val_labels.append(label)
 
     val_samples_stacked = np.stack(val_samples, axis=0)
     print(f'VAL SHAPE {val_samples_stacked.shape}')
