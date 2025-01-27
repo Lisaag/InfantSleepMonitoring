@@ -3,7 +3,7 @@ from tensorflow.keras import layers, models
 from keras import backend as K
 
 
-def create_3dcnn_model(input_shape=(6, 64, 64, 1), num_classes=2):
+def create_3dcnn_model(input_shape=(1, 6, 64, 64), num_classes=2):
     model = models.Sequential([
         # First 3D Convolutional Layer
         layers.Conv3D(32, kernel_size=(3, 3, 3), activation='relu', padding='same', input_shape=input_shape),
@@ -35,7 +35,7 @@ def create_3dcnn_model(input_shape=(6, 64, 64, 1), num_classes=2):
 def REMtrain():
     K.set_image_data_format('channels_first')
     # Define input shape (6 frames, 64x64 grayscale images)
-    input_shape = (6, 64, 64, 1)
+    input_shape = (1, 6, 64, 64)
 
     # Number of classes
     num_classes = 2
