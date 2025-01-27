@@ -1,5 +1,7 @@
 import tensorflow as tf
 from tensorflow.keras import layers, models
+from keras import backend as K
+
 
 def create_3dcnn_model(input_shape=(6, 64, 64, 1), num_classes=2):
     model = models.Sequential([
@@ -31,6 +33,7 @@ def create_3dcnn_model(input_shape=(6, 64, 64, 1), num_classes=2):
 
 # Example usage
 def REMtrain():
+    K.set_image_dim_ordering('th')
     # Define input shape (6 frames, 64x64 grayscale images)
     input_shape = (6, 64, 64, 1)
 
