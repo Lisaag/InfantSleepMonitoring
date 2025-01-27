@@ -7,8 +7,8 @@ val_loss = list()
 with open('names.csv', newline='') as csvfile:
     reader = csv.DictReader(csvfile)
     for row in reader:
-        loss.append(row['loss'])
-        val_loss.append(row['val_loss'])
+        loss.append(float(row['loss']))
+        val_loss.append(float(row['val_loss']))
 
 print(loss)
 print(val_loss)
