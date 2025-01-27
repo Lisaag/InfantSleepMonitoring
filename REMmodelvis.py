@@ -14,6 +14,7 @@ print(loss)
 print(val_loss)
 
 plt.figure(figsize=(10, 6))
+plt.ylim(0,2)
 plt.plot(loss, label='Training Loss')
 plt.plot(val_loss, label='Validation Loss')
 plt.xlabel('Epochs')
