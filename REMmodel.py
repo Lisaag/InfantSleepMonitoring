@@ -1,6 +1,9 @@
 import tensorflow as tf
 from tensorflow.keras import layers, models
 from keras import backend as K
+import os
+import numpy as np
+import cv2
 
 
 def create_3dcnn_model(input_shape=(1, 6, 64, 64), num_classes=2):
@@ -46,7 +49,24 @@ def REMtrain():
     # Print the model summary
     model.summary()
 
-    # X_train shape: (num_samples, 6, 64, 64, 3)
+
+    train_dir = os.path.join(os.path.abspath(os.getcwd()),"REM-dataset", "train")
+    val_dir = os.path.join(os.path.abspath(os.getcwd()),"REM-dataset", "val")
+
+
+    for eye_state in os.listdir(train_dir):
+        eye_state_dir = os.path.join(train_dir, eye_state)
+        for sample in os.listdir(eye_state_dir):
+            sample_dir = os.path.join(eye_state_dir, sample)
+            for frame in sample_dir:
+                image = cv2.imread(os.path.join(sample_dir, frame)) 
+                print(image.shape())
+
+
+
+
+
+    # X_train shape: (num_samples, 1, 6, 64, 64)
     # y_train shape: (num_samples,)
     # model.fit(X_train, y_train, validation_data=(X_val, y_val), epochs=10, batch_size=32)
 
