@@ -10,6 +10,9 @@ with open('names.csv', newline='') as csvfile:
         loss.append(row['loss'])
         val_loss.append(row['val_loss'])
 
+print(loss)
+print(val_loss)
+
 plt.figure(figsize=(10, 6))
 plt.plot(loss, label='Training Loss')
 plt.plot(val_loss, label='Validation Loss')
