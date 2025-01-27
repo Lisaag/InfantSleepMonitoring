@@ -111,7 +111,7 @@ def REMtrain():
 
         writer.writeheader()
         
-        for loss, val_loss in zip(history['loss'], history['val_loss']):
+        for loss, val_loss in zip(history.history['loss'], history.history['val_loss']):
             writer.writerow({'loss': loss, 'val_loss': val_loss})
 
 
