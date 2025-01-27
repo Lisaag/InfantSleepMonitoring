@@ -73,6 +73,8 @@ def REMtrain():
             train_labels.append(label)
 
     train_samples_stacked = np.stack(train_samples, axis=0)
+    train_labels_numpy = np.array(train_labels, dtype=int)
+
     print(f'TRAIN SHAPE {train_samples_stacked.shape}')
     print(f'TRAIN LABELS {len(train_labels)}')
 
@@ -96,10 +98,11 @@ def REMtrain():
             val_labels.append(label)
 
     val_samples_stacked = np.stack(val_samples, axis=0)
+    val_labels_numpy = np.array(val_labels, dtype=int)
     print(f'VAL SHAPE {val_samples_stacked.shape}')
     print(f'VAL LABELS {len(val_labels)}')
 
-    model.fit(train_samples_stacked, train_labels, validation_data=(val_samples_stacked, val_labels), epochs=10, batch_size=32)
+    model.fit(train_samples_stacked, train_labels_numpy, validation_data=(val_samples_stacked, val_labels_numpy), epochs=10, batch_size=32)
 
 
 
