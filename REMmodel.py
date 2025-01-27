@@ -64,7 +64,8 @@ def REMtrain():
                 images.append(image)
             
             stacked_images = np.stack(images, axis=0)
-            print(f'b {stacked_images.shape}')
+            expanded_stack = np.expand_dims(stacked_images, axis=0) 
+            print(f'b {expanded_stack.shape}')
 
 
 
