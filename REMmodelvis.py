@@ -22,4 +22,6 @@ plt.ylabel('Loss')
 plt.title('Training and Validation Loss')
 plt.legend()
 plt.grid(True)
+plt.ylim(0,2)
+
 plt.savefig('plot.jpg', format='jpg')   
