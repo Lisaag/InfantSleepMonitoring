@@ -5,6 +5,8 @@ import os
 import numpy as np
 import cv2
 
+def count_subdirectories(path):
+    return sum(os.path.isdir(os.path.join(path, entry)) for entry in os.listdir(path))
 
 def create_3dcnn_model(input_shape=(1, 6, 64, 64), num_classes=2):
     model = models.Sequential([
@@ -51,9 +53,13 @@ def REMtrain():
 
 
     train_dir = os.path.join(os.path.abspath(os.getcwd()),"REM-dataset", "train")
+    train_sample_count = count_subdirectories(os.path.join(train_dir, "C")) + count_subdirectories(os.path.join(train_dir, "CR"))
     val_dir = os.path.join(os.path.abspath(os.getcwd()),"REM-dataset", "val")
+    val_sample_count = count_subdirectories(os.path.join(val_dir, "C")) + count_subdirectories(os.path.join(val_dir, "CR"))
 
 
+    train_samples = list()
+    train_labels = list()
     for eye_state in os.listdir(train_dir):
         eye_state_dir = os.path.join(train_dir, eye_state)
         for sample in os.listdir(eye_state_dir):
@@ -65,8 +71,12 @@ def REMtrain():
             
             stacked_images = np.stack(images, axis=0)
             expanded_stack = np.expand_dims(stacked_images, axis=0) 
-            print(f'b {expanded_stack.shape}')
 
+            train_samples.append(expanded_stack)
+            train_labels.append(eye_state)
+
+    train_samples_stacked = np.stack(train_samples, axis=0)
+    print(train_samples_stacked.shape)
 
 
 
