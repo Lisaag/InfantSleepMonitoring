@@ -69,3 +69,6 @@ def split_REM_set(val_patients:list):
 
                                 cv2.imwrite(destination_file, gray_image) 
 
+
+split_REM_set([704])
+
