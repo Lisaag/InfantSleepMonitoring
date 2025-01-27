@@ -58,9 +58,13 @@ def REMtrain():
         eye_state_dir = os.path.join(train_dir, eye_state)
         for sample in os.listdir(eye_state_dir):
             sample_dir = os.path.join(eye_state_dir, sample)
+            images = list()
             for frame in os.listdir(sample_dir):
                 image = cv2.imread(os.path.join(sample_dir, frame), cv2.IMREAD_GRAYSCALE) 
-                print(image.shape)
+                images.append(image)
+            
+            stacked_images = np.stack(images, axis=0)
+            print(f'b {stacked_images.shape}')
 
 
 
