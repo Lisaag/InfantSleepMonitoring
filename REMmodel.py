@@ -1,6 +1,7 @@
 import tensorflow as tf
 from tensorflow.keras import layers, models
 from keras import backend as K
+import matplotlib.pyplot as plt
 import os
 import numpy as np
 import cv2
@@ -102,9 +103,19 @@ def REMtrain():
     print(f'VAL SHAPE {val_samples_stacked.shape}')
     print(f'VAL LABELS {len(val_labels)}')
 
-    model.fit(train_samples_stacked, train_labels_numpy, validation_data=(val_samples_stacked, val_labels_numpy), epochs=50, batch_size=32)
+    history = model.fit(train_samples_stacked, train_labels_numpy, validation_data=(val_samples_stacked, val_labels_numpy), epochs=50, batch_size=32)
 
+    
+    plt.figure(figsize=(10, 6))
+    plt.plot(history.history['loss'], label='Training Loss')
+    plt.plot(history.history['val_loss'], label='Validation Loss')
+    plt.xlabel('Epochs')
+    plt.ylabel('Loss')
+    plt.title('Training and Validation Loss')
+    plt.legend()
+    plt.grid(True)
 
+    plt.savefig('plot.jpg', format='jpg')   
 
     # X_train shape: (num_samples, 1, 6, 64, 64)
     # y_train shape: (num_samples,)
