@@ -75,9 +75,9 @@ def create_3dcnn_model(input_shape=(1, 6, 64, 64), num_classes=2):
 
 # Example usage
 def REMtrain():
-    K.set_image_data_format('channels_first')
+    K.set_image_data_format('channels_last')
     # Define input shape (6 frames, 64x64 grayscale images)
-    input_shape = (1, 6, 64, 64)
+    input_shape = (6, 64, 64, 1)
 
     # Number of classes
     num_classes = 2
@@ -143,7 +143,7 @@ def REMtrain():
     print(f'VAL SHAPE {val_samples_stacked.shape}')
     print(f'VAL LABELS {len(val_labels)}')
 
-    history = model.fit(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), epochs=50, batch_size=8)
+    #history = model.fit(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), epochs=50, batch_size=8)
 
     # with open('names.csv', 'w', newline='') as csvfile:
     #     fieldnames = ['loss', 'val_loss']
