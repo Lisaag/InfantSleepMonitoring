@@ -30,8 +30,9 @@ def create_3dcnn_model(input_shape=(1, 6, 64, 64), num_classes=2):
         layers.Dense(num_classes, activation='softmax')
     ])
 
+    optimizer = keras.optimizers.Adam(lr=0.001)
     # Compile the model
-    model.compile(optimizer='adam',
+    model.compile(optimizer=optimizer,
                   loss=keras.losses.BinaryCrossentropy(from_logits=False),
                   metrics=['accuracy'])
 
@@ -55,9 +56,6 @@ def REMtrain():
 
     train_dir = os.path.join(os.path.abspath(os.getcwd()),"REM-dataset", "train")
     val_dir = os.path.join(os.path.abspath(os.getcwd()),"REM-dataset", "val")
-
-    optimizer = keras.optimizers.Adam(lr=0.001)
-    model.compile(loss='mse', optimizer=optimizer)
 
     train_samples = list()
     train_labels = list()
