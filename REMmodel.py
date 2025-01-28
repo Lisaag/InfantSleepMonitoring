@@ -11,7 +11,7 @@ import cv2
 def tune_model(hp):
     input_shape=(1, 6, 64, 64)
     num_classes=2
-    
+
     model = models.Sequential([
         # First 3D Convolutional Layer
         layers.Conv3D(32, kernel_size=(1, 3, 3), activation='relu', padding='same', input_shape=input_shape),
@@ -35,7 +35,7 @@ def tune_model(hp):
 
     hp_learning_rate = hp.Float('learning_rate', min_value=1e-4, max_value=1e-2, sampling='log')
 
-    optimizer = keras.optimizers.Adam(lr=0.0001)
+    optimizer = keras.optimizers.Adam(learning_rate=hp_learning_rate)
     # Compile the model
     model.compile(optimizer=optimizer,
                   loss=keras.losses.BinaryCrossentropy(from_logits=False),
