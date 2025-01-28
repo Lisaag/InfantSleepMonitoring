@@ -1,6 +1,7 @@
 import tensorflow as tf
 from tensorflow.keras import layers, models
 from keras import backend as K
+import keras
 import csv
 import os
 import numpy as np
@@ -55,6 +56,8 @@ def REMtrain():
     train_dir = os.path.join(os.path.abspath(os.getcwd()),"REM-dataset", "train")
     val_dir = os.path.join(os.path.abspath(os.getcwd()),"REM-dataset", "val")
 
+    optimizer = keras.optimizers.Adam(lr=0.01)
+    model.compile(loss='mse', optimizer=optimizer)
 
     train_samples = list()
     train_labels = list()
