@@ -1,3 +1,6 @@
+import keras_tuner as kt
+
+
 import tensorflow as tf
 from tensorflow.keras import layers, models
 from keras import backend as K
@@ -9,8 +12,6 @@ import csv
 import os
 import numpy as np
 import cv2
-
-import keras_tuner as kt
 
 
 def create_3dcnn_model(hp):
