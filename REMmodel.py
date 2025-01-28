@@ -77,6 +77,7 @@ def REMtrain():
 
     train_samples_stacked = np.stack(train_samples, axis=0)
     train_labels_numpy = np.array(train_labels, dtype=int)
+    train_labels_bce = tf.one_hot(train_labels_numpy, depth=2)
 
     print(f'TRAIN SHAPE {train_samples_stacked.shape}')
     print(f'TRAIN LABELS {len(train_labels)}')
@@ -102,10 +103,12 @@ def REMtrain():
 
     val_samples_stacked = np.stack(val_samples, axis=0)
     val_labels_numpy = np.array(val_labels, dtype=int)
+    val_labels_bce = tf.one_hot(val_labels_numpy, depth=2)
+
     print(f'VAL SHAPE {val_samples_stacked.shape}')
     print(f'VAL LABELS {len(val_labels)}')
 
-    history = model.fit(train_samples_stacked, train_labels_numpy, validation_data=(val_samples_stacked, val_labels_numpy), epochs=50, batch_size=32)
+    history = model.fit(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), epochs=50, batch_size=32)
 
     with open('names.csv', 'w', newline='') as csvfile:
         fieldnames = ['loss', 'val_loss']
