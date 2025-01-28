@@ -8,6 +8,40 @@ import os
 import numpy as np
 import cv2
 
+def tune_model(hp):
+    input_shape=(1, 6, 64, 64)
+    num_classes=2
+    
+    model = models.Sequential([
+        # First 3D Convolutional Layer
+        layers.Conv3D(32, kernel_size=(1, 3, 3), activation='relu', padding='same', input_shape=input_shape),
+        layers.Conv3D(32, kernel_size=(3, 3, 3), activation='relu', padding='same'),
+        layers.MaxPooling3D(pool_size=(2, 2, 2)),
+
+        # Second 3D Convolutional Layer
+        layers.Conv3D(64, kernel_size=(3, 3, 3), activation='relu', padding='same'),
+        layers.MaxPooling3D(pool_size=(2, 2, 2)),   
+
+        # # Third 3D Convolutional Layer
+        # layers.Conv3D(128, kernel_size=(3, 3, 3), activation='relu', padding='same'),
+        # layers.MaxPooling3D(pool_size=(2, 2, 2)),
+
+        # Flatten and Fully Connected Layers
+        layers.Flatten(),
+        layers.Dense(64, activation='relu'),
+        layers.Dropout(0.5),
+        layers.Dense(num_classes, activation='softmax')
+    ])
+
+    hp_learning_rate = hp.Float('learning_rate', min_value=1e-4, max_value=1e-2, sampling='log')
+
+    optimizer = keras.optimizers.Adam(lr=0.0001)
+    # Compile the model
+    model.compile(optimizer=optimizer,
+                  loss=keras.losses.BinaryCrossentropy(from_logits=False),
+                  metrics=['accuracy'])
+
+    return model
 
 def create_3dcnn_model(input_shape=(1, 6, 64, 64), num_classes=2):
     model = models.Sequential([
@@ -43,16 +77,16 @@ def create_3dcnn_model(input_shape=(1, 6, 64, 64), num_classes=2):
 def REMtrain():
     K.set_image_data_format('channels_first')
     # Define input shape (6 frames, 64x64 grayscale images)
-    input_shape = (1, 6, 64, 64)
+    # input_shape = (1, 6, 64, 64)
 
-    # Number of classes
-    num_classes = 2
+    # # Number of classes
+    # num_classes = 2
 
-    # Create the model
-    model = create_3dcnn_model(input_shape=input_shape, num_classes=num_classes)
+    # # Create the model
+    # model = create_3dcnn_model(input_shape=input_shape, num_classes=num_classes)
 
-    # Print the model summary
-    model.summary()
+    # # Print the model summary
+    # model.summary()
 
 
     train_dir = os.path.join(os.path.abspath(os.getcwd()),"REM-dataset", "train")
@@ -109,16 +143,16 @@ def REMtrain():
     print(f'VAL SHAPE {val_samples_stacked.shape}')
     print(f'VAL LABELS {len(val_labels)}')
 
-    history = model.fit(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), epochs=50, batch_size=8)
+    # history = model.fit(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), epochs=50, batch_size=8)
 
-    with open('names.csv', 'w', newline='') as csvfile:
-        fieldnames = ['loss', 'val_loss']
-        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+    # with open('names.csv', 'w', newline='') as csvfile:
+    #     fieldnames = ['loss', 'val_loss']
+    #     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
-        writer.writeheader()
+    #     writer.writeheader()
         
-        for loss, val_loss in zip(history.history['loss'], history.history['val_loss']):
-            writer.writerow({'loss': loss, 'val_loss': val_loss})
+    #     for loss, val_loss in zip(history.history['loss'], history.history['val_loss']):
+    #         writer.writerow({'loss': loss, 'val_loss': val_loss})
 
 
     # plt.figure(figsize=(10, 6))
@@ -135,5 +169,10 @@ def REMtrain():
     # X_train shape: (num_samples, 1, 6, 64, 64)
     # y_train shape: (num_samples,)
     # model.fit(X_train, y_train, validation_data=(X_val, y_val), epochs=10, batch_size=32)
+
+    tuner = keras_tuner.RandomSearch(
+        tune_model,
+        objective='val_loss',
+        max_trials=5)
 
 REMtrain()
