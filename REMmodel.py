@@ -103,10 +103,10 @@ def REMtrain():
                 image = cv2.imread(os.path.join(sample_dir, frame), cv2.IMREAD_GRAYSCALE) 
                 images.append(image)
             
-            stacked_images = np.stack(images, axis=0)
-            expanded_stack = np.expand_dims(stacked_images, axis=0) 
+            expanded_stack = np.expand_dims(images, axis=-1) 
+            stacked_images = np.stack(expanded_stack, axis=0)
 
-            train_samples.append(expanded_stack)
+            train_samples.append(stacked_images)
             label = 0 if eye_state == "C" else 1
             train_labels.append(label)
 
