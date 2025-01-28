@@ -56,7 +56,7 @@ def REMtrain():
     train_dir = os.path.join(os.path.abspath(os.getcwd()),"REM-dataset", "train")
     val_dir = os.path.join(os.path.abspath(os.getcwd()),"REM-dataset", "val")
 
-    optimizer = keras.optimizers.Adam(lr=0.0001)
+    optimizer = keras.optimizers.Adam(lr=0.001)
     model.compile(loss='mse', optimizer=optimizer)
 
     train_samples = list()
