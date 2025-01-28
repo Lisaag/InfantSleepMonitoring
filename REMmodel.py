@@ -1,6 +1,9 @@
 import tensorflow as tf
 from tensorflow.keras import layers, models
 from keras import backend as K
+
+print(f'TF VERSION {tf.__version__}')
+
 import keras
 import csv
 import os
@@ -150,5 +153,4 @@ def REMtrain():
     # y_train shape: (num_samples,)
     # model.fit(X_train, y_train, validation_data=(X_val, y_val), epochs=10, batch_size=32)
 
-print(f'TF VERSION {tf.__version__}')
 REMtrain()
