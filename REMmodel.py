@@ -7,8 +7,12 @@ import os
 import numpy as np
 import cv2
 
+import keras_tuner as kt
 
-def create_3dcnn_model(input_shape=(1, 6, 64, 64), num_classes=2):
+
+def create_3dcnn_model(hp):
+    input_shape=(1, 6, 64, 64)
+    num_classes=2
     model = models.Sequential([
         # First 3D Convolutional Layer
         layers.Conv3D(32, kernel_size=(1, 3, 3), activation='relu', padding='same', input_shape=input_shape),
@@ -30,7 +34,9 @@ def create_3dcnn_model(input_shape=(1, 6, 64, 64), num_classes=2):
         layers.Dense(num_classes, activation='softmax')
     ])
 
-    optimizer = keras.optimizers.Adam(lr=0.0001)
+    hp_learning_rate = hp.Choice('learning_rate', values=[1e-2, 1e-3, 1e-4])
+
+    optimizer = keras.optimizers.Adam(learning_rate=hp_learning_rate)
     # Compile the model
     model.compile(optimizer=optimizer,
                   loss=keras.losses.BinaryCrossentropy(from_logits=False),
@@ -41,17 +47,12 @@ def create_3dcnn_model(input_shape=(1, 6, 64, 64), num_classes=2):
 # Example usage
 def REMtrain():
     K.set_image_data_format('channels_first')
-    # Define input shape (6 frames, 64x64 grayscale images)
-    input_shape = (1, 6, 64, 64)
 
-    # Number of classes
-    num_classes = 2
+    # # Create the model
+    # model = create_3dcnn_model()
 
-    # Create the model
-    model = create_3dcnn_model(input_shape=input_shape, num_classes=num_classes)
-
-    # Print the model summary
-    model.summary()
+    # # Print the model summary
+    # model.summary()
 
 
     train_dir = os.path.join(os.path.abspath(os.getcwd()),"REM-dataset", "train")
@@ -108,16 +109,30 @@ def REMtrain():
     print(f'VAL SHAPE {val_samples_stacked.shape}')
     print(f'VAL LABELS {len(val_labels)}')
 
-    history = model.fit(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), epochs=50, batch_size=8)
+# Define the tuner
+    tuner = kt.Hyperband(
+        create_3dcnn_model,
+        objective='val_accuracy',  # Metric to optimize
+        max_epochs=10,             # Max number of epochs to train
+        hyperband_iterations=2,    # Number of iterations to search
+        directory='my_dir',        # Directory to save results
+        project_name='tune_model'  # Project name for results
+    )
 
-    with open('names.csv', 'w', newline='') as csvfile:
-        fieldnames = ['loss', 'val_loss']
-        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+# Run the tuner to find the best combination of hyperparameters
+    tuner.search(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), epochs=50)
 
-        writer.writeheader()
+
+    # history = model.fit(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), epochs=50, batch_size=8)
+
+    # with open('names.csv', 'w', newline='') as csvfile:
+    #     fieldnames = ['loss', 'val_loss']
+    #     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+
+    #     writer.writeheader()
         
-        for loss, val_loss in zip(history.history['loss'], history.history['val_loss']):
-            writer.writerow({'loss': loss, 'val_loss': val_loss})
+    #     for loss, val_loss in zip(history.history['loss'], history.history['val_loss']):
+    #         writer.writerow({'loss': loss, 'val_loss': val_loss})
 
 
     # plt.figure(figsize=(10, 6))
