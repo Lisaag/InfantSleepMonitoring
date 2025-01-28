@@ -8,6 +8,8 @@ import os
 import numpy as np
 import cv2
 
+os.environ['TF_XLA_FLAGS'] = '--tf_xla_enable_xla_devices'
+
 # def tune_model(hp):
 #     input_shape=(1, 6, 64, 64)
 #     num_classes=2
