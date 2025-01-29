@@ -28,7 +28,7 @@ def create_3dcnn_model(input_shape=(1, 6, 64, 64), num_classes=2):
 
         # Flatten and Fully Connected Layers
         layers.Flatten(),
-        layers.Dense(64, activation='relu', kernel_regularizer=regularizers.L2(0.01), kernel_initializer=tf.keras.initializers.HeNormal()),
+        layers.Dense(64, activation='relu', kernel_initializer=tf.keras.initializers.HeNormal()),
         layers.BatchNormalization(),
         layers.Dropout(0.5),
         layers.Dense(num_classes, activation='softmax')
