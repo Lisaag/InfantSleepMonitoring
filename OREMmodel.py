@@ -32,7 +32,7 @@ def create_3dcnn_model(input_shape=(1, 6, 64, 64), num_classes=2):
         layers.Dense(num_classes, activation='softmax')
     ])
 
-    optimizer = keras.optimizers.Adam(lr=0.00001)
+    optimizer = keras.optimizers.Adam(lr=0.0001)
     # Compile the model
     model.compile(optimizer=optimizer,
                   loss=keras.losses.BinaryCrossentropy(from_logits=False),
@@ -116,7 +116,7 @@ def REMtrain():
 
    
 
-    history = model.fit(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), epochs=50, batch_size=4)
+    history = model.fit(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), epochs=50, batch_size=8)
 
 
     # 2. Get predictions
