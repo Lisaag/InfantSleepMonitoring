@@ -137,6 +137,18 @@ def REMtrain():
         for loss, val_loss in zip(history.history['loss'], history.history['val_loss']):
             writer.writerow({'loss': loss, 'val_loss': val_loss})
 
+    # Open a file in write mode
+    with open(os.path.join(os.path.abspath(os.getcwd()),"REM-results", "predictions.txt"), 'w') as file:
+        # Convert the array to a string and write it to the file
+        for label in predicted_labels:
+            file.write(f"{label}\n")
+
+        # Open a file in write mode
+    with open(os.path.join(os.path.abspath(os.getcwd()),"REM-results", "true_labels.txt"), 'w') as file:
+        # Convert the array to a string and write it to the file
+        for label in val_labels_bce:
+            file.write(f"{label}\n")
+
 
 
 
