@@ -15,7 +15,6 @@ def create_3dcnn_model(input_shape=(1, 6, 64, 64), num_classes=2):
         layers.Conv3D(32, kernel_size=(1, 3, 3), activation='relu', padding='same', input_shape=input_shape),
         layers.Conv3D(32, kernel_size=(3, 3, 3), activation='relu', padding='same'),
         layers.MaxPooling3D(pool_size=(2, 2, 2)),
-        layers.Dropout(0.25),
 
         # Second 3D Convolutional Layer
         layers.Conv3D(64, kernel_size=(3, 3, 3), activation='relu', padding='same'),
@@ -117,7 +116,7 @@ def REMtrain():
 
    
 
-    history = model.fit(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), epochs=50, batch_size=8)
+    history = model.fit(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), epochs=50, batch_size=4)
 
 
     # 2. Get predictions
