@@ -11,18 +11,18 @@ def plot_confusion_matrix():
     true_labels = []
 
     with open(os.path.join(os.path.abspath(os.getcwd()),"REM-results", "predictions.txt"), 'r') as file:
-        for line in file: print(line)#predicted_labels.append(int(line.strip()))
+        for line in file: predicted_labels.append(int(line.strip()))
     with open(os.path.join(os.path.abspath(os.getcwd()),"REM-results", "true_labels.txt"), 'r') as file:
-        for line in file: print(line)#true_labels.append(int(line.strip()))
+        for line in file: true_labels.append(int(line.strip()))
 
-    # cm = confusion_matrix(true_labels, predicted_labels)
+    cm = confusion_matrix(true_labels, predicted_labels)
 
-    # # 4. Plot confusion matrix using seaborn for better visualization
-    # plt.figure(figsize=(10, 7))
-    # sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=np.arange(10), yticklabels=np.arange(10))
-    # plt.xlabel('Predicted Labels')
-    # plt.ylabel('True Labels')
-    # plt.title('Confusion Matrix')
+    # 4. Plot confusion matrix using seaborn for better visualization
+    plt.figure(figsize=(10, 7))
+    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=np.arange(10), yticklabels=np.arange(10))
+    plt.xlabel('Predicted Labels')
+    plt.ylabel('True Labels')
+    plt.title('Confusion Matrix')
 
     plt.savefig(os.path.join(os.path.abspath(os.getcwd()),"REM-results", "confusion_matrix.jpg"), format='jpg')  
 
