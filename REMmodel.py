@@ -176,7 +176,7 @@ def REMtrain():
     tuner = keras_tuner.Hyperband(
         tune_model,
         objective='val_loss',
-        max_trials=5, 
+        max_epochs=20,
         directory=os.path.join(os.path.abspath(os.getcwd()),"tuner"),
         project_name='intro_to_kt')
     
