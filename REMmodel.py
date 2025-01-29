@@ -45,6 +45,11 @@ def tune_model(hp):
 
     return model
 
+# Define the search function for batch size
+def search_batch_size(hp):
+    batch_size = hp.Choice('batch_size', values=[2, 4, 8, 16, 32])
+    return batch_size
+
 def create_3dcnn_model(input_shape=(1, 6, 64, 64), num_classes=2):
     model = models.Sequential([
         # First 3D Convolutional Layer
@@ -173,7 +178,7 @@ def REMtrain():
         objective='val_loss',
         max_trials=5)
     
-    tuner.search(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), epochs=50, batch_size=8)
+    tuner.search(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), epochs=50, batch_size=search_batch_size(tuner.oracle.hyperparameters))
     best_model = tuner.get_best_models()[0] 
     best_model.summary()
 
