@@ -173,8 +173,8 @@ def REMtrain():
         objective='val_loss',
         max_trials=5)
     
-    # tuner.search(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), epochs=50, batch_size=8)
-    # best_model = tuner.get_best_models()[0] 
-    # best_model.summary()
+    tuner.search(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), epochs=50, batch_size=8)
+    best_model = tuner.get_best_models()[0] 
+    best_model.summary()
 
 REMtrain()
