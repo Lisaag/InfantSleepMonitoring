@@ -15,10 +15,12 @@ def create_3dcnn_model(input_shape=(1, 6, 64, 64), num_classes=2):
         layers.Conv3D(32, kernel_size=(1, 3, 3), activation='relu', padding='same', input_shape=input_shape),
         layers.Conv3D(32, kernel_size=(3, 3, 3), activation='relu', padding='same'),
         layers.MaxPooling3D(pool_size=(2, 2, 2)),
+        layers.Dropout(0.25),
 
         # Second 3D Convolutional Layer
         layers.Conv3D(64, kernel_size=(3, 3, 3), activation='relu', padding='same'),
         layers.MaxPooling3D(pool_size=(2, 2, 2)),   
+        layers.Dropout(0.25),
 
         # # Third 3D Convolutional Layer
         # layers.Conv3D(128, kernel_size=(3, 3, 3), activation='relu', padding='same'),
@@ -27,7 +29,7 @@ def create_3dcnn_model(input_shape=(1, 6, 64, 64), num_classes=2):
         # Flatten and Fully Connected Layers
         layers.Flatten(),
         layers.Dense(64, activation='relu'),
-        layers.Dropout(0.8),
+        layers.Dropout(0.5),
         layers.Dense(num_classes, activation='softmax')
     ])
 
