@@ -116,14 +116,14 @@ def REMtrain():
 
     history = model.fit(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), epochs=50, batch_size=8)
 
-    # with open('names.csv', 'w', newline='') as csvfile:
-    #     fieldnames = ['loss', 'val_loss']
-    #     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+    with open('names.csv', 'w', newline='') as csvfile:
+        fieldnames = ['loss', 'val_loss']
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
-    #     writer.writeheader()
+        writer.writeheader()
         
-    #     for loss, val_loss in zip(history.history['loss'], history.history['val_loss']):
-    #         writer.writerow({'loss': loss, 'val_loss': val_loss})
+        for loss, val_loss in zip(history.history['loss'], history.history['val_loss']):
+            writer.writerow({'loss': loss, 'val_loss': val_loss})
 
 
 
