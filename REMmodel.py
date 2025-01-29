@@ -10,40 +10,40 @@ import cv2
 
 #os.environ['TF_XLA_FLAGS'] = '--tf_xla_enable_xla_devices'
 
-# def tune_model(hp):
-#     input_shape=(1, 6, 64, 64)
-#     num_classes=2
+def tune_model(hp):
+    input_shape=(6, 64, 64, 1)
+    num_classes=2
 
-#     model = models.Sequential([
-#         # First 3D Convolutional Layer
-#         layers.Conv3D(32, kernel_size=(1, 3, 3), activation='relu', padding='same', input_shape=input_shape),
-#         layers.Conv3D(32, kernel_size=(3, 3, 3), activation='relu', padding='same'),
-#         layers.MaxPooling3D(pool_size=(2, 2, 2)),
+    model = models.Sequential([
+        # First 3D Convolutional Layer
+        layers.Conv3D(32, kernel_size=(1, 3, 3), activation='relu', padding='same', input_shape=input_shape),
+        layers.Conv3D(32, kernel_size=(3, 3, 3), activation='relu', padding='same'),
+        layers.MaxPooling3D(pool_size=(2, 2, 2)),
 
-#         # Second 3D Convolutional Layer
-#         layers.Conv3D(64, kernel_size=(3, 3, 3), activation='relu', padding='same'),
-#         layers.MaxPooling3D(pool_size=(2, 2, 2)),   
+        # Second 3D Convolutional Layer
+        layers.Conv3D(64, kernel_size=(3, 3, 3), activation='relu', padding='same'),
+        layers.MaxPooling3D(pool_size=(2, 2, 2)),   
 
-#         # # Third 3D Convolutional Layer
-#         # layers.Conv3D(128, kernel_size=(3, 3, 3), activation='relu', padding='same'),
-#         # layers.MaxPooling3D(pool_size=(2, 2, 2)),
+        # # Third 3D Convolutional Layer
+        # layers.Conv3D(128, kernel_size=(3, 3, 3), activation='relu', padding='same'),
+        # layers.MaxPooling3D(pool_size=(2, 2, 2)),
 
-#         # Flatten and Fully Connected Layers
-#         layers.Flatten(),
-#         layers.Dense(64, activation='relu'),
-#         layers.Dropout(0.5),
-#         layers.Dense(num_classes, activation='softmax')
-#     ])
+        # Flatten and Fully Connected Layers
+        layers.Flatten(),
+        layers.Dense(64, activation='relu'),
+        layers.Dropout(0.5),
+        layers.Dense(num_classes, activation='softmax')
+    ])
 
-#     hp_learning_rate = hp.Float('learning_rate', min_value=1e-4, max_value=1e-2, sampling='log')
+    hp_learning_rate = hp.Float('learning_rate', min_value=1e-4, max_value=1e-2, sampling='log')
 
-#     optimizer = keras.optimizers.Adam(learning_rate=hp_learning_rate)
-#     # Compile the model
-#     model.compile(optimizer=optimizer,
-#                   loss=keras.losses.BinaryCrossentropy(from_logits=False),
-#                   metrics=['accuracy'])
+    optimizer = keras.optimizers.Adam(learning_rate=hp_learning_rate)
+    # Compile the model
+    model.compile(optimizer=optimizer,
+                  loss=keras.losses.BinaryCrossentropy(from_logits=False),
+                  metrics=['accuracy'])
 
-#     return model
+    return model
 
 def create_3dcnn_model(input_shape=(1, 6, 64, 64), num_classes=2):
     model = models.Sequential([
