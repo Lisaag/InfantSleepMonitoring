@@ -78,17 +78,17 @@ def create_3dcnn_model(input_shape=(1, 6, 64, 64), num_classes=2):
 # Example usage
 def REMtrain():
     K.set_image_data_format('channels_last')
-    # Define input shape (6 frames, 64x64 grayscale images)
-    input_shape = (6, 64, 64, 1)
+    # # Define input shape (6 frames, 64x64 grayscale images)
+    # input_shape = (6, 64, 64, 1)
 
-    # Number of classes
-    num_classes = 2
+    # # Number of classes
+    # num_classes = 2
 
-    # Create the model
-    model = create_3dcnn_model(input_shape=input_shape, num_classes=num_classes)
+    # # Create the model
+    # model = create_3dcnn_model(input_shape=input_shape, num_classes=num_classes)
 
-    # Print the model summary
-    model.summary()
+    # # Print the model summary
+    # model.summary()
 
 
     train_dir = os.path.join(os.path.abspath(os.getcwd()),"REM-dataset", "train")
@@ -145,7 +145,7 @@ def REMtrain():
     print(f'VAL SHAPE {val_samples_stacked.shape}')
     print(f'VAL LABELS {len(val_labels)}')
 
-    history = model.fit(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), epochs=50, batch_size=8)
+   # history = model.fit(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), epochs=50, batch_size=8)
 
     # with open('names.csv', 'w', newline='') as csvfile:
     #     fieldnames = ['loss', 'val_loss']
@@ -168,10 +168,10 @@ def REMtrain():
 
     # plt.savefig('plot.jpg', format='jpg')   
 
-    # tuner = keras_tuner.RandomSearch(
-    #     tune_model,
-    #     objective='val_loss',
-    #     max_trials=5)
+    tuner = keras_tuner.RandomSearch(
+        tune_model,
+        objective='val_loss',
+        max_trials=5)
     
     # tuner.search(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), epochs=50, batch_size=8)
     # best_model = tuner.get_best_models()[0] 
