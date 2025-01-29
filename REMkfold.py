@@ -27,7 +27,7 @@ def create_3dcnn_model(input_shape=(1, 6, 64, 64), num_classes=2):
         # Flatten and Fully Connected Layers
         layers.Flatten(),
         layers.Dense(64, activation='relu', kernel_initializer=tf.keras.initializers.HeNormal()),
-        layers.BatchNormalization(momentum=0.8),
+        layers.BatchNormalization(momentum=0.99),
         layers.Dropout(0.5),
         layers.Dense(num_classes, activation='softmax')
     ])
@@ -116,7 +116,7 @@ def REMtrain():
 
    
 
-    history = model.fit(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), epochs=50, batch_size=4)
+    history = model.fit(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), epochs=50, batch_size=2)
 
 
     # 2. Get predictions
