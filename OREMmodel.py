@@ -103,7 +103,7 @@ def REMtrain():
             stacked_images = np.stack(expanded_stack, axis=0)
 
             val_samples.append(stacked_images)
-            label = 0 if eye_state == "C" else 1
+            label = 0 if eye_state == "O" else 1
             val_labels.append(label)
 
     
