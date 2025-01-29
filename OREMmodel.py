@@ -15,7 +15,6 @@ def create_3dcnn_model(input_shape=(1, 6, 64, 64), num_classes=2):
         layers.Conv3D(32, kernel_size=(1, 3, 3), activation='relu', padding='same', input_shape=input_shape),
         layers.Conv3D(32, kernel_size=(3, 3, 3), activation='relu', padding='same'),
         layers.MaxPooling3D(pool_size=(2, 2, 2)),
-        layers.Dropout(0.5),
 
 
         # Second 3D Convolutional Layer
