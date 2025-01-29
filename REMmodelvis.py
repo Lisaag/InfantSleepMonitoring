@@ -1,10 +1,10 @@
 import matplotlib.pyplot as plt
 import csv
-
+import os
 loss = list()
 val_loss = list()
 
-with open('names.csv', newline='') as csvfile:
+with open(os.path.join(os.path.abspath(os.getcwd()),"REM-results", "loss.txt"), newline='') as csvfile:
     reader = csv.DictReader(csvfile)
     for row in reader:
         loss.append(float(row['loss']))
@@ -23,4 +23,4 @@ plt.title('Training and Validation Loss')
 plt.legend()
 plt.grid(True)
 
-plt.savefig('plot.jpg', format='jpg')   
+plt.savefig(os.path.join(os.path.abspath(os.getcwd()),"REM-results", "plot.jpg"), format='jpg')   

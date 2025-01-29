@@ -117,7 +117,6 @@ def REMtrain():
 
    
 
-
     history = model.fit(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), epochs=50, batch_size=4)
 
 
@@ -129,7 +128,7 @@ def REMtrain():
 
     print(predicted_labels)
 
-    with open('names.csv', 'w', newline='') as csvfile:
+    with open(os.path.join(os.path.abspath(os.getcwd()),"REM-results", "loss.txt"), 'w', newline='') as csvfile:
         fieldnames = ['loss', 'val_loss']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
