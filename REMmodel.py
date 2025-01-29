@@ -108,6 +108,7 @@ def REMtrain():
             images = list()
             for frame in os.listdir(sample_dir):
                 image = cv2.imread(os.path.join(sample_dir, frame), cv2.IMREAD_GRAYSCALE) 
+                image = image / 255
                 images.append(image)
             
             expanded_stack = np.expand_dims(images, axis=-1) 
@@ -134,6 +135,7 @@ def REMtrain():
             images = list()
             for frame in os.listdir(sample_dir):
                 image = cv2.imread(os.path.join(sample_dir, frame), cv2.IMREAD_GRAYSCALE) 
+                image = image / 255
                 images.append(image)
             
             expanded_stack = np.expand_dims(images, axis=-1) 
