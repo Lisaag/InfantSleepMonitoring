@@ -59,7 +59,7 @@ def split_REM_set():
 
                                 image = cv2.imread(source_file) 
 
-                                print(image.shape())
+                                print(image.shape)
 
                                 
 
