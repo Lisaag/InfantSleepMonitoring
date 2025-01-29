@@ -46,7 +46,7 @@ def plot_loss_curves():
     plt.plot(val_loss, label='Validation Loss')
     plt.xlabel('Epochs')
     plt.ylabel('Loss')
-    plt.ylim(0,1.0)
+    plt.ylim(0,1.5)
     plt.title('Training and Validation Loss')
     plt.legend()
     plt.grid(True)
