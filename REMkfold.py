@@ -146,7 +146,7 @@ def REMtrain():
         # Open a file in write mode
     with open(os.path.join(os.path.abspath(os.getcwd()),"REM-results", "true_labels.txt"), 'w') as file:
         # Convert the array to a string and write it to the file
-        for label in val_labels_bce:
+        for label in val_labels:
             file.write(f"{label}\n")
 
 
