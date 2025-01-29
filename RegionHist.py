@@ -2,6 +2,7 @@ import os
 import shutil
 import cv2
 import matplotlib.pyplot as plt
+import numpy as np
 
 def is_jpg(file_path):
     _, file_extension = os.path.splitext(file_path)
@@ -59,8 +60,11 @@ def split_REM_set():
 
                                 image = cv2.imread(source_file) 
 
+               
                                 sizes.append(len(image))
 
+    average = np.mean(sizes)
+    median = np.median(sizes)
 
     # Create a histogram
     plt.hist(sizes, bins=8, edgecolor='black', alpha=0.75)
@@ -69,6 +73,9 @@ def split_REM_set():
     plt.title('Frequency of image region sizes')
     plt.xlabel('Size')
     plt.ylabel('Frequency')
+
+    text = f"Average: {average:.2f}\nMedian: {median:.2f}"
+    plt.text(0.95, 0.95, text, transform=plt.gca().transAxes, fontsize=10, verticalalignment='top', horizontalalignment='right', bbox=dict(facecolor='white', alpha=0.5))
 
     plt.savefig(os.path.join(os.path.abspath(os.getcwd()),"sizes.jpg"), format='jpg')   
 
