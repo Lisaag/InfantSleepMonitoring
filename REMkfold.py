@@ -27,7 +27,7 @@ def create_3dcnn_model(input_shape=(1, 6, 64, 64), num_classes=2):
         # Flatten and Fully Connected Layers
         layers.Flatten(),
         layers.Dense(64, activation='relu'),
-        layers.Dropout(0.5),
+        layers.Dropout(0.8),
         layers.Dense(num_classes, activation='softmax')
     ])
 
