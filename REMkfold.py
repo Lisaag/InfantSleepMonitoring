@@ -106,6 +106,8 @@ def REMtrain():
             label = 0 if eye_state == "C" else 1
             val_labels.append(label)
 
+    
+
     val_samples_stacked = np.stack(val_samples, axis=0)
     val_labels_numpy = np.array(val_labels, dtype=int)
     val_labels_bce = tf.one_hot(val_labels_numpy, depth=2)
@@ -117,6 +119,15 @@ def REMtrain():
 
 
     history = model.fit(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), epochs=50, batch_size=4)
+
+
+    # 2. Get predictions
+    predictions = model.predict(val_samples_stacked)
+
+    # Get predicted class labels
+    predicted_labels = np.argmax(predictions, axis=1)
+
+    print(predicted_labels)
 
     with open('names.csv', 'w', newline='') as csvfile:
         fieldnames = ['loss', 'val_loss']
