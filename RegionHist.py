@@ -1,7 +1,7 @@
 import os
 import shutil
 import cv2
-import ast
+import matplotlib.pyplot as plt
 
 def is_jpg(file_path):
     _, file_extension = os.path.splitext(file_path)
@@ -59,8 +59,19 @@ def split_REM_set():
 
                                 image = cv2.imread(source_file) 
 
-                                print(image.shape)
-                                print(len(image))
+                                sizes.append(len(image))
+
+
+    # Create a histogram
+    plt.hist(sizes, bins=8, edgecolor='black', alpha=0.75)
+
+    # Add labels and title
+    plt.title('Frequency of image region sizes')
+    plt.xlabel('Size')
+    plt.ylabel('Frequency')
+
+    plt.savefig(os.path.join(os.path.abspath(os.getcwd()),"sizes.jpg"), format='jpg')   
+
 
 
                                 
