@@ -141,7 +141,7 @@ def create_yolo_labels():
         #delete_files_in_directory(all_labels_dir)
         #delete_files_in_directory(vis_aabb_dir)
     df_all = pd.read_csv(os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", "raw", "annotations", "aabb.csv"))
-    stats = defaultdict(lambda: [0, 0])
+    stats = defaultdict(lambda: [0, 0, 0])
     for i in range(len(df_all)):
         match = re.search(r'frame_(?:CG_)?(.*)', df_all["filename"][i])
         attributes = get_attributes_from_string(df_all["region_attributes"][i])
@@ -150,6 +150,11 @@ def create_yolo_labels():
             stats[match.group(1)[0:3]][0] += 1
         else:
             stats[match.group(1)[0:3]][1] += 1
+
+        if(len(attributes[1]) > 0):
+            stats[match.group(1)[0:3]][2] += 1
+
+
 
     print(stats)
 
