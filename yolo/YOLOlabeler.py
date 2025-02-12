@@ -145,6 +145,7 @@ def create_yolo_labels():
     for i in range(len(df_all)):
         match = re.search(r'frame_(?:CG_)?(.*)', df_all["filename"][i])
         attributes = get_attributes_from_string(df_all["region_attributes"][i])
+        if attributes[2]: continue
         if(attributes[0]):
             stats[match.group(1)[0:3]][0] += 1
         else:
