@@ -151,7 +151,7 @@ def create_yolo_labels():
         else:
             stats[match.group(1)[0:3]][1] += 1
 
-        if(len(attributes[1]) > 0):
+        if('none' not in attributes[1]):
             stats[match.group(1)[0:3]][2] += 1
 
 
