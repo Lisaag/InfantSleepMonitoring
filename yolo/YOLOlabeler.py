@@ -140,7 +140,8 @@ def create_yolo_labels():
         #delete_files_in_directory(vis_aabb_dir)
     df_all = pd.read_csv(os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", "raw", "annotations", "aabb.csv"))
     for i in range(len(df_all)):
-        print(df_all["filename"][i])
+        match = re.search(r'frame_(?:CG_)?(.*)', df_all["filename"][i])
+        print(match.group(1)[0:3])
     #         x, y, w, h = get_aabb_from_string(df_all["region_shape_attributes"][i])
     #         x=x+(w/2)
     #         y=y+(h/2)
