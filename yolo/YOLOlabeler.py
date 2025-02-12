@@ -133,16 +133,14 @@ def get_attributes_from_string(input_string: str):
 
     return [open_value, quality_value, occlusion_value]
 
-def create_yolo_labels(is_dummy:bool = False, annotation_type:str = "aabb"):
+def create_yolo_labels():
     global all_labels_dir
-    all_labels_dir = os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", "raw", "labels", annotation_type)
-
-    if(annotation_type == "aabb" or annotation_type == "ocaabb"):
+    all_labels_dir = os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", "raw", "labels", "aabb")
         #delete_files_in_directory(all_labels_dir)
         #delete_files_in_directory(vis_aabb_dir)
-        df_all = pd.read_csv(os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", "raw", "annotations", "aabb.csv"))
-        for i in range(len(df_all)):
-            print(i)
+    df_all = pd.read_csv(os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", "raw", "annotations", "aabb.csv"))
+    for i in range(len(df_all)):
+        print(i)
     #         x, y, w, h = get_aabb_from_string(df_all["region_shape_attributes"][i])
     #         x=x+(w/2)
     #         y=y+(h/2)
@@ -181,3 +179,4 @@ def create_yolo_labels(is_dummy:bool = False, annotation_type:str = "aabb"):
     # else:
     #     print("unknown annotation type")
 
+create_yolo_labels()
