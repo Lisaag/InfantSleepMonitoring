@@ -138,45 +138,46 @@ def create_yolo_labels(is_dummy:bool = False, annotation_type:str = "aabb"):
     all_labels_dir = os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", "raw", "labels", annotation_type)
 
     if(annotation_type == "aabb" or annotation_type == "ocaabb"):
-        delete_files_in_directory(all_labels_dir)
-        delete_files_in_directory(vis_aabb_dir)
+        #delete_files_in_directory(all_labels_dir)
+        #delete_files_in_directory(vis_aabb_dir)
         df_all = pd.read_csv(os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", "raw", "annotations", "aabb.csv"))
         for i in range(len(df_all)):
-            x, y, w, h = get_aabb_from_string(df_all["region_shape_attributes"][i])
-            x=x+(w/2)
-            y=y+(h/2)
+            print(i)
+    #         x, y, w, h = get_aabb_from_string(df_all["region_shape_attributes"][i])
+    #         x=x+(w/2)
+    #         y=y+(h/2)
 
-            if(not is_dummy):
-                test_aabb(df_all["filename"][i], x, y, w, h)
-                image = cv2.imread(os.path.join(os.path.abspath(os.getcwd()), all_images_dir, df_all["filename"][i]))
-                height, width, _ = image.shape
-                x/=width; w/=width; y/=height; h/=height
+    #         if(not is_dummy):
+    #             test_aabb(df_all["filename"][i], x, y, w, h)
+    #             image = cv2.imread(os.path.join(os.path.abspath(os.getcwd()), all_images_dir, df_all["filename"][i]))
+    #             height, width, _ = image.shape
+    #             x/=width; w/=width; y/=height; h/=height
 
-            object_class = "0"
-            if(annotation_type == "ocaabb"):
-                attributes = get_attributes_from_string(df_all["region_attributes"][i])
-                if(attributes[0]): object_class = "1"
+    #         object_class = "0"
+    #         if(annotation_type == "ocaabb"):
+    #             attributes = get_attributes_from_string(df_all["region_attributes"][i])
+    #             if(attributes[0]): object_class = "1"
 
-            write_aabb_label(df_all["filename"][i], all_labels_dir, x, y, w, h, object_class)
-    elif(annotation_type == "obb" or annotation_type == "ocobb"):
-        delete_files_in_directory(all_labels_dir)
-        delete_files_in_directory(vis_obb_dir)
-        df_all = pd.read_csv(os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", "raw", "annotations", "obb.csv"))
-        for i in range(len(df_all)):
-            all_points_x, all_points_y = get_obb_from_string(df_all["region_shape_attributes"][i])
-            if(not is_dummy):
-                test_obb(df_all["filename"][i], all_points_x, all_points_y)
-                image = cv2.imread(os.path.join(os.path.abspath(os.getcwd()), all_images_dir, df_all["filename"][i]))
-                height, width, _ = image.shape
-                for x in range(len(all_points_x)): all_points_x[x] /= width
-                for y in range(len(all_points_y)): all_points_y[y] /= height
+    #         write_aabb_label(df_all["filename"][i], all_labels_dir, x, y, w, h, object_class)
+    # elif(annotation_type == "obb" or annotation_type == "ocobb"):
+    #     delete_files_in_directory(all_labels_dir)
+    #     delete_files_in_directory(vis_obb_dir)
+    #     df_all = pd.read_csv(os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", "raw", "annotations", "obb.csv"))
+    #     for i in range(len(df_all)):
+    #         all_points_x, all_points_y = get_obb_from_string(df_all["region_shape_attributes"][i])
+    #         if(not is_dummy):
+    #             test_obb(df_all["filename"][i], all_points_x, all_points_y)
+    #             image = cv2.imread(os.path.join(os.path.abspath(os.getcwd()), all_images_dir, df_all["filename"][i]))
+    #             height, width, _ = image.shape
+    #             for x in range(len(all_points_x)): all_points_x[x] /= width
+    #             for y in range(len(all_points_y)): all_points_y[y] /= height
 
-            object_class = "0"
-            if(annotation_type == "ocobb"):
-                attributes = get_attributes_from_string(df_all["region_attributes"][i])
-                if(attributes[0]): object_class = "1"
+    #         object_class = "0"
+    #         if(annotation_type == "ocobb"):
+    #             attributes = get_attributes_from_string(df_all["region_attributes"][i])
+    #             if(attributes[0]): object_class = "1"
 
-            write_obb_label(df_all["filename"][i], all_labels_dir, all_points_x, all_points_y, object_class)
-    else:
-        print("unknown annotation type")
+    #         write_obb_label(df_all["filename"][i], all_labels_dir, all_points_x, all_points_y, object_class)
+    # else:
+    #     print("unknown annotation type")
 
