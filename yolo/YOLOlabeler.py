@@ -118,21 +118,22 @@ def create_dummy_data(file_name, dir_name):
 
 def get_attributes_from_string(input_string: str):
     open_pattern = r'"open":"(true|false)"'
-    quality_pattern = r'"quality":"([1-5])"'
     occlusion_pattern = r'"occlusion":{(.*?)}'
+    side_pattern = r'"side":"(true|false)"'
 
     open_match = re.search(open_pattern, input_string)
-    quality_match = re.search(quality_pattern, input_string)
     occlusion_match = re.search(occlusion_pattern, input_string)
+    side_match = re.search(side_pattern, input_string)
 
     open_value = open_match.group(1) if open_match else None
     open_value = str_to_bool(open_value)
-    quality_value = int(quality_match.group(1)) if quality_match else None
     occlusion_value = (
         re.findall(r'"(\w+)":(?:true|false)', occlusion_match.group(1)) if occlusion_match else []
     )
+    side_value = side_match.group(1) if side_match else None
+    side_value = str_to_bool(side_value)
 
-    return [open_value, quality_value, occlusion_value]
+    return [open_value, occlusion_value, side_value]
 
 def create_yolo_labels():
     global all_labels_dir
