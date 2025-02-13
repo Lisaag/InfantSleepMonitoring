@@ -146,11 +146,15 @@ def create_yolo_labels():
     total_samples = 0
     total_samples_filtered = 0
 
+    train_ids = []
+    val_ids =  []
+    test_ids = [228, 360, 417, 545, 663, 929]
+
     for i in range(len(df_all)):
         match = re.search(r'frame_(?:CG_)?(.*)', df_all["filename"][i])
-        attributes = get_attributes_from_string(df_all["region_attributes"][i])
+        attributes = get_ataributes_from_string(df_all["region_attributes"][i])
         if attributes[2]: continue
-        total_samples+=1
+        if patient_id in test_ids: total_samples+=1
         patient_id = int(match.group(1)[0:3])
         if(attributes[0]):
             stats[patient_id][0] += 1
@@ -161,7 +165,7 @@ def create_yolo_labels():
             for attribute in attributes[1]:
                 stats[patient_id][2][attribute] += 1
         else:
-            total_samples_filtered+=1
+            if patient_id in test_ids: patient_idtotal_samples_filtered+=1
 
 
     for key in stats:
