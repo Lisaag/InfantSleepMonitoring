@@ -165,7 +165,9 @@ def create_splits(split_type):
 
     train_samples, val_samples, test_samples = reduce_splits(train_split, val_split, test_split, 100)
 
+    tst = 0
     for sample in train_samples:
+       tst+=1
        label_file = re.sub(r'\.jpg$', '', sample) + ".txt"
        copy_files(all_images_dir, all_labels_dir, train_images_dir, train_labels_dir, image_filename=sample, label_filename=label_file)
     for sample in val_samples:
@@ -175,6 +177,7 @@ def create_splits(split_type):
        label_file = re.sub(r'\.jpg$', '', sample) + ".txt"
        copy_files(all_images_dir, all_labels_dir, test_images_dir, test_labels_dir, image_filename=sample, label_filename=label_file)
 
+    print(f'st {tst}')
     # reduce_splits(train_split, val_split, test_split, 50)
     # reduce_splits(train_split, val_split, test_split, 75)
     # reduce_splits(train_split, val_split, test_split, 100)
