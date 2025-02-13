@@ -161,7 +161,7 @@ def create_yolo_labels():
             for attribute in attributes[1]:
                 stats[patient_id][2][attribute] += 1
         else:
-            total_samples_filtered+-1
+            total_samples_filtered+=1
 
 
     for key in stats:
