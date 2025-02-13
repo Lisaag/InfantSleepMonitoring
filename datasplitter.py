@@ -136,8 +136,11 @@ def create_splits(split_type):
 
     total_samples = 0
     total_samples_filtered = 0 #total samples not including those with occlusions
+
+    all = []
     
     for i in range(len(df_all)):
+        all.append(df_all["filename"][i])
         match = re.search(r'frame_(?:CG_)?(.*)', df_all["filename"][i])
         attributes = get_attributes_from_string(df_all["region_attributes"][i])
         if attributes[2]: continue
@@ -156,7 +159,7 @@ def create_splits(split_type):
         else:
             if(attributes[0]): curr_split.open_samples_occ.append(df_all["filename"][i])
             else: curr_split.closed_samples_occ.append(df_all["filename"][i])
-
+    print(f'ALL {set(all)}')
     print(f'TOTAL {total_samples}')
     print(f'TOTAL FILTERED {total_samples_filtered}')
     print(f'TRAIN O:{len(train_split.open_samples)} - C:{len(train_split.closed_samples)} OCCLUDED O:{len(train_split.open_samples_occ)} - C:{len(train_split.closed_samples_occ)}')
@@ -165,9 +168,7 @@ def create_splits(split_type):
 
     train_samples, val_samples, test_samples = reduce_splits(train_split, val_split, test_split, 100)
 
-    tst = 0
     for sample in train_samples:
-       tst+=1
        label_file = re.sub(r'\.jpg$', '', sample) + ".txt"
        copy_files(all_images_dir, all_labels_dir, train_images_dir, train_labels_dir, image_filename=sample, label_filename=label_file)
     for sample in val_samples:
@@ -177,7 +178,6 @@ def create_splits(split_type):
        label_file = re.sub(r'\.jpg$', '', sample) + ".txt"
        copy_files(all_images_dir, all_labels_dir, test_images_dir, test_labels_dir, image_filename=sample, label_filename=label_file)
 
-    print(f'st {tst}')
     # reduce_splits(train_split, val_split, test_split, 50)
     # reduce_splits(train_split, val_split, test_split, 75)
     # reduce_splits(train_split, val_split, test_split, 100)
