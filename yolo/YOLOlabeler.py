@@ -166,8 +166,9 @@ def create_yolo_labels():
             stats[patient_id][1] += 1
 
         if('none' not in attributes[1]):
-            for attribute in attributes[1]:
-                stats[patient_id][2][attribute] += 1
+            if(not(len(attributes[1]) == 1 and attributes[1][0] == 'shadow')):
+                for attribute in attributes[1]:
+                    stats[patient_id][2][attribute] += 1
         else:
             if patient_id in test_ids: filtered_test+=1
             elif patient_id in val_ids: filtered_val+=1
