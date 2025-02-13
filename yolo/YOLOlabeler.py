@@ -179,7 +179,9 @@ def create_yolo_labels():
             if(attributes[0]): curr_split.open_samples_occ.append(df_all["filename"][i])
             else: curr_split.closed_samples_occ.append(df_all["filename"][i])
 
-    print(train_split.open_samples)
+    print(f'TRAIN O:{len(train_split.open_samples)} - C:{len(train_split.closed_samples)} OCCLUDED O:{len(train_split.open_samples_occ)} - C:{len(train_split.closed_samples_occ)}')
+    print(f'VAL O:{len(val_split.open_samples)} - C:{len(val_split.closed_samples)} OCCLUDED O:{len(val_split.open_samples_occ)} - C:{len(val_split.closed_samples_occ)}')
+    print(f'TEST O:{len(test_split.open_samples)} - C:{len(test_split.closed_samples)} OCCLUDED O:{len(test_split.open_samples_occ)} - C:{len(test_split.closed_samples_occ)}')
     #         x, y, w, h = get_aabb_from_string(df_all["region_shape_attributes"][i])
     #         x=x+(w/2)
     #         y=y+(h/2)
