@@ -171,7 +171,7 @@ def create_yolo_labels():
         else:
             if patient_id in test_ids: filtered_test+=1
             elif patient_id in val_ids: filtered_val+=1
-            elif patient_id in train_ids: filtered_val+=1
+            elif patient_id in train_ids: filtered_train+=1
 
 
     for key in stats:
