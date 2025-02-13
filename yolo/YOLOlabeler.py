@@ -193,7 +193,7 @@ def create_yolo_labels():
         if(('none' in attributes[1]) or (len(attributes[1]) == 1 and attributes[1][0] == 'shadow')):
             if(attributes[0]): curr_split.open_samples.append(df_all["filename"][i])
             else: curr_split.closed_samples.append(df_all["filename"][i])
-            total_samples_filtered = 0
+            total_samples_filtered += 1
         else:
             if(attributes[0]): curr_split.open_samples_occ.append(df_all["filename"][i])
             else: curr_split.closed_samples_occ.append(df_all["filename"][i])
