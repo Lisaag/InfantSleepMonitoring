@@ -178,4 +178,4 @@ def create_splits(split_type):
     reduce_splits(train_split, val_split, test_split, 100)
 
 
-    create_splits("aabb")
+create_splits("aabb")
