@@ -161,12 +161,16 @@ def create_yolo_labels():
     test_split = Split()
 
     curr_split = Split()
+
+    total_samples = 0
     
     for i in range(len(df_all)):
         match = re.search(r'frame_(?:CG_)?(.*)', df_all["filename"][i])
         attributes = get_attributes_from_string(df_all["region_attributes"][i])
         if attributes[2]: continue
         
+        total_samples += 1
+
         patient_id = int(match.group(1)[0:3])
         if(patient_id in train_ids): curr_split = train_split
         elif(patient_id in val_ids): curr_split = val_split
@@ -180,6 +184,7 @@ def create_yolo_labels():
             if(attributes[0]): curr_split.open_samples_occ.append(df_all["filename"][i])
             else: curr_split.closed_samples_occ.append(df_all["filename"][i])
 
+    print(f'TOTAL {total_samples}')
     print(f'TRAIN O:{len(train_split.open_samples)} - C:{len(train_split.closed_samples)} OCCLUDED O:{len(train_split.open_samples_occ)} - C:{len(train_split.closed_samples_occ)}')
     print(f'VAL O:{len(val_split.open_samples)} - C:{len(val_split.closed_samples)} OCCLUDED O:{len(val_split.open_samples_occ)} - C:{len(val_split.closed_samples_occ)}')
     print(f'TEST O:{len(test_split.open_samples)} - C:{len(test_split.closed_samples)} OCCLUDED O:{len(test_split.open_samples_occ)} - C:{len(test_split.closed_samples_occ)}')
