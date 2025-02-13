@@ -8,6 +8,8 @@ import cv2
 import pandas as pd
 import settings
 from collections import defaultdict
+from dataclasses import dataclass, field
+from typing import List
 
 #directories
 all_labels_dir = ""
@@ -71,7 +73,7 @@ def write_aabb_label(file_name, dir_name, x, y, w, h, object_class):
     with open(os.path.join(os.path.abspath(os.getcwd()), dir_name, file_name + '.txt'), "a") as file:
         file.write(str(object_class) + " " + str(x) + " " + str(y) + " " + str(w) + " " + str(h) + "\n")
 
-#write aabb label in YOLO format
+#write obb label in YOLO format
 def write_obb_label(file_name, dir_name, all_points_x, all_points_y, object_class):
     file_name = re.sub(r'\.jpg$', '', file_name)
 
@@ -135,6 +137,13 @@ def get_attributes_from_string(input_string: str):
 
     return [open_value, occlusion_value, side_value]
 
+@dataclass
+class Split:
+    open_samples: List[str] = field(default_factory=list)
+    closed_samples: List[str] = field(default_factory=list)
+    open_samples_occ: List[str] = field(default_factory=list)
+    closed_samples_occ: List[str] = field(default_factory=list)
+
 def create_yolo_labels():
     global all_labels_dir
     all_labels_dir = os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", "raw", "labels", "aabb")
@@ -143,45 +152,34 @@ def create_yolo_labels():
     df_all = pd.read_csv(os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", "raw", "annotations", "aabb.csv"))
     stats = defaultdict(lambda: [0, 0, defaultdict(lambda: 0)])
 
-    total_train, total_val, total_test = 0, 0, 0
-    filtered_train, filtered_val, filtered_test = 0, 0, 0
-
     train_ids = [137, 260, 416, 440, 524, 554, 614, 616, 701, 773, 777, 863, 867, 887, 901, 866, 704, 657, 778, 976]
     val_ids =  [4, 399, 875, 971, 43]
     test_ids = [228, 360, 417, 545, 663, 929]
 
+    train_split = Split()
+    val_split = Split()
+    test_split = Split()
+
+    curr_split = Split()
+    
     for i in range(len(df_all)):
         match = re.search(r'frame_(?:CG_)?(.*)', df_all["filename"][i])
         attributes = get_attributes_from_string(df_all["region_attributes"][i])
         if attributes[2]: continue
         
         patient_id = int(match.group(1)[0:3])
-        if patient_id in test_ids: total_test+=1
-        elif patient_id in val_ids: total_val+=1
-        elif patient_id in train_ids: total_train+=1
+        if(patient_id in train_ids): curr_split = train_split
+        elif(patient_id in val_ids): curr_split = val_split
+        elif(patient_id in test_ids): curr_split = test_split
 
-        if(attributes[0]):
-            stats[patient_id][0] += 1
+        if(('none' not in attributes[1]) or (not(len(attributes[1]) == 1 and attributes[1][0] == 'shadow'))):
+            if(attributes[0]): curr_split.open_samples.append(df_all["filename"][i])
+            else: curr_split.closed_samples.append(df_all["filename"][i])
         else:
-            stats[patient_id][1] += 1
+            if(attributes[0]): curr_split.open_samples_occ.append(df_all["filename"][i])
+            else: curr_split.closed_samples_occ.append(df_all["filename"][i])
 
-        if('none' not in attributes[1]):
-            if(not(len(attributes[1]) == 1 and attributes[1][0] == 'shadow')):
-                for attribute in attributes[1]:
-                    stats[patient_id][2][attribute] += 1
-        else:
-            if patient_id in test_ids: filtered_test+=1
-            elif patient_id in val_ids: filtered_val+=1
-            elif patient_id in train_ids: filtered_train+=1
-
-
-    for key in stats:
-        print(f'{key}:::  O: {stats[key][0]} - C: {stats[key][1]} -  {dict(stats[key][2])} ')
-
-    print(f'TRAIN TOTAL: {total_train} TOTAL FILTERED: {filtered_train}')
-    print(f'VAL TOTAL: {total_val} TOTAL FILTERED: {filtered_val}')
-    print(f'TEST TOTAL: {total_test} TOTAL FILTERED: {filtered_test}')
-
+    print(train_split.open_samples)
     #         x, y, w, h = get_aabb_from_string(df_all["region_shape_attributes"][i])
     #         x=x+(w/2)
     #         y=y+(h/2)
