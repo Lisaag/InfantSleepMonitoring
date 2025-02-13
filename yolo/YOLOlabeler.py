@@ -154,8 +154,10 @@ def create_yolo_labels():
         match = re.search(r'frame_(?:CG_)?(.*)', df_all["filename"][i])
         attributes = get_attributes_from_string(df_all["region_attributes"][i])
         if attributes[2]: continue
-        if patient_id in test_ids: total_samples+=1
+        
         patient_id = int(match.group(1)[0:3])
+        if patient_id in test_ids: total_samples+=1
+
         if(attributes[0]):
             stats[patient_id][0] += 1
         else:
