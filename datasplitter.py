@@ -60,15 +60,6 @@ def copy_files(old_image_path:str, old_label_path, new_image_path:str, new_label
     shutil.copy(os.path.join(old_image_path, prefix+image_filename), os.path.join(new_image_path, prefix+image_filename))
     shutil.copy(os.path.join(old_label_path, prefix+label_filename), os.path.join(new_label_path, prefix+label_filename))
 
-def copy_to_split(file_name:str):
-    # aug_labels_dir = os.path.join(os.path.abspath(os.getcwd()), "datasets","SLAPI", "raw", "aug", "labels")
-    # aug_images_dir = os.path.join(os.path.abspath(os.getcwd()), "datasets","SLAPI", "raw", "aug", "images")
-
-    label_file = re.sub(r'\.jpg$', '', file_name) + ".txt"
-
-    print(label_file)
-
-
 def get_attributes_from_string(input_string: str):
     open_pattern = r'"open":"(true|false)"'
     occlusion_pattern = r'"occlusion":{(.*?)}'
@@ -172,10 +163,20 @@ def create_splits(split_type):
     print(f'VAL O:{len(val_split.open_samples)} - C:{len(val_split.closed_samples)} OCCLUDED O:{len(val_split.open_samples_occ)} - C:{len(val_split.closed_samples_occ)}')
     print(f'TEST O:{len(test_split.open_samples)} - C:{len(test_split.closed_samples)} OCCLUDED O:{len(test_split.open_samples_occ)} - C:{len(test_split.closed_samples_occ)}')
 
-    reduce_splits(train_split, val_split, test_split, 25)
-    reduce_splits(train_split, val_split, test_split, 50)
-    reduce_splits(train_split, val_split, test_split, 75)
-    reduce_splits(train_split, val_split, test_split, 100)
+    train_samples, val_samples, test_samples = reduce_splits(train_split, val_split, test_split, 100)
 
+    for sample in train_samples:
+       label_file = re.sub(r'\.jpg$', '', sample) + ".txt"
+       copy_files(all_images_dir, all_labels_dir, train_images_dir, train_labels_dir, image_filename=sample, label_filename=label_file)
+    for sample in val_samples:
+       label_file = re.sub(r'\.jpg$', '', sample) + ".txt"
+       copy_files(all_images_dir, all_labels_dir, val_images_dir, val_labels_dir, image_filename=sample, label_filename=label_file)
+    for sample in test_samples:
+       label_file = re.sub(r'\.jpg$', '', sample) + ".txt"
+       copy_files(all_images_dir, all_labels_dir, test_images_dir, test_labels_dir, image_filename=sample, label_filename=label_file)
+
+    # reduce_splits(train_split, val_split, test_split, 50)
+    # reduce_splits(train_split, val_split, test_split, 75)
+    # reduce_splits(train_split, val_split, test_split, 100)
 
 create_splits("aabb")
