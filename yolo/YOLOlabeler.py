@@ -143,11 +143,11 @@ def create_yolo_labels():
     df_all = pd.read_csv(os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", "raw", "annotations", "aabb.csv"))
     stats = defaultdict(lambda: [0, 0, defaultdict(lambda: 0)])
 
-    total_samples = 0
-    total_samples_filtered = 0
+    total_train = 0, total_val = 0, total_test = 0
+    filtered_train = 0, filtered_val = 0, filtered_test = 0
 
-    train_ids = []
-    val_ids =  []
+    train_ids = [137, 260, 416, 440, 524, 554, 614, 616, 701, 773, 777, 863, 867, 887, 901, 866, 704, 657, 778, 976]
+    val_ids =  [4, 399, 875, 971, 43]
     test_ids = [228, 360, 417, 545, 663, 929]
 
     for i in range(len(df_all)):
@@ -156,7 +156,9 @@ def create_yolo_labels():
         if attributes[2]: continue
         
         patient_id = int(match.group(1)[0:3])
-        if patient_id in test_ids: total_samples+=1
+        if patient_id in test_ids: total_test+=1
+        elif patient_id in val_ids: total_val+=1
+        elif patient_id in train_ids: total_train+=1
 
         if(attributes[0]):
             stats[patient_id][0] += 1
@@ -167,13 +169,17 @@ def create_yolo_labels():
             for attribute in attributes[1]:
                 stats[patient_id][2][attribute] += 1
         else:
-            if patient_id in test_ids: total_samples_filtered+=1
+            if patient_id in test_ids: filtered_test+=1
+            elif patient_id in val_ids: filtered_val+=1
+            elif patient_id in train_ids: filtered_val+=1
 
 
     for key in stats:
         print(f'{key}:::  O: {stats[key][0]} - C: {stats[key][1]} -  {dict(stats[key][2])} ')
 
-    print(f'TOTAL: {total_samples} TOTAL FILTERED: {total_samples_filtered}')
+    print(f'TRAIN TOTAL: {total_train} TOTAL FILTERED: {filtered_train}')
+    print(f'VAL TOTAL: {total_val} TOTAL FILTERED: {filtered_val}')
+    print(f'TEST TOTAL: {total_test} TOTAL FILTERED: {filtered_test}')
 
     #         x, y, w, h = get_aabb_from_string(df_all["region_shape_attributes"][i])
     #         x=x+(w/2)
