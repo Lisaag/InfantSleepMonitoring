@@ -151,7 +151,7 @@ def create_yolo_labels():
         attributes = get_attributes_from_string(df_all["region_attributes"][i])
         if attributes[2]: continue
         total_samples+=1
-        patient_id = match.group(1)[0:3]
+        patient_id = int(match.group(1)[0:3])
         if(attributes[0]):
             stats[patient_id][0] += 1
         else:
