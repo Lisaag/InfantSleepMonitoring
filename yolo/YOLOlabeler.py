@@ -143,8 +143,8 @@ def create_yolo_labels():
     df_all = pd.read_csv(os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", "raw", "annotations", "aabb.csv"))
     stats = defaultdict(lambda: [0, 0, defaultdict(lambda: 0)])
 
-    total_train = 0, total_val = 0, total_test = 0
-    filtered_train = 0, filtered_val = 0, filtered_test = 0
+    total_train, total_val, total_test = 0
+    filtered_train, filtered_val, filtered_test = 0, 0, 0
 
     train_ids = [137, 260, 416, 440, 524, 554, 614, 616, 701, 773, 777, 863, 867, 887, 901, 866, 704, 657, 778, 976]
     val_ids =  [4, 399, 875, 971, 43]
