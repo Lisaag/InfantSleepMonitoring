@@ -10,6 +10,7 @@ import settings
 from collections import defaultdict
 from dataclasses import dataclass, field
 from typing import List
+import math
 
 #directories
 all_labels_dir = ""
@@ -144,6 +145,18 @@ class Split:
     open_samples_occ: List[str] = field(default_factory=list)
     closed_samples_occ: List[str] = field(default_factory=list)
 
+def reduce_splits(train_split:Split, val_split:Split, test_split:Split, percentage:float):
+    percentage = min(percentage, 100) / 100 #cap to 100%
+
+    train_samples = train_split.open_samples[0:math.ceil(len(train_split.open_samples) * percentage)] + train_split.closed_samples[0:math.ceil(len(train_split.closed_samples) * percentage)]
+    val_samples = val_split.open_samples[0:math.ceil(len(val_split.open_samples) * percentage)] + val_split.closed_samples[0:math.ceil(len(val_split.closed_samples) * percentage)]
+    test_samples = test_split.open_samples[0:math.ceil(len(test_split.open_samples) * percentage)] + test_split.closed_samples[0:math.ceil(len(test_split.closed_samples) * percentage)]
+
+    print(f'reduced {percentage * 100}%: train: {len(train_samples)}, val: {len(val_samples)}, test: {len(test_samples)}')
+
+    return(train_samples, val_samples, test_samples)
+
+
 def create_yolo_labels():
     global all_labels_dir
     all_labels_dir = os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", "raw", "labels", "aabb")
@@ -180,7 +193,6 @@ def create_yolo_labels():
             if(attributes[0]): curr_split.open_samples.append(df_all["filename"][i])
             else: curr_split.closed_samples.append(df_all["filename"][i])
         else:
-            print("AAA")
             if(attributes[0]): curr_split.open_samples_occ.append(df_all["filename"][i])
             else: curr_split.closed_samples_occ.append(df_all["filename"][i])
 
@@ -188,6 +200,13 @@ def create_yolo_labels():
     print(f'TRAIN O:{len(train_split.open_samples)} - C:{len(train_split.closed_samples)} OCCLUDED O:{len(train_split.open_samples_occ)} - C:{len(train_split.closed_samples_occ)}')
     print(f'VAL O:{len(val_split.open_samples)} - C:{len(val_split.closed_samples)} OCCLUDED O:{len(val_split.open_samples_occ)} - C:{len(val_split.closed_samples_occ)}')
     print(f'TEST O:{len(test_split.open_samples)} - C:{len(test_split.closed_samples)} OCCLUDED O:{len(test_split.open_samples_occ)} - C:{len(test_split.closed_samples_occ)}')
+
+    reduce_splits(train_split, val_split, test_split, 25)
+    reduce_splits(train_split, val_split, test_split, 50)
+    reduce_splits(train_split, val_split, test_split, 75)
+    reduce_splits(train_split, val_split, test_split, 100)
+
+
     #         x, y, w, h = get_aabb_from_string(df_all["region_shape_attributes"][i])
     #         x=x+(w/2)
     #         y=y+(h/2)
