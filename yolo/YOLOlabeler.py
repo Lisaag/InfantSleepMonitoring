@@ -157,8 +157,8 @@ def create_yolo_labels():
                 stats[patient_id][2][attribute] += 1
 
 
-
-    print(stats)
+    for key in stats:
+        print(f'{key}:::  O: {stats[key][0]} - C: {stats[key][1]} -  {dict(stats[key][2])} ')
 
     #         x, y, w, h = get_aabb_from_string(df_all["region_shape_attributes"][i])
     #         x=x+(w/2)
