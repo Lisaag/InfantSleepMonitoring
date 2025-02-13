@@ -159,7 +159,7 @@ def create_splits(split_type):
         else:
             if(attributes[0]): curr_split.open_samples_occ.append(df_all["filename"][i])
             else: curr_split.closed_samples_occ.append(df_all["filename"][i])
-    print(f'ALL {set(all)}')
+    print(f'ALL {len(set(all))}')
     print(f'TOTAL {total_samples}')
     print(f'TOTAL FILTERED {total_samples_filtered}')
     print(f'TRAIN O:{len(train_split.open_samples)} - C:{len(train_split.closed_samples)} OCCLUDED O:{len(train_split.open_samples_occ)} - C:{len(train_split.closed_samples_occ)}')
