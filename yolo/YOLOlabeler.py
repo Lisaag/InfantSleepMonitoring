@@ -176,6 +176,7 @@ def create_yolo_labels():
             if(attributes[0]): curr_split.open_samples.append(df_all["filename"][i])
             else: curr_split.closed_samples.append(df_all["filename"][i])
         else:
+            print("AAA")
             if(attributes[0]): curr_split.open_samples_occ.append(df_all["filename"][i])
             else: curr_split.closed_samples_occ.append(df_all["filename"][i])
 
