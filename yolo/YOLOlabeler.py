@@ -142,10 +142,15 @@ def create_yolo_labels():
         #delete_files_in_directory(vis_aabb_dir)
     df_all = pd.read_csv(os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", "raw", "annotations", "aabb.csv"))
     stats = defaultdict(lambda: [0, 0, defaultdict(lambda: 0)])
+
+    total_samples = 0
+    total_samples_filtered = 0
+
     for i in range(len(df_all)):
         match = re.search(r'frame_(?:CG_)?(.*)', df_all["filename"][i])
         attributes = get_attributes_from_string(df_all["region_attributes"][i])
         if attributes[2]: continue
+        total_samples+=1
         patient_id = match.group(1)[0:3]
         if(attributes[0]):
             stats[patient_id][0] += 1
@@ -155,10 +160,14 @@ def create_yolo_labels():
         if('none' not in attributes[1]):
             for attribute in attributes[1]:
                 stats[patient_id][2][attribute] += 1
+        else:
+            total_samples_filtered+-1
 
 
     for key in stats:
         print(f'{key}:::  O: {stats[key][0]} - C: {stats[key][1]} -  {dict(stats[key][2])} ')
+
+    print(f'TOTAL: {total_samples} TOTAL FILTERED: {total_samples_filtered}')
 
     #         x, y, w, h = get_aabb_from_string(df_all["region_shape_attributes"][i])
     #         x=x+(w/2)
