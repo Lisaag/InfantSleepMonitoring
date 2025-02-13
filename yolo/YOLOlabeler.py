@@ -176,7 +176,7 @@ def create_yolo_labels():
         elif(patient_id in val_ids): curr_split = val_split
         elif(patient_id in test_ids): curr_split = test_split
 
-        if(('none' not in attributes[1]) or (not(len(attributes[1]) == 1 and attributes[1][0] == 'shadow'))):
+        if(('none' in attributes[1]) or (len(attributes[1]) == 1 and attributes[1][0] == 'shadow')):
             if(attributes[0]): curr_split.open_samples.append(df_all["filename"][i])
             else: curr_split.closed_samples.append(df_all["filename"][i])
         else:
