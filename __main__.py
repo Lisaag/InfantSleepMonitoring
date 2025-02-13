@@ -1,6 +1,4 @@
 import argparse
-from yolo import YOLOlabeler
-import datasplitter
 import detect
 import dataaugmenter
 import imgtransformer
@@ -9,7 +7,6 @@ import REMsplitter
 import REMmodel
 
 PARSER = argparse.ArgumentParser(prog='EyDetector')
-PARSER.add_argument('--datasplit', nargs=1, type=str, help="split the data into train, validation, and test sets. arg1['aabb', 'obb', 'ocaabb', 'ocobb']")
 PARSER.add_argument('--detect', nargs=2, type=str, help="detect on videos, using trained model. arg1[RELATIVE PATH TO WEIGHTS], arg2['all', '000_00-00-00]")
 PARSER.add_argument('--REMset', nargs=1, type=str, help="construct REM dataset. arg1['all', '000_00-00-00]")
 PARSER.add_argument('--REMsplit', nargs="+", type=int, help="make REM dataset split")
@@ -22,10 +19,7 @@ PARSER.add_argument('--REMtrain', action="store_const", const=True, help="train 
 if __name__ == '__main__':
     args = PARSER.parse_args() # type: ignore
 
-    if(args.datasplit):
-        annotation_type = args.datasplit[0]
-        datasplitter.split_dataset(annotation_type)
-    elif(args.detect):
+    if(args.detect):
         detect.detect_vid(args.detect[0], args.detect[1])
     elif(args.augment):
         if args.augment[0] == 'aug':
