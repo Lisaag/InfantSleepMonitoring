@@ -94,7 +94,8 @@ def reduce_splits(train_split:Split, val_split:Split, test_split:Split, percenta
     val_samples = val_split.open_samples[0:math.ceil(len(val_split.open_samples) * percentage)] + val_split.closed_samples[0:math.ceil(len(val_split.closed_samples) * percentage)]
     test_samples = test_split.open_samples[0:math.ceil(len(test_split.open_samples) * percentage)] + test_split.closed_samples[0:math.ceil(len(test_split.closed_samples) * percentage)]
 
-    print(f'reduced {percentage * 100}%: train: {len(set(train_samples))}, val: {len(val_samples)}, test: {len(test_samples)}, total: {len(train_samples)+len(val_samples)+len(test_samples)}')
+    print(f'reduced {percentage * 100}%: train: {len(train_samples)}, val: {len(val_samples)}, test: {len(test_samples)}, total: {len(train_samples)+len(val_samples)+len(test_samples)}')
+    print(f'FILECOUNT reduced {percentage * 100}%: train: {len(set(train_samples))}, val: {len(set(val_samples))}, test: {len(set(test_samples))}, total: {len(set(train_samples))+len(set(val_samples))+len(set(test_samples))}')
 
     return(train_samples, val_samples, test_samples)
 
@@ -159,17 +160,18 @@ def create_splits(split_type):
     curr_split = Split()
 
     total_samples = 0
-    total_samples_filtered = 0 #total samples not including those with occlusions
+    total_samples_filtered = 0
 
+    filtered = [] #samples not including those with occlusions
     all = []
     
     for i in range(len(df_all)):
-        all.append(df_all["filename"][i])
         match = re.search(r'frame_(?:CG_)?(.*)', df_all["filename"][i])
         attributes = get_attributes_from_string(df_all["region_attributes"][i])
         if attributes[2]: continue
         
         total_samples += 1
+        all.append(df_all["filename"][i])
 
         patient_id = int(match.group(1)[0:3])
         if(patient_id in train_ids): curr_split = train_split
@@ -180,6 +182,7 @@ def create_splits(split_type):
             if(attributes[0]): curr_split.open_samples.append(df_all["filename"][i])
             else: curr_split.closed_samples.append(df_all["filename"][i])
             total_samples_filtered += 1
+            filtered.append(df_all["filename"][i])
 
             x, y, w, h = get_aabb_from_string(df_all["region_shape_attributes"][i])
             x=x+(w/2); y=y+(h/2)
@@ -191,9 +194,10 @@ def create_splits(split_type):
             if(attributes[0]): curr_split.open_samples_occ.append(df_all["filename"][i])
             else: curr_split.closed_samples_occ.append(df_all["filename"][i])
 
-    print(f'ALL {len(set(all))}')
-    print(f'TOTAL {total_samples}')
-    print(f'TOTAL FILTERED {total_samples_filtered}')
+    print(f'TOTAL FILES {len(set(all))}')
+    print(f'TOTAL FILTERED FILES {len(set(filtered))}')
+    print(f'TOTAL SAMPLES {total_samples}')
+    print(f'TOTAL FILTERED SAMPLES {total_samples_filtered}')
     print(f'TRAIN O:{len(train_split.open_samples)} - C:{len(train_split.closed_samples)} OCCLUDED O:{len(train_split.open_samples_occ)} - C:{len(train_split.closed_samples_occ)}')
     print(f'VAL O:{len(val_split.open_samples)} - C:{len(val_split.closed_samples)} OCCLUDED O:{len(val_split.open_samples_occ)} - C:{len(val_split.closed_samples_occ)}')
     print(f'TEST O:{len(test_split.open_samples)} - C:{len(test_split.closed_samples)} OCCLUDED O:{len(test_split.open_samples_occ)} - C:{len(test_split.closed_samples_occ)}')
