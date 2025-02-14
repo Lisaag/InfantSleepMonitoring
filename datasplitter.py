@@ -10,6 +10,7 @@ import pandas as pd
 from dataclasses import dataclass, field
 from typing import List
 import math
+import cv2
 
 #directories
 train_labels_dir = ""
@@ -97,6 +98,29 @@ def reduce_splits(train_split:Split, val_split:Split, test_split:Split, percenta
 
     return(train_samples, val_samples, test_samples)
 
+##Get aabb data from raw annotation data
+def get_aabb_from_string(input_string: str):
+    pattern = r'"x":(\d+),"y":(\d+),"width":(\d+),"height":(\d+)'
+
+    match = re.search(pattern, input_string)
+
+    if match:
+        x = int(match.group(1))
+        y = int(match.group(2))
+        width = int(match.group(3))
+        height = int(match.group(4))
+        return ([x, y, width, height])
+    else:
+        print(input_string)
+        return None
+
+#write aabb label in YOLO format
+def write_aabb_label(file_name, dir_name, x, y, w, h, object_class):
+    file_name = re.sub(r'\.jpg$', '', file_name)
+
+    with open(os.path.join(os.path.abspath(os.getcwd()), dir_name, file_name + '.txt'), "a") as file:
+        file.write(str(object_class) + " " + str(x) + " " + str(y) + " " + str(w) + " " + str(h) + "\n")
+
 def create_splits(split_type):
     global train_labels_dir
     train_labels_dir = os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", split_type, "train", "labels")
@@ -156,9 +180,17 @@ def create_splits(split_type):
             if(attributes[0]): curr_split.open_samples.append(df_all["filename"][i])
             else: curr_split.closed_samples.append(df_all["filename"][i])
             total_samples_filtered += 1
+
+            x, y, w, h = get_aabb_from_string(df_all["region_shape_attributes"][i])
+            x=x+(w/2); y=y+(h/2)
+            image = cv2.imread(os.path.join(os.path.abspath(os.getcwd()), all_images_dir, df_all["filename"][i]))
+            height, width, _ = image.shape  
+            x/=width; w/=width; y/=height; h/=height
+            write_aabb_label(df_all["filename"][i], all_labels_dir, x, y, w, h, "0")
         else:
             if(attributes[0]): curr_split.open_samples_occ.append(df_all["filename"][i])
             else: curr_split.closed_samples_occ.append(df_all["filename"][i])
+
     print(f'ALL {len(set(all))}')
     print(f'TOTAL {total_samples}')
     print(f'TOTAL FILTERED {total_samples_filtered}')
@@ -177,9 +209,5 @@ def create_splits(split_type):
     for sample in test_samples:
        label_file = re.sub(r'\.jpg$', '', sample) + ".txt"
        copy_files(all_images_dir, all_labels_dir, test_images_dir, test_labels_dir, image_filename=sample, label_filename=label_file)
-
-    # reduce_splits(train_split, val_split, test_split, 50)
-    # reduce_splits(train_split, val_split, test_split, 75)
-    # reduce_splits(train_split, val_split, test_split, 100)
 
 create_splits("aabb")
