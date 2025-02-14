@@ -146,6 +146,7 @@ def create_splits(split_type):
     delete_files_in_directory(train_images_dir)
     delete_files_in_directory(test_images_dir)
     delete_files_in_directory(val_images_dir)
+    delete_files_in_directory(all_labels_dir)
 
     df_all = pd.read_csv(os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", "raw", "annotations", "aabb.csv"))
 
@@ -202,7 +203,7 @@ def create_splits(split_type):
     print(f'VAL O:{len(val_split.open_samples)} - C:{len(val_split.closed_samples)} OCCLUDED O:{len(val_split.open_samples_occ)} - C:{len(val_split.closed_samples_occ)}')
     print(f'TEST O:{len(test_split.open_samples)} - C:{len(test_split.closed_samples)} OCCLUDED O:{len(test_split.open_samples_occ)} - C:{len(test_split.closed_samples_occ)}')
 
-    train_samples, val_samples, test_samples = reduce_splits(train_split, val_split, test_split, 75)
+    train_samples, val_samples, test_samples = reduce_splits(train_split, val_split, test_split, 100)
 
     for sample in train_samples:
        label_file = re.sub(r'\.jpg$', '', sample) + ".txt"
