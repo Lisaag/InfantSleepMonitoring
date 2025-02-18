@@ -27,5 +27,15 @@ model.tune(
     space=search_space,
     plots=True,
     save=False,
-    val=True
+    val=True,
+    lr0= 0.00913,
+    lrf= 0.01,
+    weight_decay= 0.00043,
+    box= 0.2,
+    cls= 0.31572,
+    hsv_h= 0.0116,
+    hsv_s= 0.60593,
+    hsv_v= 0.41582,
+    crop_fraction= 1.0,
+    degrees= 0.0,
 )
