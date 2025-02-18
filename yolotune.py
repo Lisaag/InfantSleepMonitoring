@@ -26,5 +26,6 @@ model.tune(
     iterations=100,
     space=search_space,
     plots=True,
+    save=False,
     val=True
 )
