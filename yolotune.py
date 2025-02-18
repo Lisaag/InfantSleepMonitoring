@@ -23,9 +23,8 @@ model.tune(
     mosaic=1.0,
     erasing=0.0,
     device=0,
-    iterations=300,
+    iterations=100,
     space=search_space,
     plots=True,
-    save=True,
     val=True
 )
