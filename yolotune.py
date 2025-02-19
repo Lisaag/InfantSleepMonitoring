@@ -9,13 +9,11 @@ from ultralytics import YOLO
 model = YOLO("yolo11l.pt")
 
 # Define search space
-search_space = {'lr0': [1e-5, 1e-1], 'lrf':[0.01, 1.0], 'weight_decay':[0.0, 0.001], 'box':[0.01, 0.2], 'cls':[0.1, 4.0], 
- 'hsv_h':[0.0, 0.1], 'hsv_s':[0.0, 0.9], 'hsv_v':[0.0, 0.9], 'crop_fraction':[0.6, 1.0], 'degrees':[-25.0, 25.0]}
+search_space = {'hsv_h':[0.0, 0.1], 'hsv_s':[0.0, 0.9], 'hsv_v':[0.0, 0.9], 'crop_fraction':[0.6, 1.0], 'degrees':[-25.0, 25.0], 'translate':[0.0, 0.3]}
 
 # Tune hyperparameters on COCO8 for 30 epochs
 model.tune(
     data="SLAPIaabb.yaml",
-    optimizer="AdamW",
     epochs=100,
     imgsz=640, 
     translate=0.0,
@@ -24,19 +22,9 @@ model.tune(
     mosaic=1.0,
     erasing=0.0,
     iterations=100,
-    patience=8,
+    patience=10,
     space=search_space,
     plots=False,
     save=False,
     val=False,
-    lr0= 0.00946,
-    lrf= 0.01,
-    weight_decay= 0.00043,
-    box= 0.19093,
-    cls= 0.31572,
-    hsv_h= 0.01166,
-    hsv_s= 0.6048,
-    hsv_v= 0.41414,
-    crop_fraction= 1.0,
-    degrees= 0.0
 )
