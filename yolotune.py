@@ -16,7 +16,6 @@ model.tune(
     data="SLAPIaabb.yaml",
     epochs=50,
     imgsz=640, 
-    translate=0.0,
     scale=0.0,
     fliplr=0.0,
     mosaic=1.0,
