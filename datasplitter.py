@@ -12,6 +12,8 @@ from typing import List
 import math
 import cv2
 
+import dataaugmenter
+
 #directories
 train_labels_dir = ""
 train_images_dir = ""
@@ -57,7 +59,11 @@ def delete_files_in_directory(directory_path):
    except OSError:
      print("Error occurred while deleting files.")
 
-def copy_files(old_image_path:str, old_label_path, new_image_path:str, new_label_path:str, image_filename:str, label_filename:str, prefix:str = ""):
+def copy_files(old_image_path:str, old_label_path, new_image_path:str, new_label_path:str, image_filename:str, label_filename:str, augment=False, prefix:str = ""):
+    if(augment):
+        dataaugmenter.augment_crop(old_image_path, old_label_path, new_image_path, new_label_path, image_filename, label_filename, "CR_")
+        dataaugmenter.augment_rotate(old_image_path, old_label_path, new_image_path, new_label_path, image_filename, label_filename, "ROT_")
+
     shutil.copy(os.path.join(old_image_path, prefix+image_filename), os.path.join(new_image_path, prefix+image_filename))
     shutil.copy(os.path.join(old_label_path, prefix+label_filename), os.path.join(new_label_path, prefix+label_filename))
 
@@ -210,15 +216,10 @@ def create_splits(split_type):
 
     for sample in train_samples:
        label_file = re.sub(r'\.jpg$', '', sample) + ".txt"
-       copy_files(all_images_dir, all_labels_dir, train_images_dir, train_labels_dir, image_filename=sample, label_filename=label_file)
-       copy_files(aug_images_dir, aug_labels_dir, train_images_dir, train_labels_dir, image_filename=sample, label_filename=label_file, prefix="ROT_")
-       copy_files(aug_images_dir, aug_labels_dir, train_images_dir, train_labels_dir, image_filename=sample, label_filename=label_file, prefix="CR_")
+       copy_files(all_images_dir, all_labels_dir, train_images_dir, train_labels_dir, image_filename=sample, label_filename=label_file, augment=True)
     for sample in val_samples:
        label_file = re.sub(r'\.jpg$', '', sample) + ".txt"
-       copy_files(all_images_dir, all_labels_dir, val_images_dir, val_labels_dir, image_filename=sample, label_filename=label_file)
-       copy_files(aug_images_dir, aug_labels_dir, val_images_dir, val_labels_dir, image_filename=sample, label_filename=label_file, prefix="ROT_")
-       copy_files(aug_images_dir, aug_labels_dir, val_images_dir, val_labels_dir, image_filename=sample, label_filename=label_file, prefix="CR_")
-
+       copy_files(all_images_dir, all_labels_dir, val_images_dir, val_labels_dir, image_filename=sample, label_filename=label_file, augment=True)
     for sample in test_samples:
        label_file = re.sub(r'\.jpg$', '', sample) + ".txt"
        copy_files(all_images_dir, all_labels_dir, test_images_dir, test_labels_dir, image_filename=sample, label_filename=label_file)
