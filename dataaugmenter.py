@@ -70,7 +70,7 @@ def augment_crop(old_image_path, old_label_path, new_image_path, new_label_path,
 
     transform_crop = A.Compose([
         A.RandomCrop(width=750, height=550, p=1.0),
-        A.HueSaturationValue(hue_shift_limit=0.0, sat_shift_limit=[-60,60], val_shift_limit=[40, 80], p=1.0)
+        A.HueSaturationValue(hue_shift_limit=0.0, sat_shift_limit=[-60,20], val_shift_limit=[-60, 80], p=1.0)
     ], bbox_params=A.BboxParams(format='yolo', min_visibility=0.8))
 
     for i in range(30):
@@ -89,7 +89,7 @@ def augment_rotate(old_image_path, old_label_path, new_image_path, new_label_pat
 
     transform_rotate = A.Compose([
         A.Rotate(limit=random_range, p=1.0),
-        A.HueSaturationValue(hue_shift_limit=0.0, sat_shift_limit=[-60,60], val_shift_limit=[40, 80], p=1.0)
+        A.HueSaturationValue(hue_shift_limit=0.0, sat_shift_limit=[-60,20], val_shift_limit=[-60, 80], p=1.0)
     ], bbox_params=A.BboxParams(format='yolo', min_visibility=0.8))
 
     image = cv2.imread(os.path.join(old_image_path, image_filename))
