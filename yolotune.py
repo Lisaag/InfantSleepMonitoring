@@ -15,6 +15,7 @@ search_space = {'lr0': [1e-5, 1e-1], 'lrf':[0.01, 1.0], 'weight_decay':[0.0, 0.0
 # Tune hyperparameters on COCO8 for 30 epochs
 model.tune(
     data="SLAPIaabb.yaml",
+    optimizer="AdamW",
     epochs=100,
     imgsz=640, 
     translate=0.0,
