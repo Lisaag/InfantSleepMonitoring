@@ -9,12 +9,12 @@ from ultralytics import YOLO
 model = YOLO("yolo11l.pt")
 
 # Define search space
-search_space = {'hsv_h':[0.0, 0.1], 'hsv_s':[0.0, 0.9], 'hsv_v':[0.0, 0.9], 'crop_fraction':[0.6, 1.0], 'degrees':[-25.0, 25.0], 'translate':[0.0, 0.3]}
+search_space = {'hsv_h':[0.0, 0.1], 'hsv_s':[0.0, 0.9], 'hsv_v':[0.0, 0.9], 'crop_fraction':[0.6, 1.0], 'degrees':[-25.0, 25.0], 'translate':[0.0, 0.4]}
 
 # Tune hyperparameters on COCO8 for 30 epochs
 model.tune(
     data="SLAPIaabb.yaml",
-    epochs=100,
+    epochs=50,
     imgsz=640, 
     translate=0.0,
     scale=0.0,
@@ -22,7 +22,7 @@ model.tune(
     mosaic=1.0,
     erasing=0.0,
     iterations=100,
-    patience=10,
+    patience=5,
     space=search_space,
     plots=False,
     save=False,
