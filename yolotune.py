@@ -21,7 +21,7 @@ model.tune(
     mosaic=1.0,
     erasing=0.0,
     iterations=100,
-    patience=5,
+    patience=10,
     space=search_space,
     plots=False,
     save=False,
