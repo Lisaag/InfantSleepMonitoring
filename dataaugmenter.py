@@ -7,7 +7,7 @@ import re
 import random
 
 images_dir = os.path.join(os.path.abspath(os.getcwd()), "datasets","SLAPI", "raw", "images")
-labels_dir = os.path.join(os.path.abspath(os.getcwd()), "datasets","SLAPI", "raw", "labels", "ocaabb")
+labels_dir = os.path.join(os.path.abspath(os.getcwd()), "datasets","SLAPI", "raw", "labels", "aabb")
 aug_labels_dir = os.path.join(os.path.abspath(os.getcwd()), "datasets","SLAPI", "raw", "aug", "labels")
 aug_images_dir = os.path.join(os.path.abspath(os.getcwd()), "datasets","SLAPI", "raw", "aug", "images")
 aug_vis_dir = os.path.join(os.path.abspath(os.getcwd()), "datasets","SLAPI", "raw", "aug", "vis")
@@ -65,9 +65,14 @@ def albumentation_label(file_name):
     
     return aug_labels
 
-def augment_crop(file_name, transform_crop, prefix):   
+def augment_crop(file_name, prefix):   
     image = cv2.imread(os.path.join(images_dir, file_name + ".jpg"))
     aug_labels = albumentation_label(file_name)
+
+    transform_crop = A.Compose([
+        A.RandomCrop(width=750, height=550, p=1.0),
+        A.HueSaturationValue(hue_shift_limit=0.0, sat_shift_limit=[-60,60], val_shift_limit=[40, 80], p=1.0)
+    ], bbox_params=A.BboxParams(format='yolo', min_visibility=0.8))
 
     for i in range(30):
         transformed = transform_crop(image=image, bboxes=aug_labels)
@@ -122,16 +127,12 @@ def augment_albumentation():
     delete_files_in_directory(aug_images_dir)
     delete_files_in_directory(aug_vis_dir)
 
-    transform_crop = A.Compose([
-        A.RandomCrop(width=750, height=550, p=1.0),
-        A.HueSaturationValue(hue_shift_limit=0.0, sat_shift_limit=[-60,60], val_shift_limit=[40, 80], p=1.0)
-    ], bbox_params=A.BboxParams(format='yolo', min_visibility=0.8))
 
     for img in glob.glob(images_dir + "/*.jpg"):
         file_name = re.sub(r'\.jpg$', '', os.path.basename(img))
 
         #augment_CLAHE(file_name, "CLAHE_")
-        augment_crop(file_name, transform_crop, "CROP_")
+        augment_crop(file_name, "CROP_")
         augment_rotate(file_name, "ROT_")
 
 
