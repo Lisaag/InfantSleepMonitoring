@@ -13,7 +13,7 @@ model = YOLO("yolo11l.pt")
 # )
 
 model.train(
-    data="SLAPIaabb.yaml",
+    data="filtered.yaml",
     epochs=100,
     imgsz=640,
     augment=False,
