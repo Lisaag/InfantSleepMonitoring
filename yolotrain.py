@@ -25,8 +25,6 @@ model.train(
     fliplr=0.0,
     mosaic=1.0,
     erasing=0.0,
-    iterations=100,
     patience=5,
-    augment=False,
     device=0
 )
