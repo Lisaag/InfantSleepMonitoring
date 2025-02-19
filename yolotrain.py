@@ -16,8 +16,6 @@ model.train(
     data="SLAPIaabb.yaml",
     epochs=100,
     imgsz=640, 
-    hsv_h=(0.01, 0.02),
-    hsv_s=(0.4, 0.8),
     degrees=(-25.0, 25.0),
     crop_fraction=(0.6, 1.0),
     translate=(0.0, 0.3),
