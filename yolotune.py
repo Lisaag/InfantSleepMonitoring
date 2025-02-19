@@ -24,7 +24,7 @@ model.tune(
     erasing=0.0,
     iterations=100,
     space=search_space,
-    plots=True,
+    plots=False,
     save=False,
     val=False,
     lr0= 0.00946,
