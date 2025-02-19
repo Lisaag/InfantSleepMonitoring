@@ -216,12 +216,12 @@ def create_splits(split_type):
 
     for sample in train_samples:
        label_file = re.sub(r'\.jpg$', '', sample) + ".txt"
-       copy_files(all_images_dir, all_labels_dir, train_images_dir, train_labels_dir, image_filename=sample, label_filename=label_file, augment=False)
+       copy_files(all_images_dir, all_labels_dir, train_images_dir, train_labels_dir, image_filename=sample, label_filename=label_file, augment=True)
     for sample in val_samples:
        label_file = re.sub(r'\.jpg$', '', sample) + ".txt"
-       copy_files(all_images_dir, all_labels_dir, val_images_dir, val_labels_dir, image_filename=sample, label_filename=label_file, augment=False)
+       copy_files(all_images_dir, all_labels_dir, val_images_dir, val_labels_dir, image_filename=sample, label_filename=label_file)
     for sample in test_samples:
        label_file = re.sub(r'\.jpg$', '', sample) + ".txt"
        copy_files(all_images_dir, all_labels_dir, test_images_dir, test_labels_dir, image_filename=sample, label_filename=label_file)
 
-create_splits("ocaabb")
+create_splits("aabb")
