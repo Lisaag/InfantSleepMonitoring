@@ -146,4 +146,7 @@ def test_transformed_bboxes():
         for bbox in label_data:
             if(len(bbox) != 0):
                 test_aabb(file_name, bbox[1], bbox[2], bbox[3], bbox[4])
+
+
+augment_albumentation()
         
