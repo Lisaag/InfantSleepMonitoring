@@ -23,6 +23,7 @@ model.tune(
     mosaic=1.0,
     erasing=0.0,
     iterations=100,
+    patience=8,
     space=search_space,
     plots=False,
     save=False,
@@ -36,5 +37,5 @@ model.tune(
     hsv_s= 0.6048,
     hsv_v= 0.41414,
     crop_fraction= 1.0,
-    degrees= 0.0,
+    degrees= 0.0
 )
