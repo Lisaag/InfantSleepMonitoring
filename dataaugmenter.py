@@ -46,27 +46,27 @@ def test_aabb(file_name, x_n, y_n, w_n, h_n):
     if not cv2.imwrite( os.path.join(aug_vis_dir, file_name + ".jpg"), image):
         print("imwrite failed")
 
-def write_augmented(file_name, image, bboxes):
-    cv2.imwrite(os.path.join(aug_images_dir, file_name + ".jpg"), image)
+def write_augmented(new_image_path, new_label_path, image_filename, label_filename, image, bboxes):
+    cv2.imwrite(os.path.join(new_image_path, image_filename), image)
 
-    with open(os.path.join(aug_labels_dir, file_name + ".txt"), "a") as file:
+    with open(os.path.join(new_label_path, label_filename), "a") as file:
         pass
 
     for bbox in bboxes:
-        with open(os.path.join(aug_labels_dir, file_name + ".txt"), "a") as file:
+        with open(os.path.join(new_label_path, label_filename), "a") as file:
             file.write(str(int(bbox[4])) + " " + str(bbox[0]) + " " + str(bbox[1]) + " " + str(bbox[2]) + " " + str(bbox[3]) + " " + "\n")
 
-def albumentation_label(file_name):
-    with open(os.path.join(labels_dir, file_name+".txt"), 'r') as file:  # Open the file in read mode
+def albumentation_label(path):
+    with open(path, 'r') as file:  # Open the file in read mode
         content = file.read()  # Read the entire content of the file
         label_data = [list(map(float, line.split())) for line in content.strip().split("\n")]
         aug_labels = [row[1:] + [row[0]] for row in label_data]
     
     return aug_labels
 
-def augment_crop(file_name, prefix):   
-    image = cv2.imread(os.path.join(images_dir, file_name + ".jpg"))
-    aug_labels = albumentation_label(file_name)
+def augment_crop(old_image_path, old_label_path, new_image_path, new_label_path, image_filename, label_filename, prefix):   
+    image = cv2.imread(os.path.join(old_image_path, image_filename))
+    aug_labels = albumentation_label(os.path.join(old_label_path, label_filename))
 
     transform_crop = A.Compose([
         A.RandomCrop(width=750, height=550, p=1.0),
@@ -81,20 +81,19 @@ def augment_crop(file_name, prefix):
         if len(transformed_bboxes) > 0:
             break
 
-    aug_filename = prefix + file_name
-    write_augmented(aug_filename, transformed_image, transformed_bboxes)
+    write_augmented(new_image_path, new_label_path, prefix+image_filename, prefix+label_filename, transformed_image, transformed_bboxes)
 
-def augment_rotate(file_name, prefix):
+def augment_rotate(old_image_path, old_label_path, new_image_path, new_label_path, image_filename, label_filename, prefix):
     random_bit = random.randint(0, 1)
-    random_range = [-35, -25] if random_bit == 0 else [25, 35]
+    random_range = [-40, -20] if random_bit == 0 else [20, 40]
 
     transform_rotate = A.Compose([
         A.Rotate(limit=random_range, p=1.0),
         A.HueSaturationValue(hue_shift_limit=0.0, sat_shift_limit=[-60,60], val_shift_limit=[40, 80], p=1.0)
     ], bbox_params=A.BboxParams(format='yolo', min_visibility=0.8))
 
-    image = cv2.imread(os.path.join(images_dir, file_name + ".jpg"))
-    aug_labels = albumentation_label(file_name)
+    image = cv2.imread(os.path.join(old_image_path, image_filename))
+    aug_labels = albumentation_label(os.path.join(old_label_path, label_filename))
 
     for i in range(30):
         transformed = transform_rotate(image=image, bboxes=aug_labels)
@@ -104,8 +103,7 @@ def augment_rotate(file_name, prefix):
         if len(transformed_bboxes) > 0:
             break
 
-    aug_filename = prefix + file_name
-    write_augmented(aug_filename, transformed_image, transformed_bboxes)
+    write_augmented(new_image_path, new_label_path, prefix+image_filename, prefix+label_filename, transformed_image, transformed_bboxes)
 
 def augment_CLAHE(file_name, prefix):
     transform_CLAHE = A.Compose([

@@ -12,6 +12,8 @@ from typing import List
 import math
 import cv2
 
+import dataaugmenter
+
 #directories
 train_labels_dir = ""
 train_images_dir = ""
@@ -58,6 +60,9 @@ def delete_files_in_directory(directory_path):
      print("Error occurred while deleting files.")
 
 def copy_files(old_image_path:str, old_label_path, new_image_path:str, new_label_path:str, image_filename:str, label_filename:str, prefix:str = ""):
+    dataaugmenter.augment_crop(old_image_path, old_label_path, new_image_path, new_label_path, image_filename, label_filename, "CR_")
+    dataaugmenter.augment_rotate(old_image_path, old_label_path, new_image_path, new_label_path, image_filename, label_filename, "ROT_")
+
     shutil.copy(os.path.join(old_image_path, prefix+image_filename), os.path.join(new_image_path, prefix+image_filename))
     shutil.copy(os.path.join(old_label_path, prefix+label_filename), os.path.join(new_label_path, prefix+label_filename))
 
