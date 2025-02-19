@@ -15,10 +15,8 @@ model = YOLO("yolo11l.pt")
 model.train(
     data="SLAPIaabb.yaml",
     epochs=100,
-    imgsz=640, 
-    scale=0.0,
-    fliplr=0.0,
-    mosaic=1.0,
-    erasing=0.0,
+    imgsz=640,
+    augment=False,
+    patience=10,
     device=0
 )
