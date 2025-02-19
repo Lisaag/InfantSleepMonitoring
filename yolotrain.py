@@ -6,7 +6,6 @@ model = YOLO("yolo11l.pt")
 # Tune hyperparameters on COCO8 for 30 epochs
 model.train(
     data="SLAPIaabb.yaml",
-    optimizer="AdamW",
     epochs=100,
     imgsz=640, 
     augment=False,
