@@ -20,6 +20,6 @@ model.train(
     fliplr=0.0,
     mosaic=1.0,
     erasing=0.0,
-    patience=5,
+    patience=10,
     device=0
 )
