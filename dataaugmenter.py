@@ -128,9 +128,11 @@ def augment_albumentation():
     for img in glob.glob(images_dir + "/*.jpg"):
         file_name = re.sub(r'\.jpg$', '', os.path.basename(img))
 
+        augment_crop(images_dir, labels_dir, aug_images_dir, aug_labels_dir, file_name+".jpg", file_name+".txt", "CR_")
+        augment_rotate(images_dir, labels_dir, aug_images_dir, aug_labels_dir, file_name+".jpg", file_name+".txt", "ROT_")
         #augment_CLAHE(file_name, "CLAHE_")
-        augment_crop(file_name, "CROP_")
-        augment_rotate(file_name, "ROT_")
+        # augment_crop(file_name, "CROP_")
+        # augment_rotate(file_name, "ROT_")
 
 
 def test_transformed_bboxes():
@@ -145,4 +147,4 @@ def test_transformed_bboxes():
             if(len(bbox) != 0):
                 test_aabb(file_name, bbox[1], bbox[2], bbox[3], bbox[4])
 
-        
+augment_albumentation()        
