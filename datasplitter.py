@@ -193,18 +193,18 @@ def create_splits(split_type):
             else: curr_split.closed_samples.append(df_all["filename"][i])
             total_samples_filtered += 1
             filtered.append(df_all["filename"][i])
+            
+            x, y, w, h = get_aabb_from_string(df_all["region_shape_attributes"][i])
+            x=x+(w/2); y=y+(h/2)
+            image = cv2.imread(os.path.join(os.path.abspath(os.getcwd()), all_images_dir, df_all["filename"][i]))
+            height, width, _ = image.shape  
+            x/=width; w/=width; y/=height; h/=height
+            class_label = "0"
+            #if(attributes[0]): class_label = "1"
+            write_aabb_label(df_all["filename"][i], all_labels_dir, x, y, w, h, class_label)
         else:
             if(attributes[0]): curr_split.open_samples_occ.append(df_all["filename"][i])
             else: curr_split.closed_samples_occ.append(df_all["filename"][i])
-
-        x, y, w, h = get_aabb_from_string(df_all["region_shape_attributes"][i])
-        x=x+(w/2); y=y+(h/2)
-        image = cv2.imread(os.path.join(os.path.abspath(os.getcwd()), all_images_dir, df_all["filename"][i]))
-        height, width, _ = image.shape  
-        x/=width; w/=width; y/=height; h/=height
-        class_label = "0"
-        if(attributes[0]): class_label = "1"
-        write_aabb_label(df_all["filename"][i], all_labels_dir, x, y, w, h, class_label)
 
 
     print(f'TOTAL FILES {len(set(all))}')
@@ -215,9 +215,9 @@ def create_splits(split_type):
     print(f'VAL O:{len(val_split.open_samples)} - C:{len(val_split.closed_samples)} OCCLUDED O:{len(val_split.open_samples_occ)} - C:{len(val_split.closed_samples_occ)}')
     print(f'TEST O:{len(test_split.open_samples)} - C:{len(test_split.closed_samples)} OCCLUDED O:{len(test_split.open_samples_occ)} - C:{len(test_split.closed_samples_occ)}')
 
-    train_samples = train_split.open_samples + train_split.closed_samples + train_split.open_samples_occ + train_split.closed_samples_occ
-    val_samples = val_split.open_samples + val_split.closed_samples + val_split.open_samples_occ + val_split.closed_samples_occ
-    test_samples = test_split.open_samples + test_split.closed_samples + test_split.open_samples_occ + test_split.closed_samples_occ
+    train_samples = train_split.open_samples + train_split.closed_samples# + train_split.open_samples_occ + train_split.closed_samples_occ
+    val_samples = val_split.open_samples + val_split.closed_samples# + val_split.open_samples_occ + val_split.closed_samples_occ
+    test_samples = test_split.open_samples + test_split.closed_samples# + test_split.open_samples_occ + test_split.closed_samples_occ
 
     #train_samples, val_samples, test_samples = reduce_splits(train_split, val_split, test_split, 100)
 
@@ -231,4 +231,4 @@ def create_splits(split_type):
        label_file = re.sub(r'\.jpg$', '', sample) + ".txt"
        copy_files(all_images_dir, all_labels_dir, test_images_dir, test_labels_dir, image_filename=sample, label_filename=label_file)
 
-create_splits("open-closed")
+create_splits("aabb")
