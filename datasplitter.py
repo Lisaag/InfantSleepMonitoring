@@ -223,7 +223,7 @@ def create_splits(split_type):
 
     for sample in train_samples:
        label_file = re.sub(r'\.jpg$', '', sample) + ".txt"
-       copy_files(all_images_dir, all_labels_dir, train_images_dir, train_labels_dir, image_filename=sample, label_filename=label_file)
+       copy_files(all_images_dir, all_labels_dir, train_images_dir, train_labels_dir, image_filename=sample, augment=True, label_filename=label_file)
     for sample in val_samples:
        label_file = re.sub(r'\.jpg$', '', sample) + ".txt"
        copy_files(all_images_dir, all_labels_dir, val_images_dir, val_labels_dir, image_filename=sample, label_filename=label_file)
@@ -231,4 +231,4 @@ def create_splits(split_type):
        label_file = re.sub(r'\.jpg$', '', sample) + ".txt"
        copy_files(all_images_dir, all_labels_dir, test_images_dir, test_labels_dir, image_filename=sample, label_filename=label_file)
 
-create_splits("aabb")
+create_splits("aug")

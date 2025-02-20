@@ -69,8 +69,7 @@ def augment_crop(old_image_path, old_label_path, new_image_path, new_label_path,
     aug_labels = albumentation_label(os.path.join(old_label_path, label_filename))
 
     transform_crop = A.Compose([
-        A.RandomCrop(width=750, height=550, p=1.0),
-        A.HueSaturationValue(hue_shift_limit=0.0, sat_shift_limit=[-60,20], val_shift_limit=[-60, 80], p=1.0)
+        A.RandomCrop(width=400, height=400, p=1.0),
     ], bbox_params=A.BboxParams(format='yolo', min_visibility=0.8))
 
     for i in range(30):
@@ -84,12 +83,12 @@ def augment_crop(old_image_path, old_label_path, new_image_path, new_label_path,
     write_augmented(new_image_path, new_label_path, prefix+image_filename, prefix+label_filename, transformed_image, transformed_bboxes)
 
 def augment_rotate(old_image_path, old_label_path, new_image_path, new_label_path, image_filename, label_filename, prefix):
-    random_bit = random.randint(0, 1)
-    random_range = [-40, -20] if random_bit == 0 else [20, 40]
+    #random_bit = random.randint(0, 1)
+   # random_range = [-40, -20] if random_bit == 0 else [20, 40]
+    random_range=[-20,20]
 
     transform_rotate = A.Compose([
-        A.Rotate(limit=random_range, p=1.0),
-        A.HueSaturationValue(hue_shift_limit=0.0, sat_shift_limit=[-60,20], val_shift_limit=[-60, 80], p=1.0)
+        A.Rotate(limit=random_range, p=1.0)
     ], bbox_params=A.BboxParams(format='yolo', min_visibility=0.8))
 
     image = cv2.imread(os.path.join(old_image_path, image_filename))
