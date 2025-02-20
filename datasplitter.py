@@ -193,16 +193,18 @@ def create_splits(split_type):
             else: curr_split.closed_samples.append(df_all["filename"][i])
             total_samples_filtered += 1
             filtered.append(df_all["filename"][i])
-
-            x, y, w, h = get_aabb_from_string(df_all["region_shape_attributes"][i])
-            x=x+(w/2); y=y+(h/2)
-            image = cv2.imread(os.path.join(os.path.abspath(os.getcwd()), all_images_dir, df_all["filename"][i]))
-            height, width, _ = image.shape  
-            x/=width; w/=width; y/=height; h/=height
-            write_aabb_label(df_all["filename"][i], all_labels_dir, x, y, w, h, "0")
         else:
             if(attributes[0]): curr_split.open_samples_occ.append(df_all["filename"][i])
             else: curr_split.closed_samples_occ.append(df_all["filename"][i])
+
+        x, y, w, h = get_aabb_from_string(df_all["region_shape_attributes"][i])
+        x=x+(w/2); y=y+(h/2)
+        image = cv2.imread(os.path.join(os.path.abspath(os.getcwd()), all_images_dir, df_all["filename"][i]))
+        height, width, _ = image.shape  
+        x/=width; w/=width; y/=height; h/=height
+        class_label = "0"
+        if(attributes[0]): class_label = "1"
+        write_aabb_label(df_all["filename"][i], all_labels_dir, x, y, w, h, class_label)
 
 
     print(f'TOTAL FILES {len(set(all))}')
@@ -229,4 +231,4 @@ def create_splits(split_type):
        label_file = re.sub(r'\.jpg$', '', sample) + ".txt"
        copy_files(all_images_dir, all_labels_dir, test_images_dir, test_labels_dir, image_filename=sample, label_filename=label_file)
 
-create_splits("aabb")
+create_splits("open-closed")
