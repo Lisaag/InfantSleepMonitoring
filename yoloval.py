@@ -1,7 +1,7 @@
 from ultralytics import YOLO
 
 # Load a model
-model = YOLO("runs/detect/train14/weights/best.pt")
+model = YOLO("runs/exp/occ/weights/best.pt")
 
 # Customize validation settings
 validation_results = model.val(data="occ.yaml", imgsz=640, split="test", save_json=True, device="0")
