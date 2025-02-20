@@ -16,7 +16,7 @@ model.train(
     data="SLAPIaabb.yaml",
     epochs=100,
     imgsz=640,
-    patience=15,
+    patience=0,
     device=0,
     fliplr=0.0,
     mosaic=0.0,
