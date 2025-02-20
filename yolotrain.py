@@ -14,11 +14,16 @@ model = YOLO("yolo11l.pt")
 
 model.train(
     data="SLAPIaabb.yaml",
-    epochs=100,
+    epochs=300,
     imgsz=640,
-    patience=20,
-    device=0,
-    auto_augment="autoaugment"
+    patience=0,
+    device=0,     
+    hsv_s=0.4,
+    hsv_v=0.4,
+    translate=0.1,
+    scale=0.3,
+    crop_fraction=0.85,
+    #auto_augment="autoaugment"
     #augment=False
     # hsv_h=0.0,
     # hsv_s=0.0,
