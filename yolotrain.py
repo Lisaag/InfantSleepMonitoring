@@ -17,6 +17,6 @@ model.train(
     epochs=100,
     imgsz=640,
     augment=False,
-    patience=0,
+    patience=15,
     device=0
 )
