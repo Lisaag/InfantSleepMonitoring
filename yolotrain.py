@@ -14,7 +14,7 @@ model = YOLO("yolo11l.pt")
 
 model.train(
     data="SLAPIaabb.yaml",
-    epochs=300,
+    epochs=400,
     imgsz=640,
     patience=0,
     device=0,     
