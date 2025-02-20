@@ -18,7 +18,7 @@ model.train(
     imgsz=640,
     patience=20,
     device=0,
-    augment=False
+    #augment=False
     # hsv_h=0.0,
     # hsv_s=0.0,
     # hsv_v=0.0,
