@@ -78,7 +78,7 @@ def augment_value(old_image_path, old_label_path, new_image_path, new_label_path
     transformed_bboxes = transformed['bboxes']
 
     cv2.imwrite(os.path.join(new_image_path, prefix+image_filename), transformed_image)
-    shutil.copy(os.path.join(old_label_path, prefix+label_filename), os.path.join(new_label_path, prefix+label_filename))
+    shutil.copy(os.path.join(old_label_path, label_filename), os.path.join(new_label_path, prefix+label_filename))
 
     #write_augmented(new_image_path, new_label_path, prefix+image_filename, prefix+label_filename, transformed_image, transformed_bboxes)
 
