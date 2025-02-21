@@ -61,8 +61,8 @@ def delete_files_in_directory(directory_path):
 
 def copy_files(old_image_path:str, old_label_path, new_image_path:str, new_label_path:str, image_filename:str, label_filename:str, augment=False, prefix:str = ""):
     if(augment):
-        dataaugmenter.augment_crop(old_image_path, old_label_path, new_image_path, new_label_path, image_filename, label_filename, "CR_")
-        dataaugmenter.augment_rotate(old_image_path, old_label_path, new_image_path, new_label_path, image_filename, label_filename, "ROT_")
+       # dataaugmenter.augment_crop(old_image_path, old_label_path, new_image_path, new_label_path, image_filename, label_filename, "CR_")
+        dataaugmenter.augment_value(old_image_path, old_label_path, new_image_path, new_label_path, image_filename, label_filename, "VAL_")
 
     shutil.copy(os.path.join(old_image_path, prefix+image_filename), os.path.join(new_image_path, prefix+image_filename))
     shutil.copy(os.path.join(old_label_path, prefix+label_filename), os.path.join(new_label_path, prefix+label_filename))

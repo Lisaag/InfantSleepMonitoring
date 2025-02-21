@@ -5,6 +5,7 @@ import numpy as np
 import albumentations as A
 import re
 import random
+import shutil
 
 images_dir = os.path.join(os.path.abspath(os.getcwd()), "datasets","SLAPI", "raw", "images")
 labels_dir = os.path.join(os.path.abspath(os.getcwd()), "datasets","SLAPI", "raw", "labels")
@@ -64,6 +65,24 @@ def albumentation_label(path):
     
     return aug_labels
 
+def augment_value(old_image_path, old_label_path, new_image_path, new_label_path, image_filename, label_filename, prefix):   
+    image = cv2.imread(os.path.join(old_image_path, image_filename))
+    aug_labels = albumentation_label(os.path.join(old_label_path, label_filename))
+
+    transform_crop = A.Compose([
+        A.HueSaturationValue(hue_shift_limit=(0,0), sat_shift_limit=(0,0), val_shift_limit=(-30, 30), p=1.0),
+    ], bbox_params=A.BboxParams(format='yolo', min_visibility=0.8))
+
+    transformed = transform_crop(image=image, bboxes=aug_labels)
+    transformed_image = transformed['image']
+    transformed_bboxes = transformed['bboxes']
+
+    cv2.imwrite(os.path.join(new_image_path, prefix+image_filename), transformed_image)
+    shutil.copy(os.path.join(old_label_path, prefix+label_filename), os.path.join(new_label_path, prefix+label_filename))
+
+    #write_augmented(new_image_path, new_label_path, prefix+image_filename, prefix+label_filename, transformed_image, transformed_bboxes)
+
+
 def augment_crop(old_image_path, old_label_path, new_image_path, new_label_path, image_filename, label_filename, prefix):   
     image = cv2.imread(os.path.join(old_image_path, image_filename))
     aug_labels = albumentation_label(os.path.join(old_label_path, label_filename))
@@ -90,6 +109,7 @@ def augment_rotate(old_image_path, old_label_path, new_image_path, new_label_pat
     transform_rotate = A.Compose([
         A.Rotate(limit=random_range, p=1.0)
     ], bbox_params=A.BboxParams(format='yolo', min_visibility=0.8))
+
 
     image = cv2.imread(os.path.join(old_image_path, image_filename))
     aug_labels = albumentation_label(os.path.join(old_label_path, label_filename))
