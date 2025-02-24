@@ -14,6 +14,8 @@ import cv2
 
 import dataaugmenter
 
+from collections import defaultdict
+
 #directories
 train_labels_dir = ""
 train_images_dir = ""
@@ -175,10 +177,14 @@ def create_splits(split_type):
     filtered = [] #samples not including those with occlusions
     all = []
     
+    occ = defaultdict(lambda:[0, 0])
+    
+
     for i in range(len(df_all)):
         match = re.search(r'frame_(?:CG_)?(.*)', df_all["filename"][i])
         attributes = get_attributes_from_string(df_all["region_attributes"][i])
         if attributes[2]: continue
+
         
         total_samples += 1
         all.append(df_all["filename"][i])
@@ -189,6 +195,7 @@ def create_splits(split_type):
         elif(patient_id in test_ids): curr_split = test_split
 
         if(('none' in attributes[1]) or (len(attributes[1]) == 1 and attributes[1][0] == 'shadow')):
+            occ[df_all["filename"][i]][0] += 1
             if(attributes[0]): curr_split.open_samples.append(df_all["filename"][i])
             else: curr_split.closed_samples.append(df_all["filename"][i])
             total_samples_filtered += 1
@@ -203,9 +210,18 @@ def create_splits(split_type):
             #if(attributes[0]): class_label = "1"
             write_aabb_label(df_all["filename"][i], all_labels_dir, x, y, w, h, class_label)
         else:
+            occ[df_all["filename"][i]][1] += 1
             if(attributes[0]): curr_split.open_samples_occ.append(df_all["filename"][i])
             else: curr_split.closed_samples_occ.append(df_all["filename"][i])
 
+    tot_occ = 0
+    for key in occ:
+       if(len(occ[key][1]) == 0):
+          tot_occ+=1
+    print(f'TOT OCC {tot_occ}')
+          
+
+    return
 
     print(f'TOTAL FILES {len(set(all))}')
     print(f'TOTAL FILTERED FILES {len(set(filtered))}')
