@@ -216,9 +216,9 @@ def create_splits(split_type):
 
     tot_occ = 0
     for key in occ:
-       if(len(occ[key][1]) == 0):
+       if(occ[key][1] == 0):
           tot_occ+=1
-    print(f'TOT OCC {tot_occ}')
+    print(f'Out of {len(occ)} frames: number without any occlusion {tot_occ}, and {len(occ) - tot_occ} with some occlusion')
           
 
     return
