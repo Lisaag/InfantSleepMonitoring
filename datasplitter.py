@@ -214,11 +214,21 @@ def create_splits(split_type):
             if(attributes[0]): curr_split.open_samples_occ.append(df_all["filename"][i])
             else: curr_split.closed_samples_occ.append(df_all["filename"][i])
 
-    tot_occ = 0
+    tot_filter = 0
+    tot_filter_samp = 0
+    tot_samp = 0
+    half_occ = 0
     for key in occ:
-       if(occ[key][1] == 0):
-          tot_occ+=1
-    print(f'Out of {len(occ)} frames: number without any occlusion {tot_occ}, and {len(occ) - tot_occ} with some occlusion')
+        if(occ[key][1] == 0):
+            tot_filter+=1
+            tot_filter_samp += occ[key][0]
+        else:
+            tot_samp += occ[key][0]+occ[key][1]
+
+        if(occ[key][0] == 1 and occ[key][1] == 1):
+            half_occ+=1
+    print(f'Out of {len(occ)} frames: number without any occlusion {tot_filter}, and {len(occ) - tot_filter} with some occlusion, and {half_occ} half/half')
+    print(f'SAMPLES FILTERED DATASET {tot_filter_samp}, SAMPLES COMPLETE DATASET {tot_samp}')
           
 
     return
