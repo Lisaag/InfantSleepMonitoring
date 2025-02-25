@@ -62,7 +62,6 @@ def delete_files_in_directory(directory_path):
      print("Error occurred while deleting files.")
 
 def copy_files(old_image_path:str, old_label_path, new_image_path:str, new_label_path:str, image_filename:str, label_filename:str, prefix:str = ""):
-    print("copy_files() called")
     shutil.copy(os.path.join(old_image_path, prefix+image_filename), os.path.join(new_image_path, prefix+image_filename))
     shutil.copy(os.path.join(old_label_path, prefix+label_filename), os.path.join(new_label_path, prefix+label_filename))
 
@@ -211,7 +210,7 @@ def create_splits(split_type):
 
             if(patient_id in test_ids): copy_files(all_images_dir, all_labels_dir, test_images_dir, test_labels_dir, image_filename=key, label_filename=label_file)
             elif(patient_id in val_ids): copy_files(all_images_dir, all_labels_dir, val_images_dir, val_labels_dir, image_filename=key, label_filename=label_file)
-            elif(patient_id in train_ids): copy_files(all_images_dir, all_labels_dir, val_images_dir, val_labels_dir, image_filename=key, label_filename=label_file)
+            elif(patient_id in train_ids): copy_files(all_images_dir, all_labels_dir, train_images_dir, train_labels_dir, image_filename=key, label_filename=label_file)
             tot_filter+=1
             tot_filter_samp += len(occ[key][0])
             
