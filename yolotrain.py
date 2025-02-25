@@ -1,6 +1,5 @@
 from ultralytics import YOLO
 
-# Initialize the YOLO model
 model = YOLO("yolo11l.pt")
 
 model.train(
@@ -11,12 +10,12 @@ model.train(
     device=0,
     plots=True,
     project="runs/AUG",
-    name="no-aug",
+    name="sub1-aug",
     auto_augment="randaugment",
     copy_paste_mode="flip",
-    hsv_h=0.0,
-    hsv_s=0.0,
-    hsv_v=0.0,
+    hsv_h=0.015,
+    hsv_s=0.7,
+    hsv_v=0.4,
     degrees=0.0,
     translate=0.0,
     scale=0.0,
