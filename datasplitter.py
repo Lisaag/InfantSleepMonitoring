@@ -223,15 +223,15 @@ def create_splits(split_type):
             patient_id = int(match.group(1)[0:3])
             ids[patient_id] +=1
             if(patient_id in test_ids):
-                for sample in occ[key][1]:
+                for sample in occ[key][0]:
                     if sample: test_count_open += 1
                     else: test_count_closed += 1
             elif(patient_id in val_ids):
-                for sample in occ[key][1]:
+                for sample in occ[key][0]:
                     if sample: val_count_open += 1
                     else: val_count_closed += 1
             elif(patient_id in train_ids):
-                for sample in occ[key][1]:
+                for sample in occ[key][0]:
                     if sample: train_count_open += 1
                     else: train_count_closed += 1
 
