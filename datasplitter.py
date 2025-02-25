@@ -212,10 +212,13 @@ def create_splits(split_type):
     val_count = 0
     train_count = 0
 
+    ids = defaultdict(lambda:0)
+
     for key in occ:
         if(occ[key][1] == 0):
             match = re.search(r'frame_(?:CG_)?(.*)', df_all["filename"][i])
             patient_id = int(match.group(1)[0:3])
+            ids[patient_id] +=1
             if(patient_id in test_ids): test_count+=1
             elif(patient_id in val_ids): val_count+=1
             elif(patient_id in train_ids): train_count+=1
@@ -232,6 +235,7 @@ def create_splits(split_type):
     print(f'Out of {len(occ)} frames: number without any occlusion {tot_filter}, and {len(occ) - tot_filter} with some occlusion, and {half_occ} half/half')
     print(f'SAMPLES FILTERED DATASET {tot_filter_samp}, SAMPLES COMPLETE DATASET {tot_samp}')
     print(f'train: {train_count}, val: {val_count}, test: {test_count}')
+    print(ids.keys())
           
 
     return
