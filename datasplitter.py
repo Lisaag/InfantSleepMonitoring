@@ -171,7 +171,7 @@ def create_splits(split_type):
 
     curr_split = Split()
     
-    occ = defaultdict(lambda:[0, 0])
+    occ = defaultdict(lambda:[[], []])
     
 
     for i in range(len(df_all)):
@@ -185,12 +185,12 @@ def create_splits(split_type):
         elif(patient_id in test_ids): curr_split = test_split
 
         if(('none' in attributes[1]) or (len(attributes[1]) == 1 and attributes[1][0] == 'shadow')):
-            occ[df_all["filename"][i]][0] += 1
+            occ[df_all["filename"][i]][0].append(attributes[0])
             if(attributes[0]): curr_split.open_samples.append(df_all["filename"][i])
             else: curr_split.closed_samples.append(df_all["filename"][i])
             
         else:
-            occ[df_all["filename"][i]][1] += 1
+            occ[df_all["filename"][i]][1].append(attributes[0])
             if(attributes[0]): curr_split.open_samples_occ.append(df_all["filename"][i])
             else: curr_split.closed_samples_occ.append(df_all["filename"][i])
 
@@ -215,7 +215,7 @@ def create_splits(split_type):
     ids = defaultdict(lambda:0)
 
     for key in occ:
-        if(occ[key][1] == 0):
+        if(len(occ[key][1]) == 0):
             match = re.search(r'frame_(?:CG_)?(.*)', key)
             patient_id = int(match.group(1)[0:3])
             ids[patient_id] +=1
@@ -230,8 +230,9 @@ def create_splits(split_type):
         else:
             tot_samp += occ[key][0]+occ[key][1]
 
-        if(occ[key][0] == 1 and occ[key][1] == 1):
+        if(len(occ[key][0]) == 1 and len(occ[key][1]) == 1):
             half_occ+=1
+
     print(f'Out of {len(occ)} frames: number without any occlusion {tot_filter}, and {len(occ) - tot_filter} with some occlusion, and {half_occ} half/half')
     print(f'SAMPLES FILTERED DATASET {tot_filter_samp}, SAMPLES COMPLETE DATASET {tot_samp}')
     print(f'train: {train_count}, val: {val_count}, test: {test_count}')
