@@ -208,9 +208,12 @@ def create_splits(split_type):
     tot_samp = 0
     half_occ = 0
 
-    test_count = 0
-    val_count = 0
-    train_count = 0
+    test_count_closed = 0
+    test_count_open = 0
+    val_count_closed = 0
+    val_count_open = 0
+    train_count_closed = 0
+    train_count_open = 0
 
     ids = defaultdict(lambda:0)
 
@@ -219,10 +222,18 @@ def create_splits(split_type):
             match = re.search(r'frame_(?:CG_)?(.*)', key)
             patient_id = int(match.group(1)[0:3])
             ids[patient_id] +=1
-            if(patient_id in test_ids): test_count+=1
-            elif(patient_id in val_ids): val_count+=1
-            elif(patient_id in train_ids): train_count+=1
-
+            if(patient_id in test_ids):
+                for sample in occ[key][1]:
+                    if sample: test_count_open += 1
+                    else: test_count_closed += 1
+            elif(patient_id in val_ids):
+                for sample in occ[key][1]:
+                    if sample: val_count_open += 1
+                    else: val_count_closed += 1
+            elif(patient_id in train_ids):
+                for sample in occ[key][1]:
+                    if sample: train_count_open += 1
+                    else: train_count_closed += 1
 
             tot_filter+=1
             tot_filter_samp += len(occ[key][0])
@@ -235,7 +246,7 @@ def create_splits(split_type):
 
     print(f'Out of {len(occ)} frames: number without any occlusion {tot_filter}, and {len(occ) - tot_filter} with some occlusion, and {half_occ} half/half')
     print(f'SAMPLES FILTERED DATASET {tot_filter_samp}, SAMPLES COMPLETE DATASET {tot_samp}')
-    print(f'train: {train_count}, val: {val_count}, test: {test_count}')
+    print(f'train: O:{train_count_open}-C:{train_count_closed}, val:  O:{val_count_open}-C:{val_count_closed}, test:  O:{test_count_open}-C:{test_count_closed}')
     print(ids.keys())
           
 
