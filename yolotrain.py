@@ -15,7 +15,7 @@ model.train(
     auto_augment="randaugment",
     copy_paste_mode="flip",
     hsv_h=0.0,
-    hsv_s=0.,
+    hsv_s=0.0,
     hsv_v=0.0,
     degrees=0.0,
     translate=0.0,
