@@ -165,34 +165,24 @@ def create_splits(split_type):
     val_ids =  [4, 399, 875, 971, 43]
     test_ids = [228, 360, 417, 545, 663, 929]
 
-    train_split = Split()
-    val_split = Split()
-    test_split = Split()
+    # train_split = Split()
+    # val_split = Split()
+    # test_split = Split()
 
-    curr_split = Split()
+    # curr_split = Split()
     
     occ = defaultdict(lambda:[[], []])
     
 
     for i in range(len(df_all)):
-        match = re.search(r'frame_(?:CG_)?(.*)', df_all["filename"][i])
         attributes = get_attributes_from_string(df_all["region_attributes"][i])
         if attributes[2]: continue
 
-        patient_id = int(match.group(1)[0:3])
-        if(patient_id in train_ids): curr_split = train_split
-        elif(patient_id in val_ids): curr_split = val_split
-        elif(patient_id in test_ids): curr_split = test_split
-
         if(('none' in attributes[1]) or (len(attributes[1]) == 1 and attributes[1][0] == 'shadow')):
             occ[df_all["filename"][i]][0].append(attributes[0])
-            if(attributes[0]): curr_split.open_samples.append(df_all["filename"][i])
-            else: curr_split.closed_samples.append(df_all["filename"][i])
-            
+         
         else:
             occ[df_all["filename"][i]][1].append(attributes[0])
-            if(attributes[0]): curr_split.open_samples_occ.append(df_all["filename"][i])
-            else: curr_split.closed_samples_occ.append(df_all["filename"][i])
 
         x, y, w, h = get_aabb_from_string(df_all["region_shape_attributes"][i])
         x=x+(w/2); y=y+(h/2)
@@ -247,7 +237,9 @@ def create_splits(split_type):
     print(f'Out of {len(occ)} frames: number without any occlusion {tot_filter}, and {len(occ) - tot_filter} with some occlusion, and {half_occ} half/half')
     print(f'SAMPLES FILTERED DATASET {tot_filter_samp}, SAMPLES COMPLETE DATASET {tot_samp}')
     print(f'train: O:{train_count_open}-C:{train_count_closed}, val:  O:{val_count_open}-C:{val_count_closed}, test:  O:{test_count_open}-C:{test_count_closed}')
-    print(ids.keys())
+    for key in ids:
+        print(f'{key} - {ids[key]}')
+    #print(ids.keys())
           
 
     return
