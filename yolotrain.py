@@ -3,21 +3,15 @@ from ultralytics import YOLO
 # Initialize the YOLO model
 model = YOLO("yolo11l.pt")
 
-# # Tune hyperparameters on COCO8 for 30 epochs
-# model.train(
-#     data="SLAPIaabb.yaml",
-#     epochs=100,
-#     imgsz=640, 
-#     augment=False,
-#     device=0
-# )
-
 model.train(
     data="SLAPIaabb.yaml",
     epochs=100,
     imgsz=640,
     patience=15,
-    device=0,     
+    device=0,
+    plots=True,
+    project="AUG",
+    name="default-aug",
     auto_augment="randaugment",
     copy_paste_mode="flip",
     hsv_h=0.015,

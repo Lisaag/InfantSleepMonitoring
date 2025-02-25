@@ -170,12 +170,6 @@ def create_splits(split_type):
     test_split = Split()
 
     curr_split = Split()
-
-    total_samples = 0
-    total_samples_filtered = 0
-
-    filtered = [] #samples not including those with occlusions
-    all = []
     
     occ = defaultdict(lambda:[0, 0])
     
@@ -184,10 +178,6 @@ def create_splits(split_type):
         match = re.search(r'frame_(?:CG_)?(.*)', df_all["filename"][i])
         attributes = get_attributes_from_string(df_all["region_attributes"][i])
         if attributes[2]: continue
-
-        
-        total_samples += 1
-        all.append(df_all["filename"][i])
 
         patient_id = int(match.group(1)[0:3])
         if(patient_id in train_ids): curr_split = train_split
@@ -198,30 +188,42 @@ def create_splits(split_type):
             occ[df_all["filename"][i]][0] += 1
             if(attributes[0]): curr_split.open_samples.append(df_all["filename"][i])
             else: curr_split.closed_samples.append(df_all["filename"][i])
-            total_samples_filtered += 1
-            filtered.append(df_all["filename"][i])
             
-            x, y, w, h = get_aabb_from_string(df_all["region_shape_attributes"][i])
-            x=x+(w/2); y=y+(h/2)
-            image = cv2.imread(os.path.join(os.path.abspath(os.getcwd()), all_images_dir, df_all["filename"][i]))
-            height, width, _ = image.shape  
-            x/=width; w/=width; y/=height; h/=height
-            class_label = "0"
-            #if(attributes[0]): class_label = "1"
-            write_aabb_label(df_all["filename"][i], all_labels_dir, x, y, w, h, class_label)
         else:
             occ[df_all["filename"][i]][1] += 1
             if(attributes[0]): curr_split.open_samples_occ.append(df_all["filename"][i])
             else: curr_split.closed_samples_occ.append(df_all["filename"][i])
 
+        x, y, w, h = get_aabb_from_string(df_all["region_shape_attributes"][i])
+        x=x+(w/2); y=y+(h/2)
+        image = cv2.imread(os.path.join(os.path.abspath(os.getcwd()), all_images_dir, df_all["filename"][i]))
+        height, width, _ = image.shape  
+        x/=width; w/=width; y/=height; h/=height
+        class_label = "0"
+        #if(attributes[0]): class_label = "1"
+        write_aabb_label(df_all["filename"][i], all_labels_dir, x, y, w, h, class_label)
+
     tot_filter = 0
     tot_filter_samp = 0
     tot_samp = 0
     half_occ = 0
+
+    test_count = 0
+    val_count = 0
+    train_count = 0
+
     for key in occ:
         if(occ[key][1] == 0):
+            match = re.search(r'frame_(?:CG_)?(.*)', df_all["filename"][i])
+            patient_id = int(match.group(1)[0:3])
+            if(patient_id in test_ids): test_count+=1
+            elif(patient_id in val_ids): val_count+=1
+            elif(patient_id in train_ids): train_count+=1
+
+
             tot_filter+=1
             tot_filter_samp += occ[key][0]
+            
         else:
             tot_samp += occ[key][0]+occ[key][1]
 
@@ -229,6 +231,7 @@ def create_splits(split_type):
             half_occ+=1
     print(f'Out of {len(occ)} frames: number without any occlusion {tot_filter}, and {len(occ) - tot_filter} with some occlusion, and {half_occ} half/half')
     print(f'SAMPLES FILTERED DATASET {tot_filter_samp}, SAMPLES COMPLETE DATASET {tot_samp}')
+    print(f'train: {train_count}, val: {val_count}, test: {test_count}')
           
 
     return
