@@ -216,7 +216,7 @@ def create_splits(split_type):
 
     for key in occ:
         if(occ[key][1] == 0):
-            match = re.search(r'frame_(?:CG_)?(.*)', df_all["filename"][i])
+            match = re.search(r'frame_(?:CG_)?(.*)', key)
             patient_id = int(match.group(1)[0:3])
             ids[patient_id] +=1
             if(patient_id in test_ids): test_count+=1
