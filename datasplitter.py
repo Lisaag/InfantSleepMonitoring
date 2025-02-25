@@ -208,6 +208,7 @@ def create_splits(split_type):
     ids = defaultdict(lambda:0)
 
     for key in occ:
+        print(key)
         if(len(occ[key][1]) == 0):
             match = re.search(r'frame_(?:CG_)?(.*)', key)
             patient_id = int(match.group(1)[0:3])
@@ -241,6 +242,7 @@ def create_splits(split_type):
         print(f'{key} - {ids[key]}')
     #print(ids.keys())
           
+    
 
     return
 
