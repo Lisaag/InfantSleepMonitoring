@@ -4,13 +4,13 @@ from ultralytics import YOLO
 model = YOLO("yolo11l.pt")
 
 model.train(
-    data="SLAPIaabb.yaml",
+    data="aug.yaml",
     epochs=100,
     imgsz=640,
     patience=15,
     device=0,
     plots=True,
-    project="AUG",
+    project="runs/AUG",
     name="default-aug",
     auto_augment="randaugment",
     copy_paste_mode="flip",
