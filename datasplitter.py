@@ -225,10 +225,10 @@ def create_splits(split_type):
 
 
             tot_filter+=1
-            tot_filter_samp += occ[key][0]
+            tot_filter_samp += len(occ[key][0])
             
         else:
-            tot_samp += occ[key][0]+occ[key][1]
+            tot_samp += len(occ[key][0])+len(occ[key][1])
 
         if(len(occ[key][0]) == 1 and len(occ[key][1]) == 1):
             half_occ+=1
