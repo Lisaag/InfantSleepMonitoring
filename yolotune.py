@@ -9,21 +9,51 @@ from ultralytics import YOLO
 model = YOLO("yolo11l.pt")
 
 # Define search space
-search_space = {'hsv_h':[0.0, 0.1], 'hsv_s':[0.0, 0.9], 'hsv_v':[0.0, 0.9], 'crop_fraction':[0.6, 1.0], 'degrees':[-25.0, 25.0], 'translate':[0.0, 0.4]}
+search_space = {'mosaic':[0.7, 1.0], 'scale':[0.3, 0.7], 'crop_fraction':[0.7, 1.0], 'degrees':[0, 25.0], 'translate':[0.0, 0.3], 'fliplr':[0.3, 0.7]}
 
-# Tune hyperparameters on COCO8 for 30 epochs
+# # Tune hyperparameters on COCO8 for 30 epochs
+# model.tune(
+#     data="SLAPIaabb.yaml",
+#     epochs=50,
+#     imgsz=640, 
+#     scale=0.0,
+#     fliplr=0.0,
+#     mosaic=1.0,
+#     erasing=0.0,
+#     iterations=100,
+#     patience=10,
+#     space=search_space,
+#     plots=False,
+#     save=False,
+#     val=False,
+# )
+
 model.tune(
-    data="SLAPIaabb.yaml",
-    epochs=50,
-    imgsz=640, 
-    scale=0.0,
-    fliplr=0.0,
-    mosaic=1.0,
-    erasing=0.0,
+    data="aug.yaml",
+    epochs=100,
+    imgsz=640,
+    patience=15,
+    device=0,
     iterations=100,
-    patience=10,
-    space=search_space,
     plots=False,
     save=False,
     val=False,
+    auto_augment="randaugment",
+    copy_paste_mode="flip",
+    hsv_h=0.015,
+    hsv_s=0.7,
+    hsv_v=0.4,
+    degrees=0.0,
+    translate=0.1,
+    scale=0.5,
+    shear=0.0,
+    perspective=0.0,
+    flipud=0.0,
+    fliplr=0.5,
+    bgr=0.0,
+    mosaic=1.0,
+    mixup=0.0,
+    copy_paste=0.0,
+    erasing=0.4,
+    crop_fraction=1.0
 )
