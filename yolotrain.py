@@ -10,13 +10,13 @@ model.train(
     device=0,
     plots=True,
     project="runs/AUG",
-    name="sub8-aug",
+    name="sub9-aug",
     auto_augment="randaugment",
     copy_paste_mode="flip",
     hsv_h=0.015,
     hsv_s=0.7,
     hsv_v=0.4,
-    degrees=20,
+    degrees=0.0,
     translate=0.1,
     scale=0.5,
     shear=0.0,
@@ -28,5 +28,5 @@ model.train(
     mixup=0.0,
     copy_paste=0.0,
     erasing=0.4,
-    crop_fraction=1.0
+    crop_fraction=0.8
 )
