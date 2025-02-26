@@ -168,6 +168,9 @@ def create_splits(split_type):
     # curr_split = Split()
     
     occ = defaultdict(lambda:[[], []])
+
+    is_filter = False
+    is_OC = False
     
 
     for i in range(len(df_all)):
@@ -186,13 +189,13 @@ def create_splits(split_type):
         height, width, _ = image.shape  
         x/=width; w/=width; y/=height; h/=height
         class_label = "0"
-        #if(attributes[0]): class_label = "1"
+        if(attributes[0] and is_OC): class_label = "1"
         write_aabb_label(df_all["filename"][i], all_labels_dir, x, y, w, h, class_label)
 
-    tot_filter = 0
-    tot_filter_samp = 0
-    tot_samp = 0
-    half_occ = 0
+    # tot_filter = 0
+    # tot_filter_samp = 0
+    # tot_samp = 0
+    # half_occ = 0
 
     # test_count_closed = 0
     # test_count_open = 0
@@ -202,8 +205,9 @@ def create_splits(split_type):
     # train_count_open = 0
 
 
+   
     for key in occ:
-        if(len(occ[key][1]) == 0):
+        if(len(occ[key][1]) == 0 or not is_filter):
             match = re.search(r'frame_(?:CG_)?(.*)', key)
             patient_id = int(match.group(1)[0:3])
             label_file = re.sub(r'\.jpg$', '', key) + ".txt"
@@ -211,17 +215,17 @@ def create_splits(split_type):
             if(patient_id in test_ids): copy_files(all_images_dir, all_labels_dir, test_images_dir, test_labels_dir, image_filename=key, label_filename=label_file)
             elif(patient_id in val_ids): copy_files(all_images_dir, all_labels_dir, val_images_dir, val_labels_dir, image_filename=key, label_filename=label_file)
             elif(patient_id in train_ids): copy_files(all_images_dir, all_labels_dir, train_images_dir, train_labels_dir, image_filename=key, label_filename=label_file)
-            tot_filter+=1
-            tot_filter_samp += len(occ[key][0])
+        #     tot_filter+=1
+        #     tot_filter_samp += len(occ[key][0])
             
-        else:
-            tot_samp += len(occ[key][0])+len(occ[key][1])
+        # else:
+        #     tot_samp += len(occ[key][0])+len(occ[key][1])
 
-        if(len(occ[key][0]) == 1 and len(occ[key][1]) == 1):
-            half_occ+=1
+        # if(len(occ[key][0]) == 1 and len(occ[key][1]) == 1):
+        #     half_occ+=1
 
-    print(f'Out of {len(occ)} frames: number without any occlusion {tot_filter}, and {len(occ) - tot_filter} with some occlusion, and {half_occ} half/half')
-    print(f'SAMPLES FILTERED DATASET {tot_filter_samp}, SAMPLES COMPLETE DATASET {tot_samp}')
+    #print(f'Out of {len(occ)} frames: number without any occlusion {tot_filter}, and {len(occ) - tot_filter} with some occlusion, and {half_occ} half/half')
+    #print(f'SAMPLES FILTERED DATASET {tot_filter_samp}, SAMPLES COMPLETE DATASET {tot_samp}')
    # print(f'train: O:{train_count_open}-C:{train_count_closed}, val:  O:{val_count_open}-C:{val_count_closed}, test:  O:{test_count_open}-C:{test_count_closed}')
     #print(ids.keys())
           
@@ -253,4 +257,4 @@ def create_splits(split_type):
        label_file = re.sub(r'\.jpg$', '', sample) + ".txt"
        copy_files(all_images_dir, all_labels_dir, test_images_dir, test_labels_dir, image_filename=sample, label_filename=label_file)
 
-create_splits("aug")
+create_splits("occ")
