@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 
 def plot_loss_curve(train_losses, val_losses):
     epochs = range(1, len(train_losses) + 1)
+
+    plt.style.use("seaborn-darkgrid") 
     
     plt.figure(figsize=(8, 5))
     plt.plot(epochs, train_losses, label='Training Loss', marker='o')
