@@ -35,6 +35,7 @@ model.tune(
     patience=15,
     device=0,
     iterations=100,
+    close_mosaic=0,
     plots=False,
     save=False,
     val=False,
