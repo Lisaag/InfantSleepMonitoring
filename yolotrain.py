@@ -7,7 +7,7 @@ model.train(
     epochs=100,
     imgsz=640,
     patience=0,
-    close_mosaic=0,
+    close_mosaic=50,
     device=0,
     plots=True,
     project="runs/AUG",
