@@ -17,9 +17,10 @@ def plot_loss_curve(train_losses, val_losses):
     plt.grid(True)
     plt.savefig(os.path.join(os.path.abspath(os.getcwd()),"tmp.jpg"), format='jpg')   
 
-def get_loss(loss, prev_loss):
-    if(loss=="nan"): return float(prev_loss)
-    else: return float(loss)
+def get_loss(train_metrics, train_box, i):
+    if(i == 0): return 0
+    elif(train_metrics[i]=="nan"): return train_box[i-1]
+    else: return float(train_metrics[i])
 
 
 train_metrics = pd.read_csv(os.path.join(os.path.abspath(os.getcwd()), "runs", "AUG", "default-aug", "results.csv"))
@@ -31,5 +32,7 @@ train_box=[]
 val_box=[]
 
 for i in range(len(train_metrics)):
-    train_box.append(get_loss(train_metrics["train/box_loss"][i], train_metrics["train/box_loss"][i-1]))
-    val_box.append(get_loss(train_metrics["val/box_loss"][i], train_metrics["val/box_loss"][i-1]))
+    train_box.append(get_loss(train_metrics["train/box_loss"], train_box, i))
+    val_box.append(get_loss(train_metrics["val/box_loss"], val_box, i))
+
+plot_loss_curve(train_box, val_box)
