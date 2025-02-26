@@ -11,7 +11,7 @@ model.train(
     device=0,
     plots=True,
     project="runs/AUG",
-    name="sub6-aug",
+    name="sub7-aug",
     auto_augment="randaugment",
     copy_paste_mode="flip",
     hsv_h=0.015,
