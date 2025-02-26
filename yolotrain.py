@@ -6,11 +6,12 @@ model.train(
     data="aug.yaml",
     epochs=100,
     imgsz=640,
-    patience=15,
+    patience=0,
+    close_mosaic=15,
     device=0,
     plots=True,
     project="runs/AUG",
-    name="sub4-aug",
+    name="sub5-aug",
     auto_augment="randaugment",
     copy_paste_mode="flip",
     hsv_h=0.015,
@@ -27,6 +28,6 @@ model.train(
     mosaic=1.0,
     mixup=0.0,
     copy_paste=0.0,
-    erasing=0.0,
+    erasing=0.4,
     crop_fraction=1.0
 )
