@@ -3,7 +3,7 @@ import os
 
 import matplotlib.pyplot as plt
 
-def plot_loss_curve(train_losses, val_losses):
+def plot_loss_curve(train_losses, val_losses, filename):
     epochs = range(1, len(train_losses) + 1)
 
     plt.style.use("seaborn-v0_8-darkgrid") 
@@ -17,7 +17,7 @@ def plot_loss_curve(train_losses, val_losses):
     plt.title('Training and Validation Loss')
     plt.legend()
     plt.grid(True)
-    plt.savefig(os.path.join(os.path.abspath(os.getcwd()),"tmp.jpg"), dpi=300, format='jpg')   
+    plt.savefig(os.path.join(os.path.abspath(os.getcwd()),filename+".jpg"), dpi=300, format='jpg')   
 
 def get_loss(train_metrics, train_box, i):
     if(i == 0): return 0
@@ -37,4 +37,24 @@ for i in range(len(train_metrics)):
     train_box.append(get_loss(train_metrics["train/box_loss"], train_box, i))
     val_box.append(get_loss(train_metrics["val/box_loss"], val_box, i))
 
-plot_loss_curve(train_box, val_box)
+plot_loss_curve(train_box, val_box, "box")
+
+train_box=[]
+val_box=[]
+
+for i in range(len(train_metrics)):
+    train_box.append(get_loss(train_metrics["train/cls_loss"], train_box, i))
+    val_box.append(get_loss(train_metrics["val/cls__loss"], val_box, i))
+
+plot_loss_curve(train_box, val_box, "cls")
+train_box=[]
+val_box=[]
+
+for i in range(len(train_metrics)):
+    train_box.append(get_loss(train_metrics["train/dfl_loss"], train_box, i))
+    val_box.append(get_loss(train_metrics["val/dfl_loss"], val_box, i))
+
+plot_loss_curve(train_box, val_box, "dfl")
+
+
+
