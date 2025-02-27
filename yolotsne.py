@@ -13,7 +13,7 @@ model = YOLO("yolo11l.pt")
 def get_intermediate_features(model, image_path):
     print(f'IMGPTH {image_path}')
     img = torch.load(image_path) 
-    img = img.unsqueeze(0)
+    #img = img.unsqueeze(0)
 
     return 0
     # Forward pass and get features
