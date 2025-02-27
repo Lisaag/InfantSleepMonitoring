@@ -36,6 +36,7 @@ model.tune(
     device=0,
     iterations=100,
     close_mosaic=0,
+    space=search_space,
     plots=False,
     save=False,
     val=False,
