@@ -1,48 +1,25 @@
 import torch
-import numpy as np
-import matplotlib.pyplot as plt
-from sklearn.manifold import TSNE
 from ultralytics import YOLO
 import os
-import glob
-
-#model = YOLO(os.path.join(os.path.abspath(os.getcwd()), "runs", "AUG", "default-aug", "weights", "best.pt"))
 
 model = YOLO("yolo11l.pt")
 
-def get_intermediate_features(model, image_path):
-    print(f'IMGPTH {image_path}')
-    img = torch.load(image_path) 
-    #img = img.unsqueeze(0)
-
-    return 0
-    # Forward pass and get features
-    with torch.no_grad():
-        outputs = model.model(img)
-    
-    # Extract second-last layer features
-    features = outputs[-2].cpu().numpy()  # Adjust indexing if necessary
-    return features
 
 
-pth = os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", "aug", "test", "images", "frame_CG_360_29-03-2022-7.jpg")
-#image_paths = glob.glob(os.path.abspath(os.getcwd()), "datasets", "SLAPI", "aug", "test", "images", "*.jpg")
-# # List of image paths
-get_intermediate_features(model, pth)
-#features_list = [get_intermediate_features(model, img) for img in image_paths]
+image_path = os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", "aug", "test", "images", "frame_CG_360_29-03-2022-7.jpg")
+# Get the penultimate fully connected layer
+def get_penultimate_fc_output(module, input, output):
+    # Save the output of the second-to-last fully connected layer
+    print(output)  # This will print the output of the layer
+
+# Register the hook
+layer_name = 'model.model[-2]'  # This is just an example, you need to identify the right layer
+model.model.model[-2].register_forward_hook(get_penultimate_fc_output)
+
+# Now, run a sample image through the model to get the output
+results = model(image_path)  # Run the image through the model
+
+#model = YOLO(os.path.join(os.path.abspath(os.getcwd()), "runs", "AUG", "default-aug", "weights", "best.pt"))
 
 
-# # Stack features into a numpy array
-# features_array = np.vstack(features_list)
 
-# # Apply t-SNE for dimensionality reduction
-# tsne = TSNE(n_components=2, perplexity=30, random_state=42)
-# tsne_results = tsne.fit_transform(features_array)
-
-# # Plot the t-SNE results
-# plt.figure(figsize=(8, 6))
-# plt.scatter(tsne_results[:, 0], tsne_results[:, 1], alpha=0.7)
-# plt.xlabel("t-SNE Component 1")
-# plt.ylabel("t-SNE Component 2")
-# plt.title("t-SNE Visualization of YOLOv11 Features")
-plt.savefig(os.path.join(os.path.abspath(os.getcwd()),"tsne.jpg"), dpi=300, format='jpg')   
