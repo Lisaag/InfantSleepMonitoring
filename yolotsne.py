@@ -23,20 +23,22 @@ def get_intermediate_features(model, image_path):
 
 path = os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", "aug", "test", "images", "*.jpg")
 image_paths = glob.glob(path)
-# List of image paths
-features_list = [get_intermediate_features(model, img) for img in image_paths]
+print(image_paths)
+# # List of image paths
+# features_list = [get_intermediate_features(model, img) for img in image_paths]
 
-# Stack features into a numpy array
-features_array = np.vstack(features_list)
 
-# Apply t-SNE for dimensionality reduction
-tsne = TSNE(n_components=2, perplexity=30, random_state=42)
-tsne_results = tsne.fit_transform(features_array)
+# # Stack features into a numpy array
+# features_array = np.vstack(features_list)
 
-# Plot the t-SNE results
-plt.figure(figsize=(8, 6))
-plt.scatter(tsne_results[:, 0], tsne_results[:, 1], alpha=0.7)
-plt.xlabel("t-SNE Component 1")
-plt.ylabel("t-SNE Component 2")
-plt.title("t-SNE Visualization of YOLOv11 Features")
+# # Apply t-SNE for dimensionality reduction
+# tsne = TSNE(n_components=2, perplexity=30, random_state=42)
+# tsne_results = tsne.fit_transform(features_array)
+
+# # Plot the t-SNE results
+# plt.figure(figsize=(8, 6))
+# plt.scatter(tsne_results[:, 0], tsne_results[:, 1], alpha=0.7)
+# plt.xlabel("t-SNE Component 1")
+# plt.ylabel("t-SNE Component 2")
+# plt.title("t-SNE Visualization of YOLOv11 Features")
 plt.savefig(os.path.join(os.path.abspath(os.getcwd()),"tsne.jpg"), dpi=300, format='jpg')   
