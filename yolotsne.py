@@ -6,7 +6,9 @@ from ultralytics import YOLO
 import os
 import glob
 
-model = YOLO(os.path.join(os.path.abspath(os.getcwd()), "runs", "AUG", "default-aug", "weights", "best.pt"))
+#model = YOLO(os.path.join(os.path.abspath(os.getcwd()), "runs", "AUG", "default-aug", "weights", "best.pt"))
+
+model = YOLO("yolo11l.pt")
 
 def get_intermediate_features(model, image_path):
     img = torch.load(image_path) 
