@@ -12,7 +12,7 @@ image_path = os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", "au
 # Get the penultimate fully connected layer
 def get_penultimate_fc_output(module, input, output):
     # Save the output of the second-to-last fully connected layer
-    print(f'SHAPE {output.get_shape()}')
+    print(f'SHAPE {output.size()}')
     print(output)  # This will print the output of the layer
     
 
