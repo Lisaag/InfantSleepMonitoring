@@ -18,7 +18,7 @@ def get_penultimate_fc_output(module, input, output):
     
 
 # Register the hook
-model.model.model[-2].register_forward_hook(get_penultimate_fc_output)
+model.model.model[-1].register_forward_hook(get_penultimate_fc_output)
 
 # Now, run a sample image through the model to get the output
 results = model(image_path)  # Run the image through the model
