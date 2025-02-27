@@ -25,10 +25,11 @@ def get_intermediate_features(model, image_path):
     return features
 
 
-path = os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", "aug", "test", "images", "*.jpg")
-image_paths = glob.glob(path)
+pth = os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", "aug", "test", "images", "frame_CG_360_29-03-2022-7.jpg")
+#image_paths = glob.glob(os.path.abspath(os.getcwd()), "datasets", "SLAPI", "aug", "test", "images", "*.jpg")
 # # List of image paths
-features_list = [get_intermediate_features(model, img) for img in image_paths]
+get_intermediate_features(model, pth)
+#features_list = [get_intermediate_features(model, img) for img in image_paths]
 
 
 # # Stack features into a numpy array
