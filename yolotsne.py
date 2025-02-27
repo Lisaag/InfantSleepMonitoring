@@ -14,7 +14,7 @@ def get_penultimate_fc_output(module, input, output):
     # Save the output of the second-to-last fully connected layer
     #print(f'SHAPE {input.size()}')
     #print(input)  # This will print the output of the layer
-    print(module)
+    print(output)
     
 
 # Register the hook
