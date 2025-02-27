@@ -8,10 +8,12 @@ model.train(
     imgsz=640,
     patience=15,
     device=0,
+    amp=False,
     plots=True,
+    close_mosaic=0,
     project="runs/AUG",
-    name="sub9-aug",
-    auto_augment="randaugment",
+    name="sub10-aug",
+    auto_augment="autoaugment",
     copy_paste_mode="flip",
     hsv_h=0.015,
     hsv_s=0.7,
@@ -28,5 +30,5 @@ model.train(
     mixup=0.0,
     copy_paste=0.0,
     erasing=0.4,
-    crop_fraction=0.8
+    crop_fraction=1.0
 )
