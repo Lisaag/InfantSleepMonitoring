@@ -20,6 +20,7 @@ def get_penultimate_fc_output(module, input, output):
     
 
 # Register the hook
+print(f'MODEL {len(model.model.model)}')
 model.model.model[-1].register_forward_hook(get_penultimate_fc_output)
 
 # Now, run a sample image through the model to get the output
