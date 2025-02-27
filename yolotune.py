@@ -40,7 +40,7 @@ model.tune(
     amp=False,
     plots=False,
     save=False,
-    val=False,
+    val=True,
     auto_augment="randaugment",
     copy_paste_mode="flip",
     hsv_h=0.015,
