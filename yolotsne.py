@@ -7,8 +7,8 @@ model = YOLO(os.path.join(os.path.abspath(os.getcwd()), "runs", "AUG", "default-
 
 
 
-#image_path = os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", "aug", "test", "images", "frame_CG_360_29-03-2022-7.jpg")
-image_path = os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", "aug", "test", "images", "frame_417_12-10-2022-47.jpg")
+#image_path = os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", "aug", "test", "images", "frame_CG_360_29-03-2022-7.jpg") # 1 eye
+image_path = os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", "aug", "test", "images", "frame_417_12-10-2022-47.jpg") # 2 eyes
 # Get the penultimate fully connected layer
 def get_penultimate_fc_output(module, input, output):
     # Save the output of the second-to-last fully connected layer
@@ -26,11 +26,11 @@ def get_penultimate_fc_output(module, input, output):
 # # Now, run a sample image through the model to get the output
 # results = model(image_path)  # Run the image through the model
 
-model.predict(
+results = model.predict(
     source = image_path,
     embed = [-1]
 )
 
-
+print(results)
 
 
