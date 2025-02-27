@@ -7,8 +7,8 @@ model = YOLO(os.path.join(os.path.abspath(os.getcwd()), "runs", "AUG", "default-
 
 
 
-#image_path = os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", "aug", "test", "images", "frame_CG_360_29-03-2022-7.jpg") # 1 eye
-image_path = os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", "aug", "test", "images", "frame_417_12-10-2022-47.jpg") # 2 eyes
+image_path = os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", "aug", "test", "images", "frame_CG_360_29-03-2022-7.jpg") # 1 eye
+#image_path = os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", "aug", "test", "images", "frame_417_12-10-2022-47.jpg") # 2 eyes
 # Get the penultimate fully connected layer
 def get_penultimate_fc_output(module, input, output):
     # Save the output of the second-to-last fully connected layer
