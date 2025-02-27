@@ -19,12 +19,17 @@ def get_penultimate_fc_output(module, input, output):
     print(module)
     
 
-# Register the hook
-print(f'MODEL {len(model.model.model)}')
-model.model.model[-1].register_forward_hook(get_penultimate_fc_output)
+# # Register the hook
+# print(f'MODEL {len(model.model.model)}')
+# model.model.model[-1].register_forward_hook(get_penultimate_fc_output)
 
-# Now, run a sample image through the model to get the output
-results = model(image_path)  # Run the image through the model
+# # Now, run a sample image through the model to get the output
+# results = model(image_path)  # Run the image through the model
+
+model.predict(
+    source = image_path,
+    embed = [-1]
+)
 
 
 
