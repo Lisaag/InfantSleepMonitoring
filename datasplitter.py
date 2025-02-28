@@ -7,6 +7,7 @@ import shutil
 import pandas as pd
 import cv2
 import matplotlib.pyplot as plt
+import seaborn as sns
 from collections import defaultdict
 
 def str_to_bool(s: str):
@@ -76,14 +77,16 @@ def get_aabb_from_string(input_string: str):
 
 
 def plot_dataset_info(simple_train, simple_val, dif_train, dif_val, dif_test):
-    
     ticks = [1, 2, 3.5, 4.5, 5.5]
     bar_names = ["train", "val", "train", "val", "test"]
     open = [lst[0] for lst in [simple_train, simple_val, dif_train, dif_val, dif_test]]
     closed = [lst[1] for lst in [simple_train, simple_val, dif_train, dif_val, dif_test]]
 
-    plt.bar(ticks, open, color='r', label='Open', width=1.0, edgecolor = "black")
-    plt.bar(ticks, closed, bottom=open, color='b', label='Closed', width=1.0, edgecolor = "black") 
+    sns.set_style("whitegrid")
+    palette = sns.color_palette("pastel")
+
+    plt.bar(ticks, open, color=palette[0], label='Open', width=1.0, edgecolor = "black")
+    plt.bar(ticks, closed, bottom=open, color=palette[1], label='Closed', width=1.0, edgecolor = "black") 
 
     plt.xticks(ticks, bar_names)
     plt.legend(loc="upper right")
