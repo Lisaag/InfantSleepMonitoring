@@ -77,13 +77,13 @@ def get_aabb_from_string(input_string: str):
 
 
 def plot_dataset_info(simple_train, simple_val, dif_train, dif_val, dif_test):
-    ticks = [1, 2, 3.5, 4.5, 5.5]
+    ticks = [1, 2, 4, 5, 6]
     bar_names = ["train", "val", "train", "val", "test"]
     open = [lst[0] for lst in [simple_train, simple_val, dif_train, dif_val, dif_test]]
     closed = [lst[1] for lst in [simple_train, simple_val, dif_train, dif_val, dif_test]]
 
     sns.set_style("whitegrid")
-    palette = sns.color_palette("Blues")
+    palette = sns.color_palette("Blues", as_cmap=True)
 
     plt.bar(ticks, open, color=palette[0], label='Open', width=1.0, edgecolor = "black")
     plt.bar(ticks, closed, bottom=open, color=palette[1], label='Closed', width=1.0, edgecolor = "black") 
@@ -92,8 +92,8 @@ def plot_dataset_info(simple_train, simple_val, dif_train, dif_val, dif_test):
     plt.gca().xaxis.grid(False)
     plt.legend(loc="upper right")
 
-    group_divider = 2.75
-    plt.axvline(x=group_divider, color='black', linestyle='-', linewidth=1.0)
+    group_divider = 3
+    plt.axvline(x=group_divider, color='grey', linestyle='loosely dashed', linewidth=1.0)
     plt.rcParams['axes.spines.right'] = False
     plt.rcParams['axes.spines.top'] = False
     plt.savefig(os.path.join(os.path.abspath(os.getcwd()),"dataset.jpg"), dpi=300, format='jpg')   
