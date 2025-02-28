@@ -83,7 +83,7 @@ def plot_dataset_info(simple_train, simple_val, dif_train, dif_val, dif_test):
     closed = [lst[1] for lst in [simple_train, simple_val, dif_train, dif_val, dif_test]]
 
     sns.set_style("whitegrid")
-    palette = sns.cubehelix_palette(start=.5, rot=-.6)
+    palette = sns.cubehelix_palette(start=.5, rot=-.5)
 
     plt.bar(ticks, open, color=palette[3], label='Open', width=1.0, edgecolor = '0.3')
     plt.bar(ticks, closed, bottom=open, color=palette[2], label='Closed', width=1.0, edgecolor = '0.3') 
