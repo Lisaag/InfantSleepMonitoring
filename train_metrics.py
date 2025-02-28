@@ -5,14 +5,14 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 
-def plot_loss_curve(train_losses, val_losses, filename, gridsize=5.0):
+def plot_loss_curve(train_losses, val_losses, filename, gridsize=10.0):
     epochs = range(1, len(train_losses) + 1)
 
     sns.set_style("whitegrid")
     
     plt.figure(figsize=(8, 5))
-    plt.plot(epochs, train_losses, label='Training Loss', marker='o', markersize=10)
-    plt.plot(epochs, val_losses, label='Validation Loss', marker='s', markersize=10)
+    plt.plot(epochs, train_losses, label='Training Loss', marker='o', markersize=2)
+    plt.plot(epochs, val_losses, label='Validation Loss', marker='s', markersize=2)
     
     plt.xlabel('Epochs')
     plt.ylabel('Loss')
