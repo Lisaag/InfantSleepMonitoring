@@ -90,7 +90,8 @@ def plot_dataset_info(simple_train, simple_val, dif_train, dif_val, dif_test):
 
     group_divider = 2.75
     plt.axvline(x=group_divider, color='black', linestyle='-', linewidth=1.0)
-
+    plt.rcParams['axes.spines.right'] = False
+    plt.rcParams['axes.spines.top'] = False
     plt.savefig(os.path.join(os.path.abspath(os.getcwd()),"dataset.jpg"), dpi=300, format='jpg')   
    
 
