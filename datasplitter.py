@@ -203,8 +203,8 @@ def create_splits(split_type):
 
                         
     if(plot_info):
-        print(f'Simple set: train:{len(s_tr_p)}-{len(s_train[0])+len(s_train[1])}    val:{len(s_va_p)}-{len(s_val[0])+len(s_val[1])}')
-        print(f'Diff set: train:{len(d_tr_p)}-{len(d_train[0])+len(d_train[1])}    val:{len(d_va_p)}-{len(d_val[0])+len(d_val[1])}     test:{len(d_te_p)}-{len(d_test[0])+len(d_test[1])}')
+        print(f'Simple set: train:{len(s_tr_p)}-{s_train[0]+s_train[1]}    val:{len(s_va_p)}-{s_val[0]+s_val[1]}')
+        print(f'Diff set: train:{d_tr_p}-{d_train[0]+d_train[1]}    val:{d_va_p}-{d_val[0]+d_val[1]}     test:{d_te_p}-{d_test[0]+d_test[1]}')
         plot_dataset_info(s_train, s_val, d_train, d_val, d_test)
 
 
