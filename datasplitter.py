@@ -76,12 +76,16 @@ def get_aabb_from_string(input_string: str):
 
 
 def plot_dataset_info(simple_train, simple_val, dif_train, dif_val, dif_test):
+    
+    ticks = [1, 2, 3, 4, 5]
     bar_names = ["train", "val", "dtrain", "dval", "dtest"]
     open = [lst[0] for lst in [simple_train, simple_val, dif_train, dif_val, dif_test]]
     closed = [lst[1] for lst in [simple_train, simple_val, dif_train, dif_val, dif_test]]
 
-    plt.bar(bar_names, open, color='r')
-    plt.bar(bar_names, closed, bottom=open, color='b') 
+    plt.bar(ticks, open, color='r')
+    plt.bar(ticks, closed, bottom=open, color='b') 
+
+    plt.set_xticks(ticks, bar_names)
 
     plt.savefig(os.path.join(os.path.abspath(os.getcwd()),"dataset.jpg"), dpi=300, format='jpg')   
    
