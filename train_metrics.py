@@ -2,22 +2,24 @@ import pandas as pd
 import os
 
 import matplotlib.pyplot as plt
+import seaborn as sns
 
-def plot_loss_curve(train_losses, val_losses, filename):
+
+def plot_loss_curve(train_losses, val_losses, filename, gridsize=5.0):
     epochs = range(1, len(train_losses) + 1)
 
-    plt.style.use("seaborn-v0_8-darkgrid") 
+    sns.set_style("whitegrid")
     
     plt.figure(figsize=(8, 5))
-    plt.plot(epochs, train_losses, label='Training Loss', marker='o')
-    plt.plot(epochs, val_losses, label='Validation Loss', marker='s')
+    plt.plot(epochs, train_losses, label='Training Loss', marker='o', markersize=10)
+    plt.plot(epochs, val_losses, label='Validation Loss', marker='s', markersize=10)
     
     plt.xlabel('Epochs')
     plt.ylabel('Loss')
     plt.title('Training and Validation Loss')
     plt.legend()
     plt.grid(True)
-    plt.ylim(0, 2.5)
+    plt.ylim(0, gridsize)
     plt.savefig(os.path.join(os.path.abspath(os.getcwd()),"train_plots", filename+".jpg"), dpi=300, format='jpg')   
 
 def get_loss(train_metrics, train_box, i):
