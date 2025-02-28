@@ -18,7 +18,7 @@ def plot_loss_curve(train_losses, val_losses, filename):
     plt.legend()
     plt.grid(True)
     plt.ylim(0, 2.5)
-    plt.savefig(os.path.join(os.path.abspath(os.getcwd()),filename+".jpg"), dpi=300, format='jpg')   
+    plt.savefig(os.path.join(os.path.abspath(os.getcwd()),"train_plots", filename+".jpg"), dpi=300, format='jpg')   
 
 def get_loss(train_metrics, train_box, i):
     if(i == 0): return 0
