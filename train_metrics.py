@@ -66,7 +66,7 @@ for i in range(len(train_metrics)):
     train_box.append(get_loss(train_metrics["train/cls_loss"], train_box, i))
     val_box.append(get_loss(train_metrics["val/cls_loss"], val_box, i))
 
-plot_loss_curve(train_box, val_box, "cls", 2
+plot_loss_curve(train_box, val_box, "cls", 2)
 train_box=[]
 val_box=[]
 
