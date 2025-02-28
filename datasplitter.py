@@ -145,6 +145,8 @@ def create_splits(split_type):
     d_train = [0, 0]; d_val = [0, 0]; d_test = [0, 0]
     s_tr_p =set();s_va_p=set()
     d_tr_p =set();d_va_p=set();d_te_p=set()
+    key_s_tr_p =set();key_s_va_p=set()
+    key_d_tr_p =set();key_d_va_p=set();key_d_te_p=set()
     
 
     for i in range(len(df_all)):
@@ -177,22 +179,27 @@ def create_splits(split_type):
                 for eye in data_info[key][0] + data_info[key][1]:
                     if(patient_id in train_ids):
                         d_tr_p.add(patient_id)
+                        key_d_tr_p.add(key)
                         if(eye): d_train[0] +=1
                         else: d_train[1]+=1
                         if(len(data_info[key][1]) == 0):
                             s_tr_p.add(patient_id)
+                            key_s_tr_p.add(key)
                             if(eye): s_train[0] +=1
                             else: s_train[1]+=1
                     elif(patient_id in val_ids):
                         d_va_p.add(patient_id)
+                        key_d_va_p.add(key)
                         if(eye): d_val[0] +=1
                         else: d_val[1]+=1                        
                         if(len(data_info[key][1]) == 0):
                             s_va_p.add(patient_id)
+                            key_s_va_p.add(key)
                             if(eye): s_val[0] +=1
                             else: s_val[1]+=1   
                     elif(patient_id in test_ids):
                         d_te_p.add(patient_id)
+                        key_d_te_p.add(key)
                         if(eye): d_test[0] +=1
                         else: d_test[1]+=1                     
         else:
@@ -203,8 +210,8 @@ def create_splits(split_type):
 
                         
     if(plot_info):
-        print(f'Simple set: train:{len(s_tr_p)}-{s_train[0]+s_train[1]}    val:{len(s_va_p)}-{s_val[0]+s_val[1]}')
-        print(f'Diff set: train:{len(d_tr_p)}-{d_train[0]+d_train[1]}    val:{len(d_va_p)}-{d_val[0]+d_val[1]}     test:{len(d_te_p)}-{d_test[0]+d_test[1]}')
+        print(f'Simple set: train:{len(s_tr_p)}-{len(key_s_tr_p)}-{s_train[0]+s_train[1]}    val:{len(s_va_p)}-{len(key_s_va_p)}-{s_val[0]+s_val[1]}')
+        print(f'Diff set: train:{len(d_tr_p)}-{len(key_d_tr_p)}-{d_train[0]+d_train[1]}    val:{len(d_va_p)}-{len(key_d_va_p)}-{d_val[0]+d_val[1]}     test:{len(d_te_p)}-{len(key_d_te_p)}-{d_test[0]+d_test[1]}')
         plot_dataset_info(s_train, s_val, d_train, d_val, d_test)
 
 
