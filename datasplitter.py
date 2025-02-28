@@ -143,6 +143,8 @@ def create_splits(split_type):
 
     s_train = [0, 0]; s_val = [0, 0]
     d_train = [0, 0]; d_val = [0, 0]; d_test = [0, 0]
+    s_tr_p =set();s_va_p=set()
+    d_tr_p =set();d_va_p=set();d_te_p=set()
     
 
     for i in range(len(df_all)):
@@ -165,6 +167,8 @@ def create_splits(split_type):
             if(attributes[0] and is_OC): class_label = "1"
             write_aabb_label(df_all["filename"][i], all_labels_dir, x, y, w, h, class_label)
 
+
+
     for key in data_info:
         match = re.search(r'frame_(?:CG_)?(.*)', key)
         patient_id = int(match.group(1)[0:3])
@@ -172,18 +176,23 @@ def create_splits(split_type):
         if(plot_info):
                 for eye in data_info[key][0] + data_info[key][1]:
                     if(patient_id in train_ids):
+                        d_tr_p.add(patient_id)
                         if(eye): d_train[0] +=1
                         else: d_train[1]+=1
                         if(len(data_info[key][1]) == 0):
+                            s_tr_p.add(patient_id)
                             if(eye): s_train[0] +=1
                             else: s_train[1]+=1
                     elif(patient_id in val_ids):
+                        s_va_p.add(patient_id)
                         if(eye): d_val[0] +=1
                         else: d_val[1]+=1                        
                         if(len(data_info[key][1]) == 0):
+                            s_va_p.add(patient_id)
                             if(eye): s_val[0] +=1
                             else: s_val[1]+=1   
                     elif(patient_id in test_ids):
+                        s_te_p.add(patient_id)
                         if(eye): d_test[0] +=1
                         else: d_test[1]+=1                     
         else:
@@ -194,6 +203,8 @@ def create_splits(split_type):
 
                         
     if(plot_info):
+        print(f'Simple set: train:{len(s_tr_p)}-{len(s_train)}    val:{len(s_va_p)}-{len(s_val)}')
+        print(f'Diff set: train:{len(d_tr_p)}-{len(d_train)}    val:{len(d_va_p)}-{len(d_val)}     test:{len(d_te_p)}-{len(d_test)}')
         plot_dataset_info(s_train, s_val, d_train, d_val, d_test)
 
 
