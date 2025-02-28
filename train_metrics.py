@@ -11,16 +11,16 @@ def plot_loss_curve(train_losses, val_losses, filename, gridsize=10.0):
     sns.set_style("whitegrid")
     
     plt.figure(figsize=(8, 5))
-    plt.plot(epochs, train_losses, label='Training Loss', marker='o', markersize=2)
-    plt.plot(epochs, val_losses, label='Validation Loss', marker='s', markersize=2)
+    plt.plot(epochs, train_losses, label='Training Loss', marker='o', markersize=4)
+    plt.plot(epochs, val_losses, label='Validation Loss', marker='s', markersize=4)
     
     plt.xlabel('Epochs')
     plt.ylabel('Loss')
-    plt.title('Training and Validation Loss')
+    plt.title(f'Training and validation {filename} loss')
     plt.legend()
     plt.grid(True)
     plt.ylim(0, gridsize)
-    plt.savefig(os.path.join(os.path.abspath(os.getcwd()),"train_plots", filename+".jpg"), dpi=300, format='jpg')   
+    plt.savefig(os.path.join(os.path.abspath(os.getcwd()),"train_plots", filename+".jpg"), dpi=500, format='jpg')   
 
 def get_loss(train_metrics, train_box, i):
     if(i == 0): return 0
@@ -40,7 +40,7 @@ for i in range(len(train_metrics)):
     train_box.append(get_loss(train_metrics["train/box_loss"], train_box, i))
     val_box.append(get_loss(train_metrics["val/box_loss"], val_box, i))
 
-plot_loss_curve(train_box, val_box, "box")
+plot_loss_curve(train_box, val_box, "box", 6)
 
 train_box=[]
 val_box=[]
@@ -49,7 +49,7 @@ for i in range(len(train_metrics)):
     train_box.append(get_loss(train_metrics["train/cls_loss"], train_box, i))
     val_box.append(get_loss(train_metrics["val/cls_loss"], val_box, i))
 
-plot_loss_curve(train_box, val_box, "cls")
+plot_loss_curve(train_box, val_box, "cls", 4.5)
 train_box=[]
 val_box=[]
 
@@ -57,7 +57,7 @@ for i in range(len(train_metrics)):
     train_box.append(get_loss(train_metrics["train/dfl_loss"], train_box, i))
     val_box.append(get_loss(train_metrics["val/dfl_loss"], val_box, i))
 
-plot_loss_curve(train_box, val_box, "dfl")
+plot_loss_curve(train_box, val_box, "dfl", 3)
 
 
 
