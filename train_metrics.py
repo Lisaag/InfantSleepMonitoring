@@ -34,7 +34,7 @@ def plot_metrics_curve(metric_vals, filename):
     plt.ylabel('Loss')
     plt.title(filename)
     plt.grid(True)
-    plt.ylim(0, metric_vals.max())
+    plt.ylim(0, metric_vals.max() + 0.01)
     plt.savefig(os.path.join(os.path.abspath(os.getcwd()),"train_plots", filename+".jpg"), dpi=500, format='jpg') 
 
   
