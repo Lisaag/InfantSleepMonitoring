@@ -192,7 +192,7 @@ def create_splits(split_type):
                             if(eye): s_val[0] +=1
                             else: s_val[1]+=1   
                     elif(patient_id in test_ids):
-                        s_te_p.add(patient_id)
+                        d_te_p.add(patient_id)
                         if(eye): d_test[0] +=1
                         else: d_test[1]+=1                     
         else:
