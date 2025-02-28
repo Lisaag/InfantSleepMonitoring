@@ -85,8 +85,8 @@ def plot_dataset_info(simple_train, simple_val, dif_train, dif_val, dif_test):
     sns.set_style("whitegrid")
     palette = sns.color_palette("Blues")
 
-    plt.bar(ticks, open, color=palette[0], label='Open', width=1.0, edgecolor = "black")
-    plt.bar(ticks, closed, bottom=open, color=palette[5], label='Closed', width=1.0, edgecolor = "black") 
+    plt.bar(ticks, open, color=palette[4], label='Open', width=1.0, edgecolor = "black")
+    plt.bar(ticks, closed, bottom=open, color=palette[2], label='Closed', width=1.0, edgecolor = "black") 
 
     plt.xticks(ticks, bar_names)
     plt.gca().xaxis.grid(False)
@@ -94,8 +94,10 @@ def plot_dataset_info(simple_train, simple_val, dif_train, dif_val, dif_test):
 
     group_divider = 3
     plt.axvline(x=group_divider, color='grey', linestyle='--', linewidth=1.0)
-    plt.rcParams['axes.spines.right'] = False
-    plt.rcParams['axes.spines.top'] = False
+    
+    plt.text(1.5, -2, "Simple dataset", ha='center', va='center', fontsize=12)
+    plt.text(5.0, -2, "Difficult dataset", ha='center', va='center', fontsize=12)
+
     plt.savefig(os.path.join(os.path.abspath(os.getcwd()),"dataset.jpg"), dpi=300, format='jpg')   
    
 
