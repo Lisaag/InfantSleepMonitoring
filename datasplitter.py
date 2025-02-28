@@ -6,7 +6,7 @@ import re
 import shutil
 import pandas as pd
 import cv2
-import matplotlib as plt
+import matplotlib.pyplot as plt
 from collections import defaultdict
 
 def str_to_bool(s: str):
