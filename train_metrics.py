@@ -22,7 +22,7 @@ def plot_loss_curve(train_losses, val_losses, filename, gridsize=10.0):
     plt.ylim(0, gridsize)
     plt.savefig(os.path.join(os.path.abspath(os.getcwd()),"train_plots", filename+".jpg"), dpi=500, format='jpg') 
 
-def plot_metrics_curve(metric_vals, filename, gridsize=10.0):
+def plot_metrics_curve(metric_vals, filename):
     epochs = range(1, len(metric_vals) + 1)
 
     sns.set_style("whitegrid")
@@ -34,7 +34,7 @@ def plot_metrics_curve(metric_vals, filename, gridsize=10.0):
     plt.ylabel('Loss')
     plt.title(filename)
     plt.grid(True)
-    plt.ylim(0, gridsize)
+    plt.ylim(0, metric_vals.max())
     plt.savefig(os.path.join(os.path.abspath(os.getcwd()),"train_plots", filename+".jpg"), dpi=500, format='jpg') 
 
   
@@ -76,10 +76,10 @@ for i in range(len(train_metrics)):
 
 plot_loss_curve(train_box, val_box, "dfl", 3)
 
-plot_metrics_curve(train_metrics["metrics/precision(B)"], "Precision", 1)
-plot_metrics_curve(train_metrics["metrics/recall(B)"], "Recall", 1)
-plot_metrics_curve(train_metrics["metrics/mAP50(B)"], "mAP50", 1)
-plot_metrics_curve(train_metrics["metrics/mAP50-95(B)"], "mAp50-95", 1)
+plot_metrics_curve(train_metrics["metrics/precision(B)"], "Precision")
+plot_metrics_curve(train_metrics["metrics/recall(B)"], "Recall")
+plot_metrics_curve(train_metrics["metrics/mAP50(B)"], "mAP50")
+plot_metrics_curve(train_metrics["metrics/mAP50-95(B)"], "mAp50-95")
 
 
 
