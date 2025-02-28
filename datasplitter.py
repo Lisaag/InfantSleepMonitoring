@@ -215,4 +215,4 @@ def create_splits(split_type):
         plot_dataset_info(s_train, s_val, d_train, d_val, d_test)
 
 
-create_splits("OC")
+create_splits("open-closed")
