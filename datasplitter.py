@@ -85,7 +85,7 @@ def plot_dataset_info(simple_train, simple_val, dif_train, dif_val, dif_test):
     plt.bar(ticks, open, color='r')
     plt.bar(ticks, closed, bottom=open, color='b') 
 
-    plt.set_xticks(ticks, bar_names)
+    plt.xticks(ticks, bar_names)
 
     plt.savefig(os.path.join(os.path.abspath(os.getcwd()),"dataset.jpg"), dpi=300, format='jpg')   
    
