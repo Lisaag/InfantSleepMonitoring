@@ -76,10 +76,10 @@ for i in range(len(train_metrics)):
 
 plot_loss_curve(train_box, val_box, "dfl", 3)
 
-plot_metrics_curve(train_metrics["metrics/precision(B)"], "Precision", 10)
-plot_metrics_curve(train_metrics["metrics/recall(B)"], "Recall", 10)
-plot_metrics_curve(train_metrics["metrics/mAP50(B)"], "mAP50", 10)
-plot_metrics_curve(train_metrics["metrics/mAP50-95(B)"], "mAp50-95", 10)
+plot_metrics_curve(train_metrics["metrics/precision(B)"], "Precision", 1)
+plot_metrics_curve(train_metrics["metrics/recall(B)"], "Recall", 1)
+plot_metrics_curve(train_metrics["metrics/mAP50(B)"], "mAP50", 1)
+plot_metrics_curve(train_metrics["metrics/mAP50-95(B)"], "mAp50-95", 1)
 
 
 
