@@ -57,7 +57,7 @@ for i in range(len(train_metrics)):
     train_box.append(get_loss(train_metrics["train/box_loss"], train_box, i))
     val_box.append(get_loss(train_metrics["val/box_loss"], val_box, i))
 
-plot_loss_curve(train_box, val_box, "box", 6)
+plot_loss_curve(train_box, val_box, "box", 4)
 
 train_box=[]
 val_box=[]
@@ -66,7 +66,7 @@ for i in range(len(train_metrics)):
     train_box.append(get_loss(train_metrics["train/cls_loss"], train_box, i))
     val_box.append(get_loss(train_metrics["val/cls_loss"], val_box, i))
 
-plot_loss_curve(train_box, val_box, "cls", 4.5)
+plot_loss_curve(train_box, val_box, "cls", 2
 train_box=[]
 val_box=[]
 
@@ -74,7 +74,7 @@ for i in range(len(train_metrics)):
     train_box.append(get_loss(train_metrics["train/dfl_loss"], train_box, i))
     val_box.append(get_loss(train_metrics["val/dfl_loss"], val_box, i))
 
-plot_loss_curve(train_box, val_box, "dfl", 3)
+plot_loss_curve(train_box, val_box, "dfl", 2)
 
 plot_metrics_curve(train_metrics["metrics/precision(B)"], "Precision")
 plot_metrics_curve(train_metrics["metrics/recall(B)"], "Recall")
