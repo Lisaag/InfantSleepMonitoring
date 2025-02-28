@@ -112,8 +112,8 @@ def write_aabb_label(file_name, dir_name, x, y, w, h, object_class):
 
 def create_splits(split_type):
     is_filter = False
-    is_OC = False
-    plot_info = True
+    is_OC = True
+    plot_info = False
 
     train_labels_dir = os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", split_type, "train", "labels")
     train_images_dir = os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", split_type, "train", "images")
@@ -215,4 +215,4 @@ def create_splits(split_type):
         plot_dataset_info(s_train, s_val, d_train, d_val, d_test)
 
 
-create_splits("aug")
+create_splits("OC")
