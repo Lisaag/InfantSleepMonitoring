@@ -11,9 +11,7 @@ from dataclasses import dataclass, field
 from typing import List
 import math
 import cv2
-
-import dataaugmenter
-
+import matplotlib as plt
 from collections import defaultdict
 
 #directories
@@ -119,6 +117,20 @@ def get_aabb_from_string(input_string: str):
         print(input_string)
         return None
 
+
+def plot_dataset_info(simple_train, simple_val, dif_train, dif_val, dif_test):
+    bar_names = ["train", "val", "train", "val", "test"]
+    open = [lst[0] for lst in [simple_train, simple_val, dif_train, dif_val, dif_test]]
+    closed = [lst[1] for lst in [simple_train, simple_val, dif_train, dif_val, dif_test]]
+
+    plt.bar(bar_names, open, color='r')
+    plt.bar(bar_names, closed, bottom=open, color='b') 
+
+    plt.savefig(os.path.join(os.path.abspath(os.getcwd()),"dataset.jpg"), dpi=300, format='jpg')   
+   
+
+
+
 #write aabb label in YOLO format
 def write_aabb_label(file_name, dir_name, x, y, w, h, object_class):
     file_name = re.sub(r'\.jpg$', '', file_name)
@@ -144,8 +156,6 @@ def create_splits(split_type):
     global all_images_dir
     all_images_dir = os.path.join(os.path.abspath(os.getcwd()), "datasets", "SLAPI", "raw", "images")
 
-    aug_labels_dir = os.path.join(os.path.abspath(os.getcwd()), "datasets","SLAPI", "raw", "aug", "labels")
-    aug_images_dir = os.path.join(os.path.abspath(os.getcwd()), "datasets","SLAPI", "raw", "aug", "images")
 
     delete_files_in_directory(train_labels_dir)
     delete_files_in_directory(test_labels_dir)
@@ -205,16 +215,44 @@ def create_splits(split_type):
     # train_count_open = 0
 
 
-   
+    plot_info = True
+    s_train = [0, 0]; s_val = [0, 0]
+    d_train = [0, 0]; d_val = [0, 0]; d_test = [0, 0]
     for key in occ:
-        if(len(occ[key][1]) == 0 or not is_filter):
-            match = re.search(r'frame_(?:CG_)?(.*)', key)
-            patient_id = int(match.group(1)[0:3])
-            label_file = re.sub(r'\.jpg$', '', key) + ".txt"
+        match = re.search(r'frame_(?:CG_)?(.*)', key)
+        patient_id = int(match.group(1)[0:3])
+        label_file = re.sub(r'\.jpg$', '', key) + ".txt"
+        if(plot_info):
+                for eye in occ[key][0] + occ[key][1]:
+                    if(patient_id in train_ids):
+                        if(eye): d_train[0] +=1
+                        else: d_train[1]+=1
+                        if(len(occ[key][1]) == 0):
+                            if(eye): s_train[0] +=1
+                            else: s_train[1]+=1
+                    elif(patient_id in val_ids):
+                        if(eye): d_val[0] +=1
+                        else: d_val[1]+=1                        
+                        if(len(occ[key][1]) == 0):
+                            if(eye): s_val[0] +=1
+                            else: s_val[1]+=1   
+                    elif(patient_id in test_ids):
+                        if(eye): d_test[0] +=1
+                        else: d_test[1]+=1                     
+        else:
+            if(len(occ[key][1]) == 0 or not is_filter):
+                if(patient_id in test_ids): copy_files(all_images_dir, all_labels_dir, test_images_dir, test_labels_dir, image_filename=key, label_filename=label_file)
+                elif(patient_id in val_ids): copy_files(all_images_dir, all_labels_dir, val_images_dir, val_labels_dir, image_filename=key, label_filename=label_file)
+                elif(patient_id in train_ids): copy_files(all_images_dir, all_labels_dir, train_images_dir, train_labels_dir, image_filename=key, label_filename=label_file)
 
-            if(patient_id in test_ids): copy_files(all_images_dir, all_labels_dir, test_images_dir, test_labels_dir, image_filename=key, label_filename=label_file)
-            elif(patient_id in val_ids): copy_files(all_images_dir, all_labels_dir, val_images_dir, val_labels_dir, image_filename=key, label_filename=label_file)
-            elif(patient_id in train_ids): copy_files(all_images_dir, all_labels_dir, train_images_dir, train_labels_dir, image_filename=key, label_filename=label_file)
+                        
+    if(plot_info):
+        plot_dataset_info(s_train, s_val, d_train, d_val, d_test)
+
+
+
+
+    
         #     tot_filter+=1
         #     tot_filter_samp += len(occ[key][0])
             
@@ -257,4 +295,4 @@ def create_splits(split_type):
        label_file = re.sub(r'\.jpg$', '', sample) + ".txt"
        copy_files(all_images_dir, all_labels_dir, test_images_dir, test_labels_dir, image_filename=sample, label_filename=label_file)
 
-create_splits("occ")
+create_splits("aug")
