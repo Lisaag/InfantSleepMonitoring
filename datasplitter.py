@@ -184,7 +184,7 @@ def create_splits(split_type):
                             if(eye): s_train[0] +=1
                             else: s_train[1]+=1
                     elif(patient_id in val_ids):
-                        s_va_p.add(patient_id)
+                        d_va_p.add(patient_id)
                         if(eye): d_val[0] +=1
                         else: d_val[1]+=1                        
                         if(len(data_info[key][1]) == 0):
@@ -203,8 +203,8 @@ def create_splits(split_type):
 
                         
     if(plot_info):
-        print(f'Simple set: train:{len(s_tr_p)}-{len(s_train)}    val:{len(s_va_p)}-{len(s_val)}')
-        print(f'Diff set: train:{len(d_tr_p)}-{len(d_train)}    val:{len(d_va_p)}-{len(d_val)}     test:{len(d_te_p)}-{len(d_test)}')
+        print(f'Simple set: train:{len(s_tr_p)}-{len(s_train[0])+len(s_train[1])}    val:{len(s_va_p)}-{len(s_val[0])+len(s_val[1])}')
+        print(f'Diff set: train:{len(d_tr_p)}-{len(d_train[0])+len(d_train[1])}    val:{len(d_va_p)}-{len(d_val[0])+len(d_val[1])}     test:{len(d_te_p)}-{len(d_test[0])+len(d_test[1])}')
         plot_dataset_info(s_train, s_val, d_train, d_val, d_test)
 
 
