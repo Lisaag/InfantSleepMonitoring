@@ -82,13 +82,14 @@ def plot_dataset_info(simple_train, simple_val, dif_train, dif_val, dif_test):
     open = [lst[0] for lst in [simple_train, simple_val, dif_train, dif_val, dif_test]]
     closed = [lst[1] for lst in [simple_train, simple_val, dif_train, dif_val, dif_test]]
 
-    sns.set_style("whitegrid", {'axes.grid': False})
+    sns.set_style("whitegrid")
     palette = sns.color_palette("Blues")
 
     plt.bar(ticks, open, color=palette[0], label='Open', width=1.0, edgecolor = "black")
     plt.bar(ticks, closed, bottom=open, color=palette[1], label='Closed', width=1.0, edgecolor = "black") 
 
     plt.xticks(ticks, bar_names)
+    plt.gca().xaxis.grid(False)
     plt.legend(loc="upper right")
 
     group_divider = 2.75
