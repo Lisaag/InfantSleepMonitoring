@@ -88,6 +88,9 @@ def plot_dataset_info(simple_train, simple_val, dif_train, dif_val, dif_test):
     plt.xticks(ticks, bar_names)
     plt.legend(loc="upper right")
 
+    group_divider = 1.5 
+    plt.axvline(x=group_divider, color='black', linestyle='--', linewidth=1.5)
+
     plt.savefig(os.path.join(os.path.abspath(os.getcwd()),"dataset.jpg"), dpi=300, format='jpg')   
    
 
