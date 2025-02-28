@@ -82,8 +82,8 @@ def plot_dataset_info(simple_train, simple_val, dif_train, dif_val, dif_test):
     open = [lst[0] for lst in [simple_train, simple_val, dif_train, dif_val, dif_test]]
     closed = [lst[1] for lst in [simple_train, simple_val, dif_train, dif_val, dif_test]]
 
-    plt.bar(ticks, open, color='r', label='Open')
-    plt.bar(ticks, closed, bottom=open, color='b', label='Closed') 
+    plt.bar(ticks, open, color='r', label='Open', width=1.0)
+    plt.bar(ticks, closed, bottom=open, color='b', label='Closed', width=1.0) 
 
     plt.xticks(ticks, bar_names)
     plt.legend(loc="upper right")
