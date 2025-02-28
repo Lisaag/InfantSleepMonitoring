@@ -82,10 +82,11 @@ def plot_dataset_info(simple_train, simple_val, dif_train, dif_val, dif_test):
     open = [lst[0] for lst in [simple_train, simple_val, dif_train, dif_val, dif_test]]
     closed = [lst[1] for lst in [simple_train, simple_val, dif_train, dif_val, dif_test]]
 
-    plt.bar(ticks, open, color='r')
-    plt.bar(ticks, closed, bottom=open, color='b') 
+    plt.bar(ticks, open, color='r', label='Open')
+    plt.bar(ticks, closed, bottom=open, color='b', label='Closed') 
 
     plt.xticks(ticks, bar_names)
+    plt.legend(loc="upper right")
 
     plt.savefig(os.path.join(os.path.abspath(os.getcwd()),"dataset.jpg"), dpi=300, format='jpg')   
    
