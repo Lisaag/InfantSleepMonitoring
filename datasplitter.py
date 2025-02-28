@@ -98,7 +98,7 @@ def plot_dataset_info(simple_train, simple_val, dif_train, dif_val, dif_test):
     plt.text(1.5, -120, "Simple dataset", ha='center', va='center', fontsize=10, color='0.8', weight=700)
     plt.text(5.0, -120, "Difficult dataset", ha='center', va='center', fontsize=10, color='0.8', weight=700)
 
-    plt.savefig(os.path.join(os.path.abspath(os.getcwd()),"dataset.jpg"), dpi=300, format='jpg')   
+    plt.savefig(os.path.join(os.path.abspath(os.getcwd()),"dataset.jpg"), dpi=500, format='jpg')   
    
 
 
