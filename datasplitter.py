@@ -82,13 +82,13 @@ def plot_dataset_info(simple_train, simple_val, dif_train, dif_val, dif_test):
     open = [lst[0] for lst in [simple_train, simple_val, dif_train, dif_val, dif_test]]
     closed = [lst[1] for lst in [simple_train, simple_val, dif_train, dif_val, dif_test]]
 
-    plt.bar(ticks, open, color='r', label='Open', width=1.0)
-    plt.bar(ticks, closed, bottom=open, color='b', label='Closed', width=1.0) 
+    plt.bar(ticks, open, color='r', label='Open', width=1.0, edgecolor = "black")
+    plt.bar(ticks, closed, bottom=open, color='b', label='Closed', width=1.0, edgecolor = "black") 
 
     plt.xticks(ticks, bar_names)
     plt.legend(loc="upper right")
 
-    group_divider = 2.5 
+    group_divider = 2.75
     plt.axvline(x=group_divider, color='black', linestyle='-', linewidth=1.0)
 
     plt.savefig(os.path.join(os.path.abspath(os.getcwd()),"dataset.jpg"), dpi=300, format='jpg')   
