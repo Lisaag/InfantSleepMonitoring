@@ -4,6 +4,7 @@ model = YOLO("yolo11l.pt")
 
 model.train(
     data="occ.yaml",
+    seed=26,
     epochs=100,
     imgsz=640,
     patience=15,
@@ -12,7 +13,7 @@ model.train(
     plots=True,
     close_mosaic=0,
     project="runs/OCC",
-    name="occ2",
+    name="occ3",
     auto_augment="randaugment",
     copy_paste_mode="flip",
     hsv_h=0.015,
