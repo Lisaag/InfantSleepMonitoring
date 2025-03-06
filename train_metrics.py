@@ -68,7 +68,7 @@ train_metrics = pd.read_csv(os.path.join(os.path.abspath(os.getcwd()), "runs", "
 
 plot_loss_curve(train_metrics["train/box_loss"], train_metrics["val/box_loss"], "box", 3.5)
 plot_loss_curve(train_metrics["train/cls_loss"], train_metrics["val/cls_loss"], "cls", 1.7)
-plot_loss_curve(train_metrics["train/dfl_loss"], train_metrics["val/dfl_loss"], "dfl", 1.5)
+plot_loss_curve(train_metrics["train/dfl_loss"], train_metrics["val/dfl_loss"], "dfl", 1.3)
 
 # train_box=[]
 # val_box=[]
