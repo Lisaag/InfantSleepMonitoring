@@ -4,7 +4,7 @@ import seaborn as sns
 import numpy as np
 
 def plot_confusion_matrix():
-    data = np.array([[437, 13], [30, 0]])
+    data = [[437, 13], [30, np.nan]]
 
     sns.set_theme(font_scale=1.0)  # for label size
     # 4. Plot confusion matrix using seaborn for better visualization
