@@ -4,6 +4,8 @@ import os
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+import numpy as np
+
 
 def plot_loss_curve(train_losses, val_losses, filename, gridsize=10.0):
     epochs = range(1, len(train_losses) + 1)
@@ -22,7 +24,8 @@ def plot_loss_curve(train_losses, val_losses, filename, gridsize=10.0):
     plt.legend()
     plt.grid(True)
     print(all_losses.min())
-    plt.ylim(all_losses.min(), gridsize)
+    plt.ylim(train_losses.min(), gridsize)
+    plt.yticks(np.linspace(all_losses.min(), gridsize, 10))  
     plt.savefig(os.path.join(os.path.abspath(os.getcwd()),"train_plots", filename+".jpg"), dpi=500, format='jpg') 
 
 def plot_metrics_curve(metric_vals, filename):
