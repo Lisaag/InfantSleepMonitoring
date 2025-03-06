@@ -5,7 +5,7 @@ import numpy as np
 
 def plot_confusion_matrix():
     data =[[437, 13], [30, 0]]
-    mask = data == 0
+    mask = [[False, False], [False, True]]
 
     # 4. Plot confusion matrix using seaborn for better visualization
     plt.figure(figsize=(10, 7))
