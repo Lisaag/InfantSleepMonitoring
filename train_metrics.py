@@ -10,7 +10,7 @@ import numpy as np
 def plot_loss_curve(train_losses, val_losses, filename, gridsize=10.0):
     epochs = range(1, len(train_losses) + 1)
 
-    all_losses = train_losses + val_losses
+    all_losses = [*train_losses, *val_losses]
 
     sns.set_style("whitegrid")
     
@@ -25,7 +25,7 @@ def plot_loss_curve(train_losses, val_losses, filename, gridsize=10.0):
     plt.grid(True)
     print(all_losses.min())
     offset = (gridsize - all_losses.min()) * 0.01
-    plt.ylim(all_losses.min() - offset, gridsize)
+    plt.ylim(all_losses.min(), gridsize)
     #plt.yticks(np.linspace(all_losses.min(), gridsize, 10))  
     plt.savefig(os.path.join(os.path.abspath(os.getcwd()),"train_plots", filename+".jpg"), dpi=500, format='jpg') 
 
