@@ -9,7 +9,7 @@ def plot_confusion_matrix():
 
     # 4. Plot confusion matrix using seaborn for better visualization
     plt.figure(figsize=(8, 6))
-    h = sns.heatmap(data, annot=True, fmt='d', cmap='Blues', mask=mask, xticklabels=np.arange(2), yticklabels=np.arange(2), annot_kws={"size": 20})
+    h = sns.heatmap(data, annot=True, fmt='d', cmap='Blues', mask=mask, xticklabels=np.arange(2), yticklabels=np.arange(2), annot_kws={"size": 8})
     h.set_xticklabels(['eye', 'background'])
     h.set_yticklabels(['eye', 'background'])
     plt.xlabel('True')
