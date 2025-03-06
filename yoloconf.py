@@ -17,7 +17,7 @@ def plot_confusion_matrix():
     plt.title('Confusion Matrix')
 
 
-    plt.savefig(os.path.join(os.path.abspath(os.getcwd()),"train_plots", "confusion_matrix.jpg"), format='jpg')  
+    plt.savefig(os.path.join(os.path.abspath(os.getcwd()),"train_plots", "confusion_matrix.jpg"), dpi=500, format='jpg')  
 
 
 plot_confusion_matrix()
