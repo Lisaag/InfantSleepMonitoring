@@ -25,7 +25,7 @@ def plot_loss_curve(train_losses, val_losses, filename, gridsize=10.0):
     plt.grid(True)
     print(all_losses.min())
     plt.ylim(train_losses.min(), gridsize)
-    plt.yticks(np.linspace(all_losses.min(), gridsize, 10))  
+    #plt.yticks(np.linspace(all_losses.min(), gridsize, 10))  
     plt.savefig(os.path.join(os.path.abspath(os.getcwd()),"train_plots", filename+".jpg"), dpi=500, format='jpg') 
 
 def plot_metrics_curve(metric_vals, filename):
@@ -66,8 +66,8 @@ train_metrics = pd.read_csv(os.path.join(os.path.abspath(os.getcwd()), "runs", "
 #     val_box.append(get_loss(train_metrics["val/box_loss"], val_box, i))
 
 plot_loss_curve(train_metrics["train/box_loss"], train_metrics["val/box_loss"], "box", 4.0)
-plot_loss_curve(train_metrics["train/cls_loss"], train_metrics["val/cls_loss"], "box", 2.0)
-plot_loss_curve(train_metrics["train/dfl_loss"], train_metrics["val/dfl_loss"], "box", 2.0)
+plot_loss_curve(train_metrics["train/cls_loss"], train_metrics["val/cls_loss"], "cls", 2.0)
+plot_loss_curve(train_metrics["train/dfl_loss"], train_metrics["val/dfl_loss"], "dfl", 2.0)
 
 # train_box=[]
 # val_box=[]
