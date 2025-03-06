@@ -40,12 +40,14 @@ def plot_metrics_curve(metric_vals, filename):
   
 
 def get_loss(train_metrics, train_box, i):
+    return float(train_metrics[i])
+
     if(i == 0): return 0
     elif(train_metrics[i]=="nan"): return train_box[i-1]
     else: return float(train_metrics[i])
 
 
-train_metrics = pd.read_csv(os.path.join(os.path.abspath(os.getcwd()), "runs", "OC", "open-closed", "results.csv"))
+train_metrics = pd.read_csv(os.path.join(os.path.abspath(os.getcwd()), "runs", "AUG", "aug", "results.csv"))
 
 #train/box_loss,train/cls_loss,train/dfl_loss
 #val/box_loss,val/cls_loss,val/dfl_loss
