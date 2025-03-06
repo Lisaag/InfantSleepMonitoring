@@ -14,7 +14,7 @@ def plot_confusion_matrix():
     plt.figure(figsize=(12, 9), tight_layout=True)
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")  # suppress empty matrix RuntimeWarning: All-NaN slice encountered
-        h = sns.heatmap(data, annot=True, fmt='d', cmap='Blues', xticklabels=np.arange(2), yticklabels=np.arange(2), annot_kws={"size": 8}, square=True, vmin=0.0, mask=msk)
+        h = sns.heatmap(data, annot=True, fmt='d', cmap='Blues', xticklabels=np.arange(2), yticklabels=np.arange(2), annot_kws={"size": 8}, mask=msk)
     h.set_xticklabels(['eye', 'background'])
     h.set_yticklabels(['eye', 'background'])
     plt.xlabel('True')
