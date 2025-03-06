@@ -3,7 +3,7 @@ from ultralytics import YOLO
 model = YOLO("yolo11l.pt")
 
 model.train(
-    data="OC.yaml",
+    data="occ.yaml",
     epochs=100,
     imgsz=640,
     patience=15,
@@ -11,8 +11,8 @@ model.train(
     amp=False,
     plots=True,
     close_mosaic=0,
-    project="runs/OC",
-    name="open-closed",
+    project="runs/OCC",
+    name="occ2",
     auto_augment="randaugment",
     copy_paste_mode="flip",
     hsv_h=0.015,
