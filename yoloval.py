@@ -11,6 +11,5 @@ print(f'map95: {validation_results.box.ap}')
 print(f'box precision: {validation_results.box.p}')
 print(f'box recall: {validation_results.box.r}')
 print(f'box f1: {validation_results.box.f1}')
-print(validation_results.box.pccurve)
 
 
