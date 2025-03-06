@@ -21,7 +21,8 @@ def plot_loss_curve(train_losses, val_losses, filename, gridsize=10.0):
     plt.title(f'Training and validation {filename} loss')
     plt.legend()
     plt.grid(True)
-    plt.ylim(all_losses.min() - 0.1, gridsize)
+    print(all_losses.min())
+    plt.ylim(all_losses.min(), gridsize)
     plt.savefig(os.path.join(os.path.abspath(os.getcwd()),"train_plots", filename+".jpg"), dpi=500, format='jpg') 
 
 def plot_metrics_curve(metric_vals, filename):
