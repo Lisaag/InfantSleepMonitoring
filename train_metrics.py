@@ -25,7 +25,7 @@ def plot_loss_curve(train_losses, val_losses, filename, gridsize=10.0):
     plt.grid(True)
     print(min(all_losses))
     offset = (gridsize - min(all_losses)) * 0.01
-    plt.ylim(min(all_losses), gridsize)
+    plt.ylim(min(all_losses) - offset, gridsize)
     #plt.yticks(np.linspace(all_losses.min(), gridsize, 10))  
     plt.savefig(os.path.join(os.path.abspath(os.getcwd()),"train_plots", filename+".jpg"), dpi=500, format='jpg') 
 
