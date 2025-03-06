@@ -5,8 +5,8 @@ import numpy as np
 
 
 def plot_confusion_matrix():
-    data = [[437, 13], [30, 0]]
-    msk = [[False, False], [False, True]]
+    data = np.array([[437, 13], [30, 0]])
+    msk = np.array([[False, False], [False, True]])
 
     sns.set_theme(font_scale=1.0)  # for label size
     # 4. Plot confusion matrix using seaborn for better visualization
