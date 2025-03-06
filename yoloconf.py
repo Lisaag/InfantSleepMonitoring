@@ -6,7 +6,7 @@ import warnings
 
 
 def plot_confusion_matrix():
-    data = [[437, 13], [30, np.nan]]
+    data = [[437, 13], [30, 0]]
     msk = [[False, False], [False, True]]
 
     sns.set_theme(font_scale=1.0)  # for label size
