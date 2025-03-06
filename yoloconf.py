@@ -8,7 +8,7 @@ def plot_confusion_matrix():
     data = np.array([[437, 13], [30, 0]])
     msk = np.array([[False, False], [False, True]])
 
-    sns.set_theme(font_scale=1.0)  # for label size
+    sns.set_theme(font_scale=1.0, style='white')  # for label size
     # 4. Plot confusion matrix using seaborn for better visualization
     plt.figure(figsize=(12, 9), tight_layout=True)
     h = sns.heatmap(data, mask=msk, annot=True, fmt='d', cmap='Blues', xticklabels=np.arange(2), yticklabels=np.arange(2), annot_kws={"size": 8})
