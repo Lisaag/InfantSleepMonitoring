@@ -11,7 +11,7 @@ def plot_confusion_matrix():
     sns.set_theme(font_scale=1.0, style='white')  # for label size
     # 4. Plot confusion matrix using seaborn for better visualization
     plt.figure(figsize=(12, 9), tight_layout=True)
-    h = sns.heatmap(data, mask=msk, annot=True, fmt='d', cmap='Blues', xticklabels=np.arange(2), yticklabels=np.arange(2), annot_kws={"size": 8})
+    h = sns.heatmap(data, mask=msk, annot=True, fmt='d', cmap='Blues', xticklabels=np.arange(2), yticklabels=np.arange(2), annot_kws={"size": 8}, square=True)
     h.set_xticklabels(['eye', 'background'])
     h.set_yticklabels(['eye', 'background'])
     plt.xlabel('True')
