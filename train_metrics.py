@@ -8,6 +8,8 @@ import seaborn as sns
 def plot_loss_curve(train_losses, val_losses, filename, gridsize=10.0):
     epochs = range(1, len(train_losses) + 1)
 
+    all_losses = train_losses + val_losses
+
     sns.set_style("whitegrid")
     
     plt.figure(figsize=(8, 5))
@@ -19,7 +21,7 @@ def plot_loss_curve(train_losses, val_losses, filename, gridsize=10.0):
     plt.title(f'Training and validation {filename} loss')
     plt.legend()
     plt.grid(True)
-    plt.ylim(0, gridsize)
+    plt.ylim(all_losses.min() - 0.1, gridsize)
     plt.savefig(os.path.join(os.path.abspath(os.getcwd()),"train_plots", filename+".jpg"), dpi=500, format='jpg') 
 
 def plot_metrics_curve(metric_vals, filename):
@@ -52,31 +54,33 @@ train_metrics = pd.read_csv(os.path.join(os.path.abspath(os.getcwd()), "runs", "
 #train/box_loss,train/cls_loss,train/dfl_loss
 #val/box_loss,val/cls_loss,val/dfl_loss
 
-train_box=[]
-val_box=[]
+# train_box=[]
+# val_box=[]
 
-for i in range(len(train_metrics)):
-    train_box.append(get_loss(train_metrics["train/box_loss"], train_box, i))
-    val_box.append(get_loss(train_metrics["val/box_loss"], val_box, i))
+# for i in range(len(train_metrics)):
+#     train_box.append(get_loss(train_metrics["train/box_loss"], train_box, i))
+#     val_box.append(get_loss(train_metrics["val/box_loss"], val_box, i))
 
-plot_loss_curve(train_box, val_box, "box", 3.5)
+plot_loss_curve(train_metrics["train/box_loss"], train_metrics["val/box_loss"], "box", 4.0)
+plot_loss_curve(train_metrics["train/cls_loss"], train_metrics["val/cls_loss"], "box", 2.0)
+plot_loss_curve(train_metrics["train/dfl_loss"], train_metrics["val/dfl_loss"], "box", 2.0)
 
-train_box=[]
-val_box=[]
+# train_box=[]
+# val_box=[]
 
-for i in range(len(train_metrics)):
-    train_box.append(get_loss(train_metrics["train/cls_loss"], train_box, i))
-    val_box.append(get_loss(train_metrics["val/cls_loss"], val_box, i))
+# for i in range(len(train_metrics)):
+#     train_box.append(get_loss(train_metrics["train/cls_loss"], train_box, i))
+#     val_box.append(get_loss(train_metrics["val/cls_loss"], val_box, i))
 
-plot_loss_curve(train_box, val_box, "cls", 1.75)
-train_box=[]
-val_box=[]
+# plot_loss_curve(train_box, val_box, "cls", 1.75)
+# train_box=[]
+# val_box=[]
 
-for i in range(len(train_metrics)):
-    train_box.append(get_loss(train_metrics["train/dfl_loss"], train_box, i))
-    val_box.append(get_loss(train_metrics["val/dfl_loss"], val_box, i))
+# for i in range(len(train_metrics)):
+#     train_box.append(get_loss(train_metrics["train/dfl_loss"], train_box, i))
+#     val_box.append(get_loss(train_metrics["val/dfl_loss"], val_box, i))
 
-plot_loss_curve(train_box, val_box, "dfl",1.5)
+# plot_loss_curve(train_box, val_box, "dfl",1.5)
 
 plot_metrics_curve(train_metrics["metrics/precision(B)"], "Precision")
 plot_metrics_curve(train_metrics["metrics/recall(B)"], "Recall")
