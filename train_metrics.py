@@ -53,7 +53,7 @@ def get_loss(train_metrics, train_box, i):
     else: return float(train_metrics[i])
 
 
-train_metrics = pd.read_csv(os.path.join(os.path.abspath(os.getcwd()), "runs", "AUG", "aug", "results.csv"))
+train_metrics = pd.read_csv(os.path.join(os.path.abspath(os.getcwd()), "runs", "AUG", "no-aug3", "results.csv"))
 
 #train/box_loss,train/cls_loss,train/dfl_loss
 #val/box_loss,val/cls_loss,val/dfl_loss
@@ -65,9 +65,9 @@ train_metrics = pd.read_csv(os.path.join(os.path.abspath(os.getcwd()), "runs", "
 #     train_box.append(get_loss(train_metrics["train/box_loss"], train_box, i))
 #     val_box.append(get_loss(train_metrics["val/box_loss"], val_box, i))
 
-plot_loss_curve(train_metrics["train/box_loss"], train_metrics["val/box_loss"], "box", 4.0)
-plot_loss_curve(train_metrics["train/cls_loss"], train_metrics["val/cls_loss"], "cls", 2.0)
-plot_loss_curve(train_metrics["train/dfl_loss"], train_metrics["val/dfl_loss"], "dfl", 2.0)
+plot_loss_curve(train_metrics["train/box_loss"], train_metrics["val/box_loss"], "box", 6.0)
+plot_loss_curve(train_metrics["train/cls_loss"], train_metrics["val/cls_loss"], "cls", 4.5)
+plot_loss_curve(train_metrics["train/dfl_loss"], train_metrics["val/dfl_loss"], "dfl", 3.0)
 
 # train_box=[]
 # val_box=[]
