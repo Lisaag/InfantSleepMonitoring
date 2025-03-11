@@ -31,4 +31,4 @@ for patient in os.listdir(fragment_dir):
             frag_filename, frag_timestamp = get_fragment_info(fragment)
 
             with open(csv_dir, "a") as file:
-                file.write(str(patient_nr)+str(REM_class)+str(frag_filename)+str(frag_timestamp)+"\n")
+                file.write(str(patient_nr)+","+str(REM_class)+","+str(frag_filename)+","+str(frag_timestamp)+"\n")
