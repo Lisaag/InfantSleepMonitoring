@@ -22,13 +22,13 @@ with open(csv_dir, "w") as file:
     file.write("id,"+ "class,"+"filename,"+"timestamp"+"\n")
 
 for patient in os.listdir(fragment_dir):
-    patient_nr = int(patient[0:3])
+    #patient_nr = int(patient[0:3])
     print(patient)
-    print(patient_nr)
+    #print(patient_nr)
 
     for REM_class in os.listdir(os.path.join(fragment_dir, patient)):
         for fragment in os.listdir(os.path.join(fragment_dir, patient, REM_class, "raw")):
             frag_filename, frag_timestamp = get_fragment_info(fragment)
 
             with open(csv_dir, "a") as file:
-                file.write(str(patient_nr)+","+str(REM_class)+","+str(frag_filename)+","+str(frag_timestamp)+"\n")
+                file.write(str(patient)+","+str(REM_class)+","+str(frag_filename)+","+str(frag_timestamp)+"\n")
