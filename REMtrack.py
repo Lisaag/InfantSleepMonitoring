@@ -9,14 +9,14 @@ import statistics
 import ast
 
 
-video_input_path = os.path.join(os.path.abspath(os.getcwd()), "REM", "raw", "cutout", "554_02-03-2023")
+#video_input_path = os.path.join(os.path.abspath(os.getcwd()), "REM", "raw", "cutout", "554_02-03-2023")
 
 def track_vid_aabb(relative_weights_path:str, root_dir:str, file_name:str):
     weights_path = os.path.join(os.path.abspath(os.getcwd()), relative_weights_path)
     model = YOLO(weights_path)
 
     print(f'Processing {file_name} from dir {root_dir}')
-    video_input_path =  os.path.join(root_dir, "raw", file_name)
+    video_input_path =  os.path.join(root_dir, file_name)
     # Open the video file
     cap = cv2.VideoCapture(video_input_path)
 
