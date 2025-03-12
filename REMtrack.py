@@ -162,7 +162,7 @@ def detect_vid(relative_weights_path:str):
             fragment_dir:str = os.path.join(patient_dir, eye_state_dir)
             for fragment_file in os.listdir(fragment_dir):
                 all_boxes = track_vid_aabb(relative_weights_path, fragment_dir, fragment_file)
-                print(all_boxes)
+                print(dict(all_boxes))
                 #detect_vid_aabb_filter(all_boxes, os.path.join(patient_dir, eye_state_dir), fragment_file)
                 save_boxes_csv(all_boxes, os.path.join(frames_dir, patient, eye_state_dir), fragment_file)
                 write_bbox(all_boxes, fragment_dir, os.path.join(frames_dir, patient, eye_state_dir), fragment_file)
