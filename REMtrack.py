@@ -165,4 +165,4 @@ def detect_vid(relative_weights_path:str):
                 write_bbox(all_boxes, fragment_dir, os.path.join(frames_dir, patient, eye_state_dir), fragment_file)
 
   
-detect_vid(os.path.join(os.path.abspath(os.getcwd()), "detect", "OC", "open-closed", "weights", "best.pt"))
+detect_vid(os.path.join(os.path.abspath(os.getcwd()), "runs", "OC", "open-closed", "weights", "best.pt"))
