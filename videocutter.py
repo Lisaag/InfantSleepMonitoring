@@ -41,8 +41,8 @@ fragments_dir = os.path.join(os.path.abspath(os.getcwd()), "REM", "raw", "fragme
 df_all = pd.read_csv(csv_dir)
 for i in range(len(df_all)):
     frag_class_dirs = next(os.walk(os.path.join(fragments_dir, df_all["id"][i] )))[1]
-    class_dir = None
-    if(df_all["class"][i] in frag_class_dirs): class_dir = frag_class_dirs
+    class_dir:str = ""
+    if(df_all["class"][i] in frag_class_dirs): class_dir = df_all["class"][i]
     elif((df_all["class"][i] == "OR" or df_all["class"][i] == "CR") and "OR-CR" in frag_class_dirs): class_dir = "OR-CR"
     else: continue
 
