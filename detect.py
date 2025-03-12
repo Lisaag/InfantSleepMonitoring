@@ -1,11 +1,8 @@
 import cv2
 from ultralytics import YOLO
-from pathlib import Path
 import os
 import numpy as np
-from itertools import chain 
 from collections import defaultdict
-import statistics
 import ast
 
 
@@ -14,14 +11,10 @@ import csv
 def extract_evenly_spaced_elements(arr):
     n = len(arr)
     
-    # If array size is less than 6, return all elements.
     if n <= 6:
         return arr
 
-    # Calculate the step size for evenly spaced elements.
     step = (n - 1) / 5
-
-    # Extract 6 evenly spaced elements including the first and last.
     extracted = [arr[round(i * step)] for i in range(6)]
 
     return extracted
@@ -64,7 +57,8 @@ def track_vid_aabb(relative_weights_path:str, root_dir:str, file_name:str):
 
 
         current_frame += 1   
-        
+
+    #Delete track instances with only few detections    
     to_del = list()
     for key in box_history.keys():
         if(len(box_history[key]) < frame_count / 2):
