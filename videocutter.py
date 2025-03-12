@@ -38,7 +38,7 @@ def cut_video(patient_id:str, REM_class:str, file_name:str, start_time:str, inpu
 csv_dir = os.path.join(os.path.abspath(os.getcwd()), "REMinfo.csv")
 fragments_dir = os.path.join(os.path.abspath(os.getcwd()), "REM", "raw", "fragments")
 
-df_all = pd.read_csv(csv_dir = os.path.join(os.path.abspath(os.getcwd()), "REMinfo.csv"))
+df_all = pd.read_csv(csv_dir)
 for i in range(len(df_all)):
     frag_class_dirs = next(os.walk(os.path.join(fragments_dir, df_all["id"][i] )))[1]
     class_dir = None
