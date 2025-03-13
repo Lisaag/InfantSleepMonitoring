@@ -131,6 +131,8 @@ def save_boxes_csv(boxes:defaultdict, root_dir:str, file_name:str):
         os.makedirs(fragement_dir)
 
     for key in boxes.keys():
+        box_index = 0
+        print(f'KEY {key}')
         dir = os.path.join(fragement_dir, str(box_index) + ".csv")
 
         with open(dir, "w") as file:
@@ -155,7 +157,7 @@ def detect_vid(relative_weights_path:str):
             fragment_dir:str = os.path.join(patient_dir, eye_state_dir)
             for fragment_file in os.listdir(fragment_dir):
                 all_boxes = track_vid_aabb(relative_weights_path, fragment_dir, fragment_file)
-                print(dict(all_boxes))
+                #print(dict(all_boxes))
                 save_boxes_csv(all_boxes, os.path.join(frames_dir, patient, eye_state_dir), fragment_file)
                 write_bbox(all_boxes, fragment_dir, os.path.join(frames_dir, patient, eye_state_dir), fragment_file)
 
