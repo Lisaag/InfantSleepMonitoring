@@ -12,7 +12,7 @@ def cut_video(file_name:str, start_time:str, input_file:str, output_dir:str):
         aug_offset = 0.1
 
         start_time = float(start_time)
-        end_time = start_time + fragment_length  # 1 second after the start time
+        end_time = start_time + fragment_length 
 
         if start_time < 0 or end_time > video.duration:
             raise ValueError("Start time is out of the video duration range.")

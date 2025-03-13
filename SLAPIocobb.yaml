@@ -1,9 +1,0 @@
-path: ../datasets/SLAPI/ocobb # dataset root dir
-train: train/images # train images (relative to 'path') 128 images
-val: val/images # val images (relative to 'path') 128 images
-test: test/images # val images (relative to 'path') 128 images
-
-# Classes (80 COCO classes)
-names:
-    0: closed
-    1: open

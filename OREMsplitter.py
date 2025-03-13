@@ -11,7 +11,6 @@ def delete_contents(directory):
     for item in os.listdir(directory):
         item_path = os.path.join(directory, item)
 
-        # Remove files
         if os.path.isfile(item_path) or os.path.islink(item_path):
             try:
                 os.unlink(item_path) 
@@ -19,7 +18,6 @@ def delete_contents(directory):
             except Exception as e:
                 print(f"Failed to delete {item_path}: {e}")
 
-        # Recursively remove directories
         elif os.path.isdir(item_path):
             try:
                 shutil.rmtree(item_path) 

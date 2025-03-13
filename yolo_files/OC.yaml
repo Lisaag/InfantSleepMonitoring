@@ -1,0 +1,8 @@
+path: ../datasets/SLAPI/open-closed # dataset root dir
+train: train/images 
+val: val/images
+test: test/images 
+
+names:
+    0: closed
+    1: open
