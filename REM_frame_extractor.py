@@ -26,9 +26,9 @@ def xyxy_to_square(x1, y1, x2, y2):
 
     return [x1, y1, x2, y2]
 
-def center_pos_frames(df_bboxes):
+def center_pos_frames(df_bboxes, min_bound, max_bound):
     #Get center frame index
-    frame_count = len(df_bboxes)
+    frame_count = (max_bound - min_bound) + 1
     center_index = int(frame_count / 2)
 
     #Get bbox data, top left (x1, y1) bottom right (x2, y2)
@@ -56,7 +56,7 @@ def extract_frames(video_dir:str, file_name:str, csv_dir:str, patient_id:str, RE
     #frame_indices = np.linspace(0, len(df_bboxes) - aug_frame_count - aug_frame_count - 1, frame_stack_count, dtype=int).tolist()
     #frame_indices = np.linspace(aug_frame_count+aug_frame_count, len(df_bboxes) - 1, frame_stack_count, dtype=int).tolist()
 
-    center_frames = center_pos_frames(df_bboxes.iloc[aug_frame_count, int(len(df_bboxes)) - 1 -aug_frame_count])
+    center_frames = center_pos_frames(df_bboxes, aug_frame_count, int(len(df_bboxes)) - 1 - aug_frame_count)
     interpolate_pos_frames = []
     every_pos_frames = []
 
