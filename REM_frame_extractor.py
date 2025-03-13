@@ -56,7 +56,7 @@ def extract_frames(video_dir:str, file_name:str, csv_dir:str, patient_id:str, RE
     #frame_indices = np.linspace(0, len(df_bboxes) - aug_frame_count - aug_frame_count - 1, frame_stack_count, dtype=int).tolist()
     #frame_indices = np.linspace(aug_frame_count+aug_frame_count, len(df_bboxes) - 1, frame_stack_count, dtype=int).tolist()
 
-    center_frames = center_pos_frames(df_bboxes[aug_frame_count, int(len(df_bboxes)) - 1 -aug_frame_count])
+    center_frames = center_pos_frames(df_bboxes.iloc[aug_frame_count, int(len(df_bboxes)) - 1 -aug_frame_count])
     interpolate_pos_frames = []
     every_pos_frames = []
 
