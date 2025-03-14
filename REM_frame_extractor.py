@@ -62,7 +62,6 @@ def extract_frames(video_dir:str, file_name:str, csv_dir:str, patient_id:str, RE
     print(f'VIDEO frame count - {frame_count}')
 
 
-
     frame_stack_count = 6
     df_bboxes = pd.read_csv(csv_dir)
 
@@ -73,6 +72,10 @@ def extract_frames(video_dir:str, file_name:str, csv_dir:str, patient_id:str, RE
     center_frames = center_pos_frames(df_bboxes, aug_frame_count, int(len(df_bboxes)) - 1 - aug_frame_count)
     interpolate_pos_frames = []
     every_pos_frames = []
+
+    print(f'Frame indices- {frame_indices}')
+    print(f'Center frames- {center_frames}')
+
 
     center_frames_dir = os.path.join(cropped_dir, "center", patient_id, REMclass, file_name.replace(".mp4", ""))
     if not os.path.exists(center_frames_dir): os.makedirs(center_frames_dir)
