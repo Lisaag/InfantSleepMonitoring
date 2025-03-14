@@ -59,6 +59,7 @@ def REMtrain():
                     if frame.endswith(".jpg"):
                         print(os.path.join(sample_dir, frame))
                         image = cv2.imread(os.path.join(sample_dir, frame), cv2.IMREAD_GRAYSCALE) 
+                        image = cv2.resize(image, (64, 64))
                         image = image / 255
                         print(image.shape)
                         images.append(image)
