@@ -15,6 +15,8 @@ def remove_folder_recursively(folder_path):
 
 def get_csv(folder_path):
     csv_files = glob.glob(os.path.join(folder_path, "*.csv")) 
+    if(len(csv_files) > 1):print(f"MORE THAN 1 CSV FILE FOR {folder_path}")
+    elif(len(csv_files) == 0):print(f"NO CSV FILE FOR {folder_path}")
     return csv_files[0] if csv_files else None
 
 #get the xyxy, as 1:1 square ratio
@@ -125,7 +127,7 @@ def extract_frames(video_dir:str, file_name:str, csv_dir:str, patient_id:str, RE
     every_frames = every_pos_frames(df_bboxes, min_bounds, max_bounds)
 
     frame_indices = np.linspace(min_bounds, max_bounds, frame_stack_count, dtype=int).tolist()
-    print(f'Frame indices {frame_indices}')
+    #print(f'Frame indices {frame_indices}')
 
 
     center_frames_dir = os.path.join(cropped_dir, "center", patient_id, REMclass, file_name.replace(".mp4", ""))
@@ -150,8 +152,8 @@ def extract_frames(video_dir:str, file_name:str, csv_dir:str, patient_id:str, RE
 
     current_frame = 0
 
-    print(f'LEN {len(center_frames)}')
-    print(f'FRAMES {frame_count}')
+    #print(f'LEN {len(center_frames)}')
+    #print(f'FRAMES {frame_count}')
 
     while cap.isOpened():
         ret, frame = cap.read()
@@ -198,6 +200,7 @@ def detect_vid():
             fragment_dir:str = os.path.join(patient_dir, eye_state_dir)
             for fragment_file in os.listdir(fragment_dir):
                 bbox_csv = get_csv(os.path.join(frames_dir, patient, eye_state_dir, fragment_file.replace(".mp4", "")))
+                if (bbox_csv == None): continue
                 extract_frames(fragment_dir, fragment_file, bbox_csv, patient, eye_state_dir, cropped_dir)
 
 detect_vid()
