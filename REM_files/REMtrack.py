@@ -7,6 +7,7 @@ from itertools import chain
 from collections import defaultdict
 import statistics
 import ast
+import shutil
 
 
 #video_input_path = os.path.join(os.path.abspath(os.getcwd()), "REM", "raw", "cutout", "554_02-03-2023")
@@ -94,7 +95,7 @@ def write_bbox(boxes:defaultdict, video_input_path:str, root_dir:str, file_name:
         y1 = int(y_center - height / 2)
         y2 = int(y_center + height / 2)
 
-        box_data.append([x1, y1, width, height])
+        box_data.append([key, x1, y1, width, height])
     
 
     while cap.isOpened():
@@ -104,13 +105,11 @@ def write_bbox(boxes:defaultdict, video_input_path:str, root_dir:str, file_name:
 
         #if boxes[key].get(current_frame) != None:
         # top-left corner and bottom-right corner of rectangle
-        box_idx = 0
         for box in box_data:
-            cv2.putText(frame, str(box_idx), (x1,   y1 - 20), cv2.FONT_HERSHEY_SIMPLEX, 
+            key, x1, y1, width, height = box
+            cv2.putText(frame, str(key), (x1,   y1 - 20), cv2.FONT_HERSHEY_SIMPLEX, 
                1.5, (0, 255, 0), 2, cv2.LINE_AA)
-            x1, y1, width, height = box
             cv2.rectangle(frame, (x1, y1), (x1+width, y1+height), (0, 255, 0), 2)
-            box_idx += 1
 
         out_bbox.write(frame)
 
@@ -125,14 +124,11 @@ def save_boxes_csv(boxes:defaultdict, root_dir:str, file_name:str):
 
     fragement_dir = os.path.join(root_dir, file_name.replace(".mp4", ""))
 
-    print(f'WRITING TO {fragement_dir}')
-
     if not os.path.exists(fragement_dir):
         os.makedirs(fragement_dir)
 
     for key in boxes.keys():
         box_index = 0
-        print(f'KEY {key}')
         dir = os.path.join(fragement_dir, str(box_index) + ".csv")
 
         with open(dir, "w") as file:
@@ -151,6 +147,8 @@ def save_boxes_csv(boxes:defaultdict, root_dir:str, file_name:str):
 def detect_vid(relative_weights_path:str):
     root_dir:str = os.path.join(os.path.abspath(os.getcwd()), "REM", "raw", "cutout")
     frames_dir:str = os.path.join(os.path.abspath(os.getcwd()), "REM", "raw", "frames")
+    shutil.rmtree(frames_dir)
+
     for patient in os.listdir(root_dir):
         patient_dir:str = os.path.join(root_dir, patient)
         for eye_state_dir in os.listdir(patient_dir):
