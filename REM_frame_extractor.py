@@ -121,6 +121,7 @@ def extract_frames(video_dir:str, file_name:str, csv_dir:str, patient_id:str, RE
 
     cap.release()
     center_vid.release()
+    cv2.destroyAllWindows()
 
         
 
