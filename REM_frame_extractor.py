@@ -36,7 +36,7 @@ def xyxy_to_square(x1, y1, x2, y2):
     return [x1, y1, x2, y2]
 
 def center_pos_frames(df_bboxes,  min_bounds, max_bounds):
-    frame_count = max_bounds - min_bounds
+    frame_count = max_bounds + 1 - min_bounds
     #Get center frame
     center_frame = min_bounds + int(frame_count / 2)
     #Get the frame closest to the center one, with a valid detection (cecause not every frame might have a bbox detection)
