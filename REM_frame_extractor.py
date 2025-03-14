@@ -35,9 +35,9 @@ def xyxy_to_square(x1, y1, x2, y2):
 
     return [x1, y1, x2, y2]
 
-def center_pos_frames(df_bboxes, min_bound, max_bound):
+def center_pos_frames(df_bboxes):
     #Get center frame index
-    frame_count = (max_bound - min_bound) + 1
+    frame_count = len(df_bboxes)
     center_index = int(frame_count / 2)
 
     #Get bbox data, top left (x1, y1) bottom right (x2, y2)
@@ -50,8 +50,6 @@ def extract_frames(video_dir:str, file_name:str, csv_dir:str, patient_id:str, RE
     video_input_path =  os.path.join(video_dir, file_name)
     cap = cv2.VideoCapture(video_input_path)
 
-    aug_frame_count = 3 #total number of frames used for temporal data augmentation = 3 frames before AND after original clip, so original clip is [3, length-4]
-
     #Get video properties
     frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
@@ -60,14 +58,19 @@ def extract_frames(video_dir:str, file_name:str, csv_dir:str, patient_id:str, RE
 
     print(f'PROCESSING VIDEO - {video_input_path}')
 
+    aug_frame_count = 3 #total number of frames used for temporal data augmentation = 3 frames before AND after original clip, so original clip is [3, length-4]
+    min_bounds = aug_frame_count
+    max_bounds = frame_count - 1 - aug_frame_count
+
+
     frame_stack_count = 6
     df_bboxes = pd.read_csv(csv_dir)
 
-    frame_indices = np.linspace(aug_frame_count, len(df_bboxes) - aug_frame_count - 1, frame_stack_count, dtype=int).tolist()
-    #frame_indices = np.linspace(0, len(df_bboxes) - aug_frame_count - aug_frame_count - 1, frame_stack_count, dtype=int).tolist()
-    #frame_indices = np.linspace(aug_frame_count+aug_frame_count, len(df_bboxes) - 1, frame_stack_count, dtype=int).tolist()
+    frame_indices = np.linspace(min_bounds, max_bounds, frame_stack_count, dtype=int).tolist()
+    print(f'Frame indices {frame_indices}')
 
-    center_frames = center_pos_frames(df_bboxes, aug_frame_count, int(len(df_bboxes)) - 1 - aug_frame_count)
+
+    center_frames = center_pos_frames(df_bboxes)
     interpolate_pos_frames = []
     every_pos_frames = []
 
@@ -94,7 +97,8 @@ def extract_frames(video_dir:str, file_name:str, csv_dir:str, patient_id:str, RE
         ret, frame = cap.read()
         if not ret:
             break
-        current_frame+=1 
+        current_frame+=1
+        if(current_frame < min_bounds or current_frame > max_bounds): continue
 
         x1, y1, x2, y2 = center_frames[current_frame]
 
