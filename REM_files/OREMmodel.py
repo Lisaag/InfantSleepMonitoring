@@ -60,15 +60,14 @@ def REMtrain():
                     image = image / 255
                     print(image.shape)
                     images.append(image)
-
-return
+                continue
                 expanded_stack = np.expand_dims(images, axis=-1) 
                 stacked_images = np.stack(expanded_stack, axis=0)
 
                 train_samples.append(stacked_images)
                 label = 0 if eye_state == "O" else 1
                 train_labels.append(label)
-
+    return
     train_samples_stacked = np.stack(train_samples, axis=0)
     train_labels_numpy = np.array(train_labels, dtype=int)
     train_labels_bce = tf.one_hot(train_labels_numpy, depth=2)
