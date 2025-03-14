@@ -56,17 +56,21 @@ def interpolate_pos_frames(df_bboxes,  min_bounds, max_bounds):
     #+1, because max_bounds is valid index, not length
     frame_count = max_bounds + 1 - min_bounds
 
-    #size of bounding box as max width
-    size = max(int(abs(x1 - x2)) for x1, x2 in zip(df_bboxes['x1'][min_bounds:max_bounds+1], df_bboxes['x2'][min_bounds:max_bounds+1]))
-
     #Get the frame closest to the first and last, with a valid detection (cecause not every frame might have a bbox detection)
-    first_index = str(min(df_bboxes['frame'], key=lambda v: abs(v - min_bounds)))
-    last_index = str(min(df_bboxes['frame'], key=lambda v: abs(v - max_bounds)))
-    print(f"first {first_index} last {last_index}")
+    first_index = min(df_bboxes['frame'], key=lambda v: abs(v - min_bounds))
+    last_index = min(df_bboxes['frame'], key=lambda v: abs(v - max_bounds))
+
+    df_index_first = df_bboxes.index[df_bboxes['frame'] == first_index][0]
+    df_index_last = df_bboxes.index[df_bboxes['frame'] == last_index][0]
+
+    #size of bounding box as max width
+    size = max(int(abs(x1 - x2)) for x1, x2 in zip(df_bboxes['x1'][df_index_first:df_index_last], df_bboxes['x2'][df_index_first:df_index_last]))
 
     #Get bbox data, top left (x1, y1) bottom right (x2, y2)
-    x1_first, y1_first, x2_first, y2_first = xyxy_to_square(df_bboxes["x1"][first_index], df_bboxes["y1"][first_index], df_bboxes["x2"][first_index], df_bboxes["y2"][first_index], size)
-    x1_last, y1_last, x2_last, y2_last =  xyxy_to_square(df_bboxes["x1"][last_index], df_bboxes["y1"][last_index], df_bboxes["x2"][last_index], df_bboxes["y2"][last_index], size)
+    _, x1, y1, x2, y2 = df_bboxes.loc[df_bboxes['frame'] == first_index].iloc[0]
+    x1_first, y1_first, x2_first, y2_first = xyxy_to_square(x1, y1, x2, y2, size)
+    _, x1, y1, x2, y2 = df_bboxes.loc[df_bboxes['frame'] == last_index].iloc[0]
+    x1_last, y1_last, x2_last, y2_last =  xyxy_to_square(x1, y1, x2, y2, size)
 
     x1_vals = np.linspace(x1_first, x1_last, frame_count, dtype=int)
     y1_vals = np.linspace(y1_first, y1_last, frame_count, dtype=int)
