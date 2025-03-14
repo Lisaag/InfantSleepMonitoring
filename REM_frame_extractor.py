@@ -60,8 +60,8 @@ def interpolate_pos_frames(df_bboxes,  min_bounds, max_bounds):
     size = max(int(abs(x1 - x2)) for x1, x2 in zip(df_bboxes['x1'][min_bounds:max_bounds+1], df_bboxes['x2'][min_bounds:max_bounds+1]))
 
     #Get the frame closest to the first and last, with a valid detection (cecause not every frame might have a bbox detection)
-    first_index = min(df_bboxes['frame'], key=lambda v: abs(v - min_bounds))
-    last_index = min(df_bboxes['frame'], key=lambda v: abs(v - max_bounds))
+    first_index = str(min(df_bboxes['frame'], key=lambda v: abs(v - min_bounds)))
+    last_index = str(min(df_bboxes['frame'], key=lambda v: abs(v - max_bounds)))
     print(f"first {first_index} last {last_index}")
 
     #Get bbox data, top left (x1, y1) bottom right (x2, y2)
