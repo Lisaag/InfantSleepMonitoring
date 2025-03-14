@@ -71,6 +71,29 @@ def interpolate_pos_frames(df_bboxes,  min_bounds, max_bounds):
     cutouts = zip(x1_vals, y1_vals, x2_vals, y2_vals)
     return cutouts  
 
+def every_pos_frames(df_bboxes,  min_bounds, max_bounds):
+    #+1, because max_bounds is valid index, not length
+    frame_count = max_bounds + 1 - min_bounds
+
+    for i in range(frame_count):
+        print("a")
+
+    #Get the frame closest to the first and last, with a valid detection (cecause not every frame might have a bbox detection)
+    first_index = min(df_bboxes['frame'], key=lambda v: abs(v - min_bounds))
+    last_index = min(df_bboxes['frame'], key=lambda v: abs(v - max_bounds))
+
+    #Get bbox data, top left (x1, y1) bottom right (x2, y2)
+    x1_first, y1_first, x2_first, y2_first = xyxy_to_square(df_bboxes["x1"][first_index], df_bboxes["y1"][first_index], df_bboxes["x2"][first_index], df_bboxes["y2"][first_index])
+    x1_last, y1_last, x2_last, y2_last =  xyxy_to_square(df_bboxes["x1"][last_index], df_bboxes["y1"][last_index], df_bboxes["x2"][last_index], df_bboxes["y2"][last_index])
+
+    x1_vals = np.linspace(x1_first, x1_last, frame_count, dtype=int)
+    y1_vals = np.linspace(y1_first, y1_last, frame_count, dtype=int)
+    x2_vals = np.linspace(x2_first, x2_last, frame_count, dtype=int)
+    y2_vals = np.linspace(y2_first, y2_last, frame_count, dtype=int)
+
+    cutouts = zip(x1_vals, y1_vals, x2_vals, y2_vals)
+    return cutouts  
+
 def save_frame_stack(frame, vid, current_frame, frame_indices, bbox, dir):
     #unpack bbox values
     x1, y1, x2, y2 = bbox
@@ -140,7 +163,7 @@ def extract_frames(video_dir:str, file_name:str, csv_dir:str, patient_id:str, RE
         current_frame+=1
         if(current_frame < min_bounds or current_frame > max_bounds): continue
 
-        save_frame_stack(frame, center_vid, current_frame, frame_indices, center_frames[current_frame - min_bounds], center_frames_dir)
+        save_frame_stack(frame.copy(), center_vid, current_frame, frame_indices, center_frames[current_frame - min_bounds], center_frames_dir)
 
         # x1, y1, x2, y2 = center_frames[current_frame - min_bounds]
 
