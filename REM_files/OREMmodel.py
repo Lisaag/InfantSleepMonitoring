@@ -56,6 +56,7 @@ def REMtrain():
                 sample_dir = os.path.join(eye_state_dir, sample)
                 images = list()
                 for frame in os.listdir(sample_dir):
+                    print(frame)
                     if frame.endswith(".jpg"):
                         print(os.path.join(sample_dir, frame))
                         image = cv2.imread(os.path.join(sample_dir, frame), cv2.IMREAD_GRAYSCALE) 
