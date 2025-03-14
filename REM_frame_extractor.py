@@ -35,10 +35,12 @@ def xyxy_to_square(x1, y1, x2, y2):
 
     return [x1, y1, x2, y2]
 
-def center_pos_frames(df_bboxes):
-    #Get center frame index
-    frame_count = len(df_bboxes)
-    center_index = int(frame_count / 2)
+def center_pos_frames(df_bboxes,  min_bounds, max_bounds):
+    frame_count = max_bounds - min_bounds
+    #Get center frame
+    center_frame = min_bounds + int(frame_count / 2)
+    #Get the frame closest to the center one, with a valid detection (cecause not every frame might have a bbox detection)
+    center_index = min(df_bboxes['frame'], key=lambda v: abs(v - center_frame))
 
     #Get bbox data, top left (x1, y1) bottom right (x2, y2)
     bbox = xyxy_to_square(df_bboxes["x1"][center_index], df_bboxes["y1"][center_index], df_bboxes["x2"][center_index], df_bboxes["y2"][center_index])
@@ -62,17 +64,15 @@ def extract_frames(video_dir:str, file_name:str, csv_dir:str, patient_id:str, RE
     min_bounds = aug_frame_count
     max_bounds = frame_count - 1 - aug_frame_count
 
-
     frame_stack_count = 6
     df_bboxes = pd.read_csv(csv_dir)
 
-    frame_indices = np.linspace(min_bounds, max_bounds, frame_stack_count, dtype=int).tolist()
-    print(f'Frame indices {frame_indices}')
-
-
-    center_frames = center_pos_frames(df_bboxes)
+    center_frames = center_pos_frames(df_bboxes, min_bounds, max_bounds)
     interpolate_pos_frames = []
     every_pos_frames = []
+
+    frame_indices = np.linspace(min_bounds, max_bounds, frame_stack_count, dtype=int).tolist()
+    print(f'Frame indices {frame_indices}')
 
 
     center_frames_dir = os.path.join(cropped_dir, "center", patient_id, REMclass, file_name.replace(".mp4", ""))
@@ -101,7 +101,7 @@ def extract_frames(video_dir:str, file_name:str, csv_dir:str, patient_id:str, RE
         current_frame+=1
         if(current_frame < min_bounds or current_frame > max_bounds): continue
 
-        x1, y1, x2, y2 = center_frames[current_frame]
+        x1, y1, x2, y2 = center_frames[current_frame - min_bounds]
 
         #save stack of frames
         if np.isin(current_frame, frame_indices):
