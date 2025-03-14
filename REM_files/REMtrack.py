@@ -145,6 +145,7 @@ def detect_vid(relative_weights_path:str):
 
     for patient in os.listdir(root_dir):
         patient_dir:str = os.path.join(root_dir, patient)
+        if os.path.exists(os.path.join(frames_dir, patient)): continue
         for eye_state_dir in os.listdir(patient_dir):
             fragment_dir:str = os.path.join(patient_dir, eye_state_dir)
             for fragment_file in os.listdir(fragment_dir):
