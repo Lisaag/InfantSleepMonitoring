@@ -192,13 +192,12 @@ def detect_vid():
     remove_folder_recursively(cropped_dir)
     video_dir:str = os.path.join(os.path.abspath(os.getcwd()), "REM", "raw", "cutout")
     frames_dir:str = os.path.join(os.path.abspath(os.getcwd()), "REM", "raw", "frames")
-    #for patient in os.listdir(video_dir):
-    patient = "554_02-03-2023"
-    patient_dir:str = os.path.join(video_dir, patient)
-    for eye_state_dir in os.listdir(patient_dir):
-        fragment_dir:str = os.path.join(patient_dir, eye_state_dir)
-        for fragment_file in os.listdir(fragment_dir):
-            bbox_csv = get_csv(os.path.join(frames_dir, patient, eye_state_dir, fragment_file.replace(".mp4", "")))
-            extract_frames(fragment_dir, fragment_file, bbox_csv, patient, eye_state_dir, cropped_dir)
+    for patient in os.listdir(video_dir):
+        patient_dir:str = os.path.join(video_dir, patient)
+        for eye_state_dir in os.listdir(patient_dir):
+            fragment_dir:str = os.path.join(patient_dir, eye_state_dir)
+            for fragment_file in os.listdir(fragment_dir):
+                bbox_csv = get_csv(os.path.join(frames_dir, patient, eye_state_dir, fragment_file.replace(".mp4", "")))
+                extract_frames(fragment_dir, fragment_file, bbox_csv, patient, eye_state_dir, cropped_dir)
 
 detect_vid()
