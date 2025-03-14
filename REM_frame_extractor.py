@@ -112,12 +112,12 @@ def extract_frames(video_dir:str, file_name:str, csv_dir:str, patient_id:str, RE
 
 
         #show crop in original video for debugging
-        frame_center = frame.copy()
+        #frame_center = frame.copy()
         #frame_interpolate = frame.copy()
         #frame_every = frame.copy()
 
-        cv2.rectangle(frame_center, (x1, y1), (x2, y2), (0, 255, 0), 2)
-        center_vid.write(frame_center)
+        cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
+        center_vid.write(frame)
 
     cap.release()
     center_vid.release()
