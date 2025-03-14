@@ -3,9 +3,19 @@ import cv2
 import pandas as pd
 import numpy as np
 import glob
+import shutil
+
+
+def remove_folder_recursively(folder_path):
+    try:
+        shutil.rmtree(folder_path)
+        print(f"Successfully deleted {folder_path}")
+    except Exception as e:
+        print(f"Error removing folder {folder_path}: {e}")
 
 def get_csv(folder_path):
     csv_files = glob.glob(os.path.join(folder_path, "*.csv")) 
+    print(f'CSV {csv_files}')
     return os.path.join(folder_path, csv_files[0]) if csv_files else None
 
 #get the xyxy, as 1:1 square ratio
@@ -37,9 +47,10 @@ def center_pos_frames(df_bboxes, min_bound, max_bound):
 
     return cutouts    
 
-def extract_frames(video_dir:str, file_name:str, csv_dir:str, patient_id:str, REMclass:str):
+def extract_frames(video_dir:str, file_name:str, csv_dir:str, patient_id:str, REMclass:str, cropped_dir:str):
     video_input_path =  os.path.join(video_dir, file_name)
     cap = cv2.VideoCapture(video_input_path)
+    print(f'VIDEO INPUT PATH - {video_input_path}')
 
     aug_frame_count = 3 #total number of frames used for temporal data augmentation = 3 frames before AND after original clip, so original clip is [3, length-4]
 
@@ -60,7 +71,6 @@ def extract_frames(video_dir:str, file_name:str, csv_dir:str, patient_id:str, RE
     interpolate_pos_frames = []
     every_pos_frames = []
 
-    cropped_dir = os.path.join(os.path.abspath(os.getcwd()), "REM", "raw", "cropped")
     center_frames_dir = os.path.join(cropped_dir, "center", patient_id, REMclass, file_name.replace(".mp4", ""))
     if not os.path.exists(center_frames_dir): os.makedirs(center_frames_dir)
     interpolate_frames_dir = ""
@@ -106,6 +116,8 @@ def extract_frames(video_dir:str, file_name:str, csv_dir:str, patient_id:str, RE
         
 
 def detect_vid():
+    cropped_dir = os.path.join(os.path.abspath(os.getcwd()), "REM", "raw", "cropped")
+    remove_folder_recursively(cropped_dir)
     video_dir:str = os.path.join(os.path.abspath(os.getcwd()), "REM", "raw", "cutout")
     frames_dir:str = os.path.join(os.path.abspath(os.getcwd()), "REM", "raw", "frames")
     #for patient in os.listdir(video_dir):
@@ -115,6 +127,6 @@ def detect_vid():
         fragment_dir:str = os.path.join(patient_dir, eye_state_dir)
         for fragment_file in os.listdir(fragment_dir):
             bbox_csv = get_csv(os.path.join(frames_dir, patient, eye_state_dir, fragment_file.replace(".mp4", "")))
-            extract_frames(fragment_dir, fragment_file, bbox_csv, patient, eye_state_dir)
+            extract_frames(fragment_dir, fragment_file, bbox_csv, patient, eye_state_dir, cropped_dir)
 
 detect_vid()
