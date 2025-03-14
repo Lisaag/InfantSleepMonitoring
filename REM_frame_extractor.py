@@ -72,26 +72,15 @@ def interpolate_pos_frames(df_bboxes,  min_bounds, max_bounds):
     return cutouts  
 
 def every_pos_frames(df_bboxes,  min_bounds, max_bounds):
-    #+1, because max_bounds is valid index, not length
-    frame_count = max_bounds + 1 - min_bounds
+    cutouts = []
 
-    for i in range(frame_count):
-        print("a")
+    for i in range(min_bounds, max_bounds + 1):
+        #not every frame has a localisation, so in that case take the frame closest by that does have a localisation
+        index = min(df_bboxes['frame'], key=lambda v: abs(v - i))
+        bbox = xyxy_to_square(df_bboxes["x1"][index], df_bboxes["y1"][index], df_bboxes["x2"][index], df_bboxes["y2"][index])
 
-    #Get the frame closest to the first and last, with a valid detection (cecause not every frame might have a bbox detection)
-    first_index = min(df_bboxes['frame'], key=lambda v: abs(v - min_bounds))
-    last_index = min(df_bboxes['frame'], key=lambda v: abs(v - max_bounds))
+        cutouts.append(bbox)
 
-    #Get bbox data, top left (x1, y1) bottom right (x2, y2)
-    x1_first, y1_first, x2_first, y2_first = xyxy_to_square(df_bboxes["x1"][first_index], df_bboxes["y1"][first_index], df_bboxes["x2"][first_index], df_bboxes["y2"][first_index])
-    x1_last, y1_last, x2_last, y2_last =  xyxy_to_square(df_bboxes["x1"][last_index], df_bboxes["y1"][last_index], df_bboxes["x2"][last_index], df_bboxes["y2"][last_index])
-
-    x1_vals = np.linspace(x1_first, x1_last, frame_count, dtype=int)
-    y1_vals = np.linspace(y1_first, y1_last, frame_count, dtype=int)
-    x2_vals = np.linspace(x2_first, x2_last, frame_count, dtype=int)
-    y2_vals = np.linspace(y2_first, y2_last, frame_count, dtype=int)
-
-    cutouts = list(zip(x1_vals, y1_vals, x2_vals, y2_vals))
     return cutouts  
 
 def save_frame_stack(frame, vid, current_frame, frame_indices, bbox, dir):
@@ -128,7 +117,7 @@ def extract_frames(video_dir:str, file_name:str, csv_dir:str, patient_id:str, RE
 
     center_frames = center_pos_frames(df_bboxes, min_bounds, max_bounds)
     interpolate_frames = interpolate_pos_frames(df_bboxes, min_bounds, max_bounds)
-    every_frames = []
+    every_frames = every_pos_frames(df_bboxes, min_bounds, max_bounds)
 
     frame_indices = np.linspace(min_bounds, max_bounds, frame_stack_count, dtype=int).tolist()
     print(f'Frame indices {frame_indices}')
@@ -138,12 +127,15 @@ def extract_frames(video_dir:str, file_name:str, csv_dir:str, patient_id:str, RE
     if not os.path.exists(center_frames_dir): os.makedirs(center_frames_dir)
     interpolate_frames_dir = os.path.join(cropped_dir, "interpolate", patient_id, REMclass, file_name.replace(".mp4", ""))
     if not os.path.exists(interpolate_frames_dir): os.makedirs(interpolate_frames_dir)
-    every_frames_dir = ""
+    every_frames_dir = os.path.join(cropped_dir, "every", patient_id, REMclass, file_name.replace(".mp4", ""))
+    if not os.path.exists(every_frames_dir): os.makedirs(every_frames_dir)
+
 
     # write results to video, for debugging
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
     center_vid = cv2.VideoWriter(os.path.join(center_frames_dir, "center.mp4"), fourcc, fps, (frame_width, frame_height))
     interpolate_vid = cv2.VideoWriter(os.path.join(interpolate_frames_dir, "interpolate.mp4"), fourcc, fps, (frame_width, frame_height))
+    every_vid = cv2.VideoWriter(os.path.join(every_frames_dir, "every.mp4"), fourcc, fps, (frame_width, frame_height))
     #every_vid = cv2.VideoWriter(every_frames_dir, fourcc, fps, (frame_width, frame_height))
     
     #TODO return array of n evenly spaced integers between 3 and framecount-3 (bc of augmentation offset)
@@ -165,6 +157,7 @@ def extract_frames(video_dir:str, file_name:str, csv_dir:str, patient_id:str, RE
 
         save_frame_stack(frame.copy(), center_vid, current_frame, frame_indices, center_frames[current_frame - min_bounds], center_frames_dir)
         save_frame_stack(frame.copy(), interpolate_vid, current_frame, frame_indices, interpolate_frames[current_frame - min_bounds], interpolate_frames_dir)
+        save_frame_stack(frame.copy(), every_vid, current_frame, frame_indices, every_frames[current_frame - min_bounds], every_frames_dir)
 
         # x1, y1, x2, y2 = center_frames[current_frame - min_bounds]
 
