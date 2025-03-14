@@ -44,7 +44,7 @@ def REMtrain():
     model = create_3dcnn_model(input_shape=input_shape, num_classes=num_classes)
     model.summary()
 
-    data_dir = os.path.join(os.path.abspath(os.getcwd()),"REM", "raw", "cropped")
+    data_dir = os.path.join(os.path.abspath(os.getcwd()),"REM", "raw", "cropped", "center")
     
     val_samples = list(); val_labels = list(); train_samples = list(); train_labels = list()
 
@@ -56,7 +56,6 @@ def REMtrain():
                 sample_dir = os.path.join(eye_state_dir, sample)
                 images = list()
                 for frame in os.listdir(sample_dir):
-                    print(frame)
                     if frame.endswith(".jpg"):
                         print(os.path.join(sample_dir, frame))
                         image = cv2.imread(os.path.join(sample_dir, frame), cv2.IMREAD_GRAYSCALE) 
