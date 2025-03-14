@@ -36,7 +36,7 @@ def center_pos_frames(df_bboxes,  min_bounds, max_bounds):
     frame_count = max_bounds + 1 - min_bounds
 
     #size of bounding box as max width
-    size = max(int(abs(x1 - x2)) for x1, x2 in zip(df_bboxes['x1'][min_bounds, max_bounds+1], df_bboxes['x2'][min_bounds, max_bounds+1]))
+    size = max(int(abs(x1 - x2)) for x1, x2 in zip(df_bboxes['x1'][min_bounds:max_bounds+1], df_bboxes['x2'][min_bounds:max_bounds+1]))
 
     #Get center frame
     center_frame = min_bounds + int(frame_count / 2)
@@ -55,7 +55,7 @@ def interpolate_pos_frames(df_bboxes,  min_bounds, max_bounds):
     frame_count = max_bounds + 1 - min_bounds
 
     #size of bounding box as max width
-    size = max(int(abs(x1 - x2)) for x1, x2 in zip(df_bboxes['x1'][min_bounds, max_bounds+1], df_bboxes['x2'][min_bounds, max_bounds+1]))
+    size = max(int(abs(x1 - x2)) for x1, x2 in zip(df_bboxes['x1'][min_bounds:max_bounds+1], df_bboxes['x2'][min_bounds:max_bounds+1]))
 
     #Get the frame closest to the first and last, with a valid detection (cecause not every frame might have a bbox detection)
     first_index = min(df_bboxes['frame'], key=lambda v: abs(v - min_bounds))
@@ -77,7 +77,7 @@ def every_pos_frames(df_bboxes,  min_bounds, max_bounds):
     cutouts = []
 
     #size of bounding box as max width
-    size = max(int(abs(x1 - x2)) for x1, x2 in zip(df_bboxes['x1'][min_bounds, max_bounds+1], df_bboxes['x2'][min_bounds, max_bounds+1]))    
+    size = max(int(abs(x1 - x2)) for x1, x2 in zip(df_bboxes['x1'][min_bounds:max_bounds+1], df_bboxes['x2'][min_bounds:max_bounds+1]))    
 
     for i in range(min_bounds, max_bounds + 1):
         #not every frame has a localisation, so in that case take the frame closest by that does have a localisation
