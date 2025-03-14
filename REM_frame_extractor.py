@@ -101,6 +101,7 @@ def extract_frames(video_dir:str, file_name:str, csv_dir:str, patient_id:str, RE
         current_frame+=1
         if(current_frame < min_bounds or current_frame > max_bounds): continue
 
+        print(current_frame - min_bounds)
         x1, y1, x2, y2 = center_frames[current_frame - min_bounds]
 
         #save stack of frames
