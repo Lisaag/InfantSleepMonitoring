@@ -164,6 +164,7 @@ def extract_frames(video_dir:str, file_name:str, csv_dir:str, patient_id:str, RE
         if(current_frame < min_bounds or current_frame > max_bounds): continue
 
         save_frame_stack(frame.copy(), center_vid, current_frame, frame_indices, center_frames[current_frame - min_bounds], center_frames_dir)
+        save_frame_stack(frame.copy(), interpolate_vid, current_frame, frame_indices, interpolate_frames[current_frame - min_bounds], interpolate_frames_dir)
 
         # x1, y1, x2, y2 = center_frames[current_frame - min_bounds]
 
