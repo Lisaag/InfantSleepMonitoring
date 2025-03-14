@@ -104,8 +104,8 @@ def extract_frames(video_dir:str, file_name:str, csv_dir:str, patient_id:str, RE
     df_bboxes = pd.read_csv(csv_dir)
 
     center_frames = center_pos_frames(df_bboxes, min_bounds, max_bounds)
-    interpolate_pos_frames = interpolate_pos_frames(df_bboxes, min_bounds, max_bounds)
-    every_pos_frames = []
+    interpolate_frames = interpolate_pos_frames(df_bboxes, min_bounds, max_bounds)
+    every_frames = []
 
     frame_indices = np.linspace(min_bounds, max_bounds, frame_stack_count, dtype=int).tolist()
     print(f'Frame indices {frame_indices}')
