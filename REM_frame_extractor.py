@@ -18,26 +18,25 @@ def get_csv(folder_path):
     return csv_files[0] if csv_files else None
 
 #get the xyxy, as 1:1 square ratio
-def xyxy_to_square(x1, y1, x2, y2):
-    #Get width and heigh, as  1:1 ratio
-    width = int(abs(x1 - x2))
-    height = width
-
+def xyxy_to_square(x1, y1, x2, y2, size):
     #get bounding box center
     x_center = (x1 + x2) / 2
     y_center = (y1 + y2) / 2
 
     #get new xyxy positions, with 1:1 ratio
-    x1 = int(x_center - width / 2)
-    x2 = int(x_center + width / 2)
-    y1 = int(y_center - height / 2)
-    y2 = int(y_center + height / 2)
+    x1 = int(x_center - size / 2)
+    x2 = int(x_center + size / 2)
+    y1 = int(y_center - size / 2)
+    y2 = int(y_center + size / 2)
 
     return [x1, y1, x2, y2]
 
 def center_pos_frames(df_bboxes,  min_bounds, max_bounds):
     #+1, because max_bounds is valid index, not length
     frame_count = max_bounds + 1 - min_bounds
+
+    #size of bounding box as max width
+    size = max(int(abs(x1 - x2)) for x1, x2 in zip(df_bboxes['x1'][min_bounds, max_bounds+1], df_bboxes['x2'][min_bounds, max_bounds+1]))
 
     #Get center frame
     center_frame = min_bounds + int(frame_count / 2)
@@ -46,7 +45,7 @@ def center_pos_frames(df_bboxes,  min_bounds, max_bounds):
     center_index = min(df_bboxes['frame'], key=lambda v: abs(v - center_frame))
 
     #Get bbox data, top left (x1, y1) bottom right (x2, y2)
-    bbox = xyxy_to_square(df_bboxes["x1"][center_index], df_bboxes["y1"][center_index], df_bboxes["x2"][center_index], df_bboxes["y2"][center_index])
+    bbox = xyxy_to_square(df_bboxes["x1"][center_index], df_bboxes["y1"][center_index], df_bboxes["x2"][center_index], df_bboxes["y2"][center_index], size)
     cutouts = [bbox for _ in range(frame_count)]
 
     return cutouts    
@@ -55,13 +54,16 @@ def interpolate_pos_frames(df_bboxes,  min_bounds, max_bounds):
     #+1, because max_bounds is valid index, not length
     frame_count = max_bounds + 1 - min_bounds
 
+    #size of bounding box as max width
+    size = max(int(abs(x1 - x2)) for x1, x2 in zip(df_bboxes['x1'][min_bounds, max_bounds+1], df_bboxes['x2'][min_bounds, max_bounds+1]))
+
     #Get the frame closest to the first and last, with a valid detection (cecause not every frame might have a bbox detection)
     first_index = min(df_bboxes['frame'], key=lambda v: abs(v - min_bounds))
     last_index = min(df_bboxes['frame'], key=lambda v: abs(v - max_bounds))
 
     #Get bbox data, top left (x1, y1) bottom right (x2, y2)
-    x1_first, y1_first, x2_first, y2_first = xyxy_to_square(df_bboxes["x1"][first_index], df_bboxes["y1"][first_index], df_bboxes["x2"][first_index], df_bboxes["y2"][first_index])
-    x1_last, y1_last, x2_last, y2_last =  xyxy_to_square(df_bboxes["x1"][last_index], df_bboxes["y1"][last_index], df_bboxes["x2"][last_index], df_bboxes["y2"][last_index])
+    x1_first, y1_first, x2_first, y2_first = xyxy_to_square(df_bboxes["x1"][first_index], df_bboxes["y1"][first_index], df_bboxes["x2"][first_index], df_bboxes["y2"][first_index], size)
+    x1_last, y1_last, x2_last, y2_last =  xyxy_to_square(df_bboxes["x1"][last_index], df_bboxes["y1"][last_index], df_bboxes["x2"][last_index], df_bboxes["y2"][last_index], size)
 
     x1_vals = np.linspace(x1_first, x1_last, frame_count, dtype=int)
     y1_vals = np.linspace(y1_first, y1_last, frame_count, dtype=int)
@@ -74,10 +76,13 @@ def interpolate_pos_frames(df_bboxes,  min_bounds, max_bounds):
 def every_pos_frames(df_bboxes,  min_bounds, max_bounds):
     cutouts = []
 
+    #size of bounding box as max width
+    size = max(int(abs(x1 - x2)) for x1, x2 in zip(df_bboxes['x1'][min_bounds, max_bounds+1], df_bboxes['x2'][min_bounds, max_bounds+1]))    
+
     for i in range(min_bounds, max_bounds + 1):
         #not every frame has a localisation, so in that case take the frame closest by that does have a localisation
         index = min(df_bboxes['frame'], key=lambda v: abs(v - i))
-        bbox = xyxy_to_square(df_bboxes["x1"][index], df_bboxes["y1"][index], df_bboxes["x2"][index], df_bboxes["y2"][index])
+        bbox = xyxy_to_square(df_bboxes["x1"][index], df_bboxes["y1"][index], df_bboxes["x2"][index], df_bboxes["y2"][index], size)
 
         cutouts.append(bbox)
 
