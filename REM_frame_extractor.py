@@ -15,7 +15,6 @@ def remove_folder_recursively(folder_path):
 
 def get_csv(folder_path):
     csv_files = glob.glob(os.path.join(folder_path, "*.csv")) 
-    print(f'CSV {csv_files}')
     return csv_files[0] if csv_files else None
 
 #get the xyxy, as 1:1 square ratio
@@ -50,7 +49,6 @@ def center_pos_frames(df_bboxes, min_bound, max_bound):
 def extract_frames(video_dir:str, file_name:str, csv_dir:str, patient_id:str, REMclass:str, cropped_dir:str):
     video_input_path =  os.path.join(video_dir, file_name)
     cap = cv2.VideoCapture(video_input_path)
-    print(f'VIDEO INPUT PATH - {video_input_path}')
 
     aug_frame_count = 3 #total number of frames used for temporal data augmentation = 3 frames before AND after original clip, so original clip is [3, length-4]
 
@@ -59,6 +57,11 @@ def extract_frames(video_dir:str, file_name:str, csv_dir:str, patient_id:str, RE
     frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
     fps = int(cap.get(cv2.CAP_PROP_FPS))
+
+    print(f'VIDEO INPUT PATH - {video_input_path}')
+    print(f'VIDEO frame count - {frame_count}')
+
+
 
     frame_stack_count = 6
     df_bboxes = pd.read_csv(csv_dir)
