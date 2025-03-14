@@ -202,6 +202,7 @@ def detect_vid():
     for patient in os.listdir(video_dir):
         if patient in green_list:
             print(f"Already processed {patient}")
+            continue
         patient_dir:str = os.path.join(video_dir, patient)
         for eye_state_dir in os.listdir(patient_dir):
             fragment_dir:str = os.path.join(patient_dir, eye_state_dir)
