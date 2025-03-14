@@ -16,7 +16,7 @@ def remove_folder_recursively(folder_path):
 def get_csv(folder_path):
     csv_files = glob.glob(os.path.join(folder_path, "*.csv")) 
     print(f'CSV {csv_files}')
-    return os.path.join(folder_path, csv_files[0]) if csv_files else None
+    return csv_files[0] if csv_files else None
 
 #get the xyxy, as 1:1 square ratio
 def xyxy_to_square(x1, y1, x2, y2):
