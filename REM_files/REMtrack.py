@@ -120,16 +120,13 @@ def write_bbox(boxes:defaultdict, video_input_path:str, root_dir:str, file_name:
     cv2.destroyAllWindows()
 
 def save_boxes_csv(boxes:defaultdict, root_dir:str, file_name:str):
-    box_index = 0
-
     fragement_dir = os.path.join(root_dir, file_name.replace(".mp4", ""))
 
     if not os.path.exists(fragement_dir):
         os.makedirs(fragement_dir)
 
     for key in boxes.keys():
-        box_index = 0
-        dir = os.path.join(fragement_dir, str(box_index) + ".csv")
+        dir = os.path.join(fragement_dir, str(key) + ".csv")
 
         with open(dir, "w") as file:
             file.write("frame,x1,y1,x2,y2" + "\n")
@@ -138,7 +135,6 @@ def save_boxes_csv(boxes:defaultdict, root_dir:str, file_name:str):
             with open(dir, "a") as file:
                 file.write(str(k) + "," + str(boxes[key][k][0]) + "," + str(boxes[key][k][1]) + "," + str(boxes[key][k][2]) + "," + str(boxes[key][k][3]) + "\n")
 
-        box_index += 1
 
         print(f'Write csv for eye {key}')
 
