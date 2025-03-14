@@ -143,15 +143,10 @@ def save_boxes_csv(boxes:defaultdict, root_dir:str, file_name:str):
         print(f'Write csv for eye {key}')
 
 
-
 def detect_vid(relative_weights_path:str):
     root_dir:str = os.path.join(os.path.abspath(os.getcwd()), "REM", "raw", "cutout")
     frames_dir:str = os.path.join(os.path.abspath(os.getcwd()), "REM", "raw", "frames")
-
-    print(root_dir)
-    return
     shutil.rmtree(frames_dir)
-
 
     for patient in os.listdir(root_dir):
         patient_dir:str = os.path.join(root_dir, patient)
