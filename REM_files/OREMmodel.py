@@ -44,54 +44,57 @@ def REMtrain():
     model = create_3dcnn_model(input_shape=input_shape, num_classes=num_classes)
     model.summary()
 
-    train_dir = os.path.join(os.path.abspath(os.getcwd()),"OREM-dataset", "train")
-    val_dir = os.path.join(os.path.abspath(os.getcwd()),"OREM-dataset", "val")
+    data_dir = os.path.join(os.path.abspath(os.getcwd()),"REM", "raw", "cropped")
+    
+    val_samples = list(); val_labels = list(); train_samples = list(); train_labels = list()
 
-    train_samples = list()
-    train_labels = list()
-    for eye_state in os.listdir(train_dir):
-        eye_state_dir = os.path.join(train_dir, eye_state)
-        for sample in os.listdir(eye_state_dir):
-            sample_dir = os.path.join(eye_state_dir, sample)
-            images = list()
-            for frame in os.listdir(sample_dir):
-                image = cv2.imread(os.path.join(sample_dir, frame), cv2.IMREAD_GRAYSCALE) 
-                image = image / 255
-                images.append(image)
-            
-            expanded_stack = np.expand_dims(images, axis=-1) 
-            stacked_images = np.stack(expanded_stack, axis=0)
+    for patient in os.listdir(data_dir):
+        patient_dir:str = os.path.join(data_dir, patient)
+        for eye_state in os.listdir(patient_dir):
+            eye_state_dir = os.path.join(patient_dir, eye_state)
+            for sample in os.listdir(eye_state_dir):
+                sample_dir = os.path.join(eye_state_dir, sample)
+                images = list()
+                for frame in os.listdir(sample_dir):
+                    image = cv2.imread(os.path.join(sample_dir, frame), cv2.IMREAD_GRAYSCALE) 
+                    image = image / 255
+                    print(image.shape)
+                    images.append(image)
 
-            train_samples.append(stacked_images)
-            label = 0 if eye_state == "O" else 1
-            train_labels.append(label)
+return
+                expanded_stack = np.expand_dims(images, axis=-1) 
+                stacked_images = np.stack(expanded_stack, axis=0)
+
+                train_samples.append(stacked_images)
+                label = 0 if eye_state == "O" else 1
+                train_labels.append(label)
 
     train_samples_stacked = np.stack(train_samples, axis=0)
     train_labels_numpy = np.array(train_labels, dtype=int)
     train_labels_bce = tf.one_hot(train_labels_numpy, depth=2)
 
-    print(f'TRAIN SHAPE {train_samples_stacked.shape}')
-    print(f'TRAIN LABELS {len(train_labels)}')
+    # print(f'TRAIN SHAPE {train_samples_stacked.shape}')
+    # print(f'TRAIN LABELS {len(train_labels)}')
 
 
-    val_samples = list()
-    val_labels = list()
-    for eye_state in os.listdir(val_dir):
-        eye_state_dir = os.path.join(val_dir, eye_state)
-        for sample in os.listdir(eye_state_dir):
-            sample_dir = os.path.join(eye_state_dir, sample)
-            images = list()
-            for frame in os.listdir(sample_dir):
-                image = cv2.imread(os.path.join(sample_dir, frame), cv2.IMREAD_GRAYSCALE) 
-                image = image / 255
-                images.append(image)
+    # val_samples = list()
+    # val_labels = list()
+    # for eye_state in os.listdir(val_dir):
+    #     eye_state_dir = os.path.join(val_dir, eye_state)
+    #     for sample in os.listdir(eye_state_dir):
+    #         sample_dir = os.path.join(eye_state_dir, sample)
+    #         images = list()
+    #         for frame in os.listdir(sample_dir):
+    #             image = cv2.imread(os.path.join(sample_dir, frame), cv2.IMREAD_GRAYSCALE) 
+    #             image = image / 255
+    #             images.append(image)
             
-            expanded_stack = np.expand_dims(images, axis=-1) 
-            stacked_images = np.stack(expanded_stack, axis=0)
+    #         expanded_stack = np.expand_dims(images, axis=-1) 
+    #         stacked_images = np.stack(expanded_stack, axis=0)
 
-            val_samples.append(stacked_images)
-            label = 0 if eye_state == "O" else 1
-            val_labels.append(label)
+    #         val_samples.append(stacked_images)
+    #         label = 0 if eye_state == "O" else 1
+    #         val_labels.append(label)
 
     
 
