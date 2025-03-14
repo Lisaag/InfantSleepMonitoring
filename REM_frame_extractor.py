@@ -68,7 +68,7 @@ def interpolate_pos_frames(df_bboxes,  min_bounds, max_bounds):
     x2_vals = np.linspace(x2_first, x2_last, frame_count, dtype=int)
     y2_vals = np.linspace(y2_first, y2_last, frame_count, dtype=int)
 
-    cutouts = zip(x1_vals, y1_vals, x2_vals, y2_vals)
+    cutouts = list(zip(x1_vals, y1_vals, x2_vals, y2_vals))
     return cutouts  
 
 def every_pos_frames(df_bboxes,  min_bounds, max_bounds):
