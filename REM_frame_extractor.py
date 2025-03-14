@@ -143,8 +143,6 @@ def extract_frames(video_dir:str, file_name:str, csv_dir:str, patient_id:str, RE
     df_bboxes = pd.read_csv(csv_dir)
 
     print(f'PROCESSING VIDEO - {video_input_path}')
-    print(f'INFO - min {min_bounds}, max {max_bounds}')
-
 
     center_frames = center_pos_frames(df_bboxes, min_bounds, max_bounds)
     interpolate_frames = interpolate_pos_frames(df_bboxes, min_bounds, max_bounds)
@@ -214,15 +212,11 @@ def extract_frames(video_dir:str, file_name:str, csv_dir:str, patient_id:str, RE
         
 
 def detect_vid():
-    green_list = ["554_02-03-2023"]
     cropped_dir = os.path.join(os.path.abspath(os.getcwd()), "REM", "raw", "cropped")
-    #remove_folder_recursively(cropped_dir)
+    remove_folder_recursively(cropped_dir)
     video_dir:str = os.path.join(os.path.abspath(os.getcwd()), "REM", "raw", "cutout")
     frames_dir:str = os.path.join(os.path.abspath(os.getcwd()), "REM", "raw", "frames")
     for patient in os.listdir(video_dir):
-        if patient in green_list:
-            print(f"Already processed {patient}")
-            continue
         patient_dir:str = os.path.join(video_dir, patient)
         for eye_state_dir in os.listdir(patient_dir):
             fragment_dir:str = os.path.join(patient_dir, eye_state_dir)
