@@ -82,7 +82,7 @@ def extract_frames(video_dir:str, file_name:str, csv_dir:str, patient_id:str, RE
 
     # write results to video, for debugging
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    center_vid = cv2.VideoWriter(center_frames_dir+"center.mp4", fourcc, fps, (frame_width, frame_height))
+    center_vid = cv2.VideoWriter(os.path.join(center_frames_dir, "center.mp4"), fourcc, fps, (frame_width, frame_height))
     print(f'Center vid dir: {center_frames_dir}')
     #interpolate_vid = cv2.VideoWriter(interpolate_frames_dir, fourcc, fps, (frame_width, frame_height))
     #every_vid = cv2.VideoWriter(every_frames_dir, fourcc, fps, (frame_width, frame_height))
