@@ -58,9 +58,7 @@ def extract_frames(video_dir:str, file_name:str, csv_dir:str, patient_id:str, RE
     frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
     fps = int(cap.get(cv2.CAP_PROP_FPS))
 
-    print(f'VIDEO INPUT PATH - {video_input_path}')
-    print(f'VIDEO frame count - {frame_count}')
-
+    print(f'PROCESSING VIDEO - {video_input_path}')
 
     frame_stack_count = 6
     df_bboxes = pd.read_csv(csv_dir)
@@ -72,9 +70,6 @@ def extract_frames(video_dir:str, file_name:str, csv_dir:str, patient_id:str, RE
     center_frames = center_pos_frames(df_bboxes, aug_frame_count, int(len(df_bboxes)) - 1 - aug_frame_count)
     interpolate_pos_frames = []
     every_pos_frames = []
-
-    print(f'Frame indices- {frame_indices}')
-    print(f'Center frames- {center_frames}')
 
 
     center_frames_dir = os.path.join(cropped_dir, "center", patient_id, REMclass, file_name.replace(".mp4", ""))
@@ -99,7 +94,7 @@ def extract_frames(video_dir:str, file_name:str, csv_dir:str, patient_id:str, RE
         ret, frame = cap.read()
         if not ret:
             break
-        frame_count+=1 
+        current_frame+=1 
 
         x1, y1, x2, y2 = center_frames[current_frame]
 
