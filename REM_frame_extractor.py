@@ -62,6 +62,7 @@ def interpolate_pos_frames(df_bboxes,  min_bounds, max_bounds):
     #Get the frame closest to the first and last, with a valid detection (cecause not every frame might have a bbox detection)
     first_index = min(df_bboxes['frame'], key=lambda v: abs(v - min_bounds))
     last_index = min(df_bboxes['frame'], key=lambda v: abs(v - max_bounds))
+    print(f"first {first_index} last {last_index}")
 
     #Get bbox data, top left (x1, y1) bottom right (x2, y2)
     x1_first, y1_first, x2_first, y2_first = xyxy_to_square(df_bboxes["x1"][first_index], df_bboxes["y1"][first_index], df_bboxes["x2"][first_index], df_bboxes["y2"][first_index], size)
@@ -113,7 +114,6 @@ def extract_frames(video_dir:str, file_name:str, csv_dir:str, patient_id:str, RE
     frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
     fps = int(cap.get(cv2.CAP_PROP_FPS))
 
-    print(f'PROCESSING VIDEO - {video_input_path}')
 
     aug_frame_count = 3 #total number of frames used for temporal data augmentation = 3 frames before AND after original clip, so original clip is [3, length-4]
     min_bounds = aug_frame_count
@@ -121,6 +121,10 @@ def extract_frames(video_dir:str, file_name:str, csv_dir:str, patient_id:str, RE
 
     frame_stack_count = 6
     df_bboxes = pd.read_csv(csv_dir)
+
+    print(f'PROCESSING VIDEO - {video_input_path}')
+    print(f'INFO - min {min_bounds}, max {max_bounds}')
+
 
     center_frames = center_pos_frames(df_bboxes, min_bounds, max_bounds)
     interpolate_frames = interpolate_pos_frames(df_bboxes, min_bounds, max_bounds)
@@ -190,11 +194,14 @@ def extract_frames(video_dir:str, file_name:str, csv_dir:str, patient_id:str, RE
         
 
 def detect_vid():
+    green_list = ["554_02-03-2023"]
     cropped_dir = os.path.join(os.path.abspath(os.getcwd()), "REM", "raw", "cropped")
-    remove_folder_recursively(cropped_dir)
+    #remove_folder_recursively(cropped_dir)
     video_dir:str = os.path.join(os.path.abspath(os.getcwd()), "REM", "raw", "cutout")
     frames_dir:str = os.path.join(os.path.abspath(os.getcwd()), "REM", "raw", "frames")
     for patient in os.listdir(video_dir):
+        if patient in green_list:
+            print(f"Already processed {patient}")
         patient_dir:str = os.path.join(video_dir, patient)
         for eye_state_dir in os.listdir(patient_dir):
             fragment_dir:str = os.path.join(patient_dir, eye_state_dir)
