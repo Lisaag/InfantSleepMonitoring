@@ -47,7 +47,7 @@ def REMtrain():
     data_dir = os.path.join(os.path.abspath(os.getcwd()),"REM", "raw", "cropped", "center")
 
     is_OREM = True
-    val_ids = [554, 778]
+    val_ids = ['554', '778']
     val_samples = list(); val_labels = list(); train_samples = list(); train_labels = list()
 
     for patient in os.listdir(data_dir):
