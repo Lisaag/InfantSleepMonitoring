@@ -9,7 +9,7 @@ import numpy as np
 import cv2
 
 def lr_schedule(epoch):
-    return 0.001 * (0.1 ** (epoch // 10))  # Reduce LR every 10 epochs
+    return 0.00001 * (0.1 ** (epoch // 10))  # Reduce LR every 10 epochs
 
 def create_3dcnn_model(input_shape=(1, 6, 64, 64), num_classes=2):
     model = models.Sequential([
@@ -28,7 +28,7 @@ def create_3dcnn_model(input_shape=(1, 6, 64, 64), num_classes=2):
         layers.Dense(num_classes, activation='softmax')
     ])
 
-    optimizer = keras.optimizers.Adam(lr=0.001)
+    optimizer = keras.optimizers.Adam(lr=0.00001)
     # Compile the model
     model.compile(optimizer=optimizer,
                   loss=keras.losses.BinaryCrossentropy(from_logits=False),
