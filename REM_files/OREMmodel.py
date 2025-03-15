@@ -52,6 +52,8 @@ def REMtrain():
     for patient in os.listdir(data_dir):
         patient_dir:str = os.path.join(data_dir, patient)
         for eye_state in os.listdir(patient_dir):
+            if(is_OREM and (eye_state == "C" or eye_state == "CR")): continue
+            if(not is_OREM and (eye_state == "O" or eye_state == "OR")): continue
             print(eye_state)
             eye_state_dir = os.path.join(patient_dir, eye_state)
             for sample in os.listdir(eye_state_dir):
