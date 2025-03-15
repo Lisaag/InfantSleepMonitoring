@@ -46,15 +46,17 @@ def REMtrain():
 
     data_dir = os.path.join(os.path.abspath(os.getcwd()),"REM", "raw", "cropped", "center")
 
-    is_OREM = False
+    is_OREM = True
+    val_ids = [554, 778]
     val_samples = list(); val_labels = list(); train_samples = list(); train_labels = list()
 
     for patient in os.listdir(data_dir):
         patient_dir:str = os.path.join(data_dir, patient)
+        patient_id:str = patient[0:3]
+        print(patient_id)
         for eye_state in os.listdir(patient_dir):
             if(is_OREM and (eye_state == "C" or eye_state == "CR")): continue
             if(not is_OREM and (eye_state == "O" or eye_state == "OR")): continue
-            print(eye_state)
             eye_state_dir = os.path.join(patient_dir, eye_state)
             for sample in os.listdir(eye_state_dir):
                 sample_dir = os.path.join(eye_state_dir, sample)
@@ -65,17 +67,25 @@ def REMtrain():
                         image = cv2.resize(image, (64, 64))
                         image = image / 255
                         images.append(image)
-                continue
+            
                 expanded_stack = np.expand_dims(images, axis=-1) 
                 stacked_images = np.stack(expanded_stack, axis=0)
 
-                train_samples.append(stacked_images)
-                label = 0 if eye_state == "O" else 1
-                train_labels.append(label)
-    return
+                label = 0 if eye_state == "O" or eye_state == "C" else 1
+
+                if(patient_id in val_ids): 
+                    val_samples.append(stacked_images)
+                    val_labels.append(label)
+                else:
+                    train_samples.append(stacked_images)
+                    train_labels.append(label)
+
     train_samples_stacked = np.stack(train_samples, axis=0)
     train_labels_numpy = np.array(train_labels, dtype=int)
     train_labels_bce = tf.one_hot(train_labels_numpy, depth=2)
+    val_samples_stacked = np.stack(val_samples, axis=0)
+    val_labels_numpy = np.array(val_labels, dtype=int)
+    val_labels_bce = tf.one_hot(val_labels_numpy, depth=2)
 
     # print(f'TRAIN SHAPE {train_samples_stacked.shape}')
     # print(f'TRAIN LABELS {len(train_labels)}')
@@ -102,12 +112,12 @@ def REMtrain():
 
     
 
-    val_samples_stacked = np.stack(val_samples, axis=0)
-    val_labels_numpy = np.array(val_labels, dtype=int)
-    val_labels_bce = tf.one_hot(val_labels_numpy, depth=2)
+    # val_samples_stacked = np.stack(val_samples, axis=0)
+    # val_labels_numpy = np.array(val_labels, dtype=int)
+    # val_labels_bce = tf.one_hot(val_labels_numpy, depth=2)
 
-    print(f'VAL SHAPE {val_samples_stacked.shape}')
-    print(f'VAL LABELS {len(val_labels)}')
+    # print(f'VAL SHAPE {val_samples_stacked.shape}')
+    # print(f'VAL LABELS {len(val_labels)}')
 
 
     history = model.fit(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), epochs=50, batch_size=4)
