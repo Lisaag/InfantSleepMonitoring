@@ -2,7 +2,7 @@ import tensorflow as tf
 from tensorflow.keras import layers, models, regularizers
 from keras import backend as K
 
-import keras
+import tensorflow.keras as keras
 import csv
 import os
 import numpy as np
