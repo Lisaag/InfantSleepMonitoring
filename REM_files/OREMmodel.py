@@ -74,9 +74,11 @@ def REMtrain():
                 label = 0 if eye_state == "O" or eye_state == "C" else 1
 
                 if(patient_id in val_ids): 
+                    print(f'from {patient_id} add to val')
                     val_samples.append(stacked_images)
                     val_labels.append(label)
                 else:
+                    print(f'from {patient_id} add to train')
                     train_samples.append(stacked_images)
                     train_labels.append(label)
 
