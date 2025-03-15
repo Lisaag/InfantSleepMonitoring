@@ -8,6 +8,8 @@ import os
 import numpy as np
 import cv2
 
+def lr_schedule(epoch):
+    return 0.0001 * (0.1 ** (epoch // 10))  # Reduce LR every 10 epochs
 
 def create_3dcnn_model(input_shape=(1, 6, 64, 64), num_classes=2):
     model = models.Sequential([
@@ -19,9 +21,6 @@ def create_3dcnn_model(input_shape=(1, 6, 64, 64), num_classes=2):
         layers.MaxPooling3D(pool_size=(2, 2, 2)),   
         layers.Dropout(0.25),
 
-        # layers.Conv3D(128, kernel_size=(3, 3, 3), activation='relu', padding='same'),
-        # layers.MaxPooling3D(pool_size=(2, 2, 2)),
-
         layers.Flatten(),
         layers.Dense(64, activation='relu', kernel_regularizer=regularizers.L2(0.01), kernel_initializer=tf.keras.initializers.HeNormal()),
         layers.BatchNormalization(),
@@ -30,6 +29,7 @@ def create_3dcnn_model(input_shape=(1, 6, 64, 64), num_classes=2):
     ])
 
     optimizer = keras.optimizers.Adam(lr=0.0001)
+    # Compile the model
     model.compile(optimizer=optimizer,
                   loss=keras.losses.BinaryCrossentropy(from_logits=False),
                   metrics=['accuracy'])
@@ -121,8 +121,9 @@ def REMtrain():
     # print(f'VAL SHAPE {val_samples_stacked.shape}')
     # print(f'VAL LABELS {len(val_labels)}')
 
+    lr_callback = keras.callbacks.LearningRateScheduler(lr_schedule)
 
-    history = model.fit(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), epochs=50, batch_size=4)
+    history = model.fit(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), epochs=50, batch_size=4, callbacks=[lr_callback])
 
     predictions = model.predict(val_samples_stacked)
     predicted_labels = np.argmax(predictions, axis=1)
