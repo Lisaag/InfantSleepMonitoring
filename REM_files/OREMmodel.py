@@ -45,23 +45,23 @@ def REMtrain():
     model.summary()
 
     data_dir = os.path.join(os.path.abspath(os.getcwd()),"REM", "raw", "cropped", "center")
-    
+
+    is_OREM = True
     val_samples = list(); val_labels = list(); train_samples = list(); train_labels = list()
 
     for patient in os.listdir(data_dir):
         patient_dir:str = os.path.join(data_dir, patient)
         for eye_state in os.listdir(patient_dir):
+            print(eye_state)
             eye_state_dir = os.path.join(patient_dir, eye_state)
             for sample in os.listdir(eye_state_dir):
                 sample_dir = os.path.join(eye_state_dir, sample)
                 images = list()
                 for frame in os.listdir(sample_dir):
                     if frame.endswith(".jpg"):
-                        print(os.path.join(sample_dir, frame))
                         image = cv2.imread(os.path.join(sample_dir, frame), cv2.IMREAD_GRAYSCALE) 
                         image = cv2.resize(image, (64, 64))
                         image = image / 255
-                        print(image.shape)
                         images.append(image)
                 continue
                 expanded_stack = np.expand_dims(images, axis=-1) 
