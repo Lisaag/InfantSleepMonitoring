@@ -50,8 +50,8 @@ def REMtrain():
     #val_ids = ['554', '778'] #fold1
     #val_ids = ['004', '866'] #fold2
     #val_ids = ['399', '657'] #fold3
-    val_ids = ['416', '875'] #fold4
-    #val_ids = ['614', '704'] #fold5
+    #val_ids = ['416', '875'] #fold4
+    val_ids = ['614', '704'] #fold5
     val_samples = list(); val_labels = list(); train_samples = list(); train_labels = list()
 
     for patient in os.listdir(data_dir):
