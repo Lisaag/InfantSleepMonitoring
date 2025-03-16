@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import csv
 import os
-from sklearn.metrics import confusion_matrix
+#from sklearn.metrics import confusion_matrix
 import seaborn as sns
 import numpy as np
 
@@ -15,7 +15,11 @@ def plot_confusion_matrix():
     with open(os.path.join(os.path.abspath(os.getcwd()),"REM-results", "true_labels.txt"), 'r') as file:
         for line in file: true_labels.append(int(line.strip()))
 
-    cm = confusion_matrix(true_labels, predicted_labels)
+    num_classes = 2
+    cm = np.zeros((num_classes, num_classes), dtype=int)
+
+    for i in range(len(true_labels)):
+        cm[true_labels[i]][predicted_labels[i]] += 1        # Increment the corresponding cell
 
     plt.figure(figsize=(10, 7))
     h = sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=np.arange(2), yticklabels=np.arange(2))
