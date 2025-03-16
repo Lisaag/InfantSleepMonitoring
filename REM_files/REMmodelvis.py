@@ -32,7 +32,7 @@ def plot_confusion_matrix():
     plt.savefig(os.path.join(os.path.abspath(os.getcwd()),"REM-results", "confusion_matrix.jpg"), format='jpg')  
 
 
-def plot_loss_curve(filename, gridsize=10.0):
+def plot_loss_curve():
     train_losses = list()
     val_losses = list()
 
@@ -53,11 +53,10 @@ def plot_loss_curve(filename, gridsize=10.0):
     
     plt.xlabel('Epochs')
     plt.ylabel('Loss')
-    plt.title(f'Training and validation {filename} loss')
+    plt.title(f'Training and validation loss')
     plt.legend()
     plt.grid(True)
-    offset = (gridsize - min(all_losses)) * 0.05
-    plt.ylim(min(all_losses) - offset, gridsize)
+    plt.ylim(min(all_losses) - 0.01, max(all_losses) + 0.01)
     plt.savefig(os.path.join(os.path.abspath(os.getcwd()),"REM-results", "plot.jpg"), dpi=500, format='jpg')  
 
 
