@@ -44,7 +44,7 @@ def REMtrain():
     model = create_3dcnn_model(input_shape=input_shape, num_classes=num_classes)
     model.summary()
 
-    data_dir = os.path.join(os.path.abspath(os.getcwd()),"REM", "raw", "cropped", "center")
+    data_dir = os.path.join(os.path.abspath(os.getcwd()),"REM", "raw", "cropped", "interpolate")
 
     is_OREM = True
     val_ids = ['554', '778']
