@@ -23,40 +23,45 @@ def plot_confusion_matrix():
 
     plt.figure(figsize=(10, 7))
     h = sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=np.arange(2), yticklabels=np.arange(2))
-    h.set_xticklabels(['C', 'CR'])
-    h.set_yticklabels(['C', 'CR'])
+    h.set_xticklabels(['O', 'OR'])
+    h.set_yticklabels(['O', 'OR'])
     plt.xlabel('Predicted Labels')
     plt.ylabel('True Labels')
     plt.title('Confusion Matrix')
 
     plt.savefig(os.path.join(os.path.abspath(os.getcwd()),"REM-results", "confusion_matrix.jpg"), format='jpg')  
 
-def plot_loss_curves():
-    loss = list()
-    val_loss = list()
+
+def plot_loss_curve(filename, gridsize=10.0):
+    train_losses = list()
+    val_losses = list()
 
     with open(os.path.join(os.path.abspath(os.getcwd()),"REM-results", "loss.txt"), newline='') as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
-            loss.append(float(row['loss']))
-            val_loss.append(float(row['val_loss']))
+            train_losses.append(float(row['loss']))
+            val_losses.append(float(row['val_loss']))
+    epochs = range(1, len(train_losses) + 1)
 
-    print(loss)
-    print(val_loss)
+    all_losses = [*train_losses, *val_losses]
 
-    plt.figure(figsize=(10, 6))
-    plt.plot(loss, label='Training Loss')
-    plt.plot(val_loss, label='Validation Loss')
+    sns.set_style("whitegrid")
+    
+    plt.figure(figsize=(8, 5))
+    plt.plot(epochs, train_losses, label='Training Loss', marker='o', markersize=4)
+    plt.plot(epochs, val_losses, label='Validation Loss', marker='s', markersize=4)
+    
     plt.xlabel('Epochs')
     plt.ylabel('Loss')
-    plt.ylim(0,1.0)
-    plt.title('Training and Validation Loss')
+    plt.title(f'Training and validation {filename} loss')
     plt.legend()
     plt.grid(True)
-
-    plt.savefig(os.path.join(os.path.abspath(os.getcwd()),"REM-results", "plot.jpg"), format='jpg')   
+    print(min(all_losses))
+    offset = (gridsize - min(all_losses)) * 0.05
+    plt.ylim(min(all_losses) - offset, gridsize)
+    plt.savefig(os.path.join(os.path.abspath(os.getcwd()),"train_plots", filename+".jpg"), dpi=500, format='jpg') 
 
 
 plot_confusion_matrix()
-plot_loss_curves()
+plot_loss_curve()
 
