@@ -28,7 +28,7 @@ def create_3dcnn_model(input_shape=(1, 6, 64, 64), num_classes=2):
         layers.Dense(num_classes, activation='softmax')
     ])
 
-    optimizer = keras.optimizers.Adam(lr=0.00008)
+    optimizer = keras.optimizers.Adam(lr=0.00006)
     # Compile the model
     model.compile(optimizer=optimizer,
                   loss=keras.losses.BinaryCrossentropy(from_logits=False),
