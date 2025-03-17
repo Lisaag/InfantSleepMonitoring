@@ -125,7 +125,7 @@ def REMtrain():
     # print(f'VAL SHAPE {val_samples_stacked.shape}')
     # print(f'VAL LABELS {len(val_labels)}')
 
-    checkpoint = keras.callbacks.ModelCheckpoint("model", monitor='val_loss', verbose=1, save_best_only=True, save_weights_only=False, mode='auto', save_freq=1)
+    checkpoint = keras.callbacks.ModelCheckpoint(filepath = (os.path.abspath(os.getcwd()),"REM-results"), monitor='val_loss', verbose=1, save_best_only=True, save_weights_only=False, mode='auto', save_freq=1)
     lr_callback = keras.callbacks.LearningRateScheduler(lr_schedule)
     #save_callback = keras.callbacks.ModelCheckpoint(filepath = (os.path.abspath(os.getcwd()),"REM-results"), save_weights_only = True, monitor='val_loss', mode='min', save_best_only=True)
 
