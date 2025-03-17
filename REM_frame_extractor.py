@@ -118,8 +118,6 @@ def save_frame_stack(frame, vid, current_frame, frame_indices, bbox, dir):
     #save stack of frames
     if np.isin(current_frame, frame_indices):
         cv2.imwrite(os.path.join(dir, "FRAME" + str(current_frame) + ".jpg"), frame[y1:y2, x1:x2])
-    else:
-        print(f"AAAA - {dir}")
 
     #save video for debugging
     cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
@@ -145,15 +143,13 @@ def extract_frames(video_dir:str, file_name:str, csv_dir:str, patient_id:str, RE
     print(f'PROCESSING VIDEO - {video_input_path}')
 
     center_frames = center_pos_frames(df_bboxes, min_bounds, max_bounds)
-    print(f'CENTER {file_name.replace(".mp4", "")+suffix}   - {len(center_frames)} ')
     interpolate_frames = interpolate_pos_frames(df_bboxes, min_bounds, max_bounds)
-    print(f'INTERPOLATE {file_name.replace(".mp4", "")+suffix}   - {len(interpolate_frames)} ')
     every_frames = every_pos_frames(df_bboxes, min_bounds, max_bounds)
-    print(f'EVERY {file_name.replace(".mp4", "")+suffix}   - {len(every_frames)} ')
 
 
     frame_indices = np.linspace(min_bounds, max_bounds, frame_stack_count, dtype=int).tolist()
-    print(f'frame indices {file_name.replace(".mp4", "")+suffix}   - {len(frame_indices)} ')
+    print(f'frame count {frame_count} ')
+    print(f'frame indices {file_name.replace(".mp4", "")+suffix}   - {frame_indices} ')
 
     #print(f'Frame indices {frame_indices}')
 
