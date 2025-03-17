@@ -64,6 +64,8 @@ def center_pos_frames(df_bboxes,  min_bounds, max_bounds, pos_offset = 0):
     return cutouts    
 
 def interpolate_pos_frames(df_bboxes,  min_bounds, max_bounds, pos_offset = 0):
+    print(pos_offset)
+
     #+1, because max_bounds is valid index, not length
     frame_count = max_bounds + 1 - min_bounds
 
@@ -107,7 +109,6 @@ def every_pos_frames(df_bboxes,  min_bounds, max_bounds, pos_offset = 0):
     size = max(int(abs(x1 - x2)) for x1, x2 in zip(df_bboxes['x1'][df_index_first:df_index_last], df_bboxes['x2'][df_index_first:df_index_last]))
 
     height = max(int(abs(y1 - y2)) for y1, y2 in zip(df_bboxes['y1'][df_index_first:df_index_last], df_bboxes['y2'][df_index_first:df_index_last]))
-    print(f'SIZE {size} - HEIGHT {height}')
 
     for i in range(min_bounds, max_bounds + 1):
         #not every frame has a localisation, so in that case take the frame closest by that does have a localisation
