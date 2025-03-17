@@ -21,8 +21,6 @@ def get_csv(folder_path):
 
 #get the xyxy, as 1:1 square ratio
 def xyxy_to_square(x1, y1, x2, y2, size, offset = [0, 0]):
-    print(offset)
-
     #get bounding box center
     x_center = (x1 + x2) / 2
     y_center = (y1 + y2) / 2
@@ -212,7 +210,7 @@ def detect_vid():
                 extract_frames(fragment_dir, fragment_file, bbox_csv, patient, eye_state_dir, cropped_dir)
                 extract_frames(fragment_dir, fragment_file, bbox_csv, patient, eye_state_dir, cropped_dir, suffix="TEMP1AUG", temp_aug_offset=[0, 6])
                 extract_frames(fragment_dir, fragment_file, bbox_csv, patient, eye_state_dir, cropped_dir, suffix="TEMP2AUG", temp_aug_offset=[6, 0])
-                extract_frames(fragment_dir, fragment_file, bbox_csv, patient, eye_state_dir, cropped_dir, suffix="POS1AUG", pos_aug_offset=0.1)
-                extract_frames(fragment_dir, fragment_file, bbox_csv, patient, eye_state_dir, cropped_dir, suffix="POS2AUG", pos_aug_offset=-0.1)
+                extract_frames(fragment_dir, fragment_file, bbox_csv, patient, eye_state_dir, cropped_dir, suffix="POS1AUG", pos_aug_offset=0.05)
+                extract_frames(fragment_dir, fragment_file, bbox_csv, patient, eye_state_dir, cropped_dir, suffix="POS2AUG", pos_aug_offset=-0.05)
 
 detect_vid()
