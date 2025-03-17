@@ -125,12 +125,16 @@ def REMtrain():
     # print(f'VAL SHAPE {val_samples_stacked.shape}')
     # print(f'VAL LABELS {len(val_labels)}')
 
-    checkpoint = keras.callbacks.ModelCheckpoint(filepath = os.path.join(os.path.abspath(os.getcwd()),"REM-results","checkpoint.model.keras"), monitor='val_loss', verbose=1, save_best_only=True, save_weights_only=False, mode='min', save_freq="epoch")
+    checkpoint_filepath = os.path.join(os.path.abspath(os.getcwd()),"REM-results","checkpoint.model.keras")
+
+    checkpoint = keras.callbacks.ModelCheckpoint(filepath = checkpoint_filepath, monitor='val_loss', verbose=1, save_best_only=True, save_weights_only=False, mode='min', save_freq="epoch")
     #lr_callback = keras.callbacks.LearningRateScheduler(lr_schedule)
     #save_callback = keras.callbacks.ModelCheckpoint(filepath = (os.path.abspath(os.getcwd()),"REM-results"), save_weights_only = True, monitor='val_loss', mode='min', save_best_only=True)
 
     history = model.fit(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), epochs=50, batch_size=16, callbacks=[checkpoint])
     #history = model.fit(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), epochs=75, batch_size=16)
+
+    model.load_weights(checkpoint_filepath)
 
     predictions = model.predict(val_samples_stacked)
     predicted_labels = np.argmax(predictions, axis=1)
