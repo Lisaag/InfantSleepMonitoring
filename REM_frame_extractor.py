@@ -134,8 +134,8 @@ def extract_frames(video_dir:str, file_name:str, csv_dir:str, patient_id:str, RE
     frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
     fps = int(cap.get(cv2.CAP_PROP_FPS))
 
-    min_bounds = temp_aug_offset
-    max_bounds = frame_count - 1 - temp_aug_offset
+    min_bounds = temp_aug_offset[0]
+    max_bounds = frame_count - 1 - temp_aug_offset[1]
 
     frame_stack_count = 6
     df_bboxes = pd.read_csv(csv_dir)
