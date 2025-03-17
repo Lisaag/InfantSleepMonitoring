@@ -151,6 +151,8 @@ def extract_frames(video_dir:str, file_name:str, csv_dir:str, patient_id:str, RE
 
 
     frame_indices = np.linspace(min_bounds, max_bounds, frame_stack_count, dtype=int).tolist()
+    print(f'frame indices {file_name.replace(".mp4", "")+suffix}   - {len(frame_indices)} ')
+
     #print(f'Frame indices {frame_indices}')
 
 
