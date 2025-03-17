@@ -128,7 +128,7 @@ def REMtrain():
     lr_callback = keras.callbacks.LearningRateScheduler(lr_schedule)
 
     #history = model.fit(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), epochs=50, batch_size=4, callbacks=[lr_callback])
-    history = model.fit(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), epochs=50, batch_size=64)
+    history = model.fit(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), epochs=200, batch_size=64)
 
     predictions = model.predict(val_samples_stacked)
     predicted_labels = np.argmax(predictions, axis=1)
