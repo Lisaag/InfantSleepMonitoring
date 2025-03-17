@@ -118,6 +118,8 @@ def save_frame_stack(frame, vid, current_frame, frame_indices, bbox, dir):
     #save stack of frames
     if np.isin(current_frame, frame_indices):
         cv2.imwrite(os.path.join(dir, "FRAME" + str(current_frame) + ".jpg"), frame[y1:y2, x1:x2])
+    else:
+        print(f"AAAA - {dir}")
 
     #save video for debugging
     cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
