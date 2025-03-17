@@ -44,7 +44,7 @@ def REMtrain():
     model = create_3dcnn_model(input_shape=input_shape, num_classes=num_classes)
     model.summary()
 
-    data_dir = os.path.join(os.path.abspath(os.getcwd()),"REM", "raw", "cropped", "center")
+    data_dir = os.path.join(os.path.abspath(os.getcwd()),"REM", "raw", "cropped", "every")
 
     is_OREM = True
     #val_ids = ['554', '778'] #fold1
@@ -128,7 +128,7 @@ def REMtrain():
     lr_callback = keras.callbacks.LearningRateScheduler(lr_schedule)
 
     #history = model.fit(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), epochs=50, batch_size=4, callbacks=[lr_callback])
-    history = model.fit(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), epochs=50, batch_size=32)
+    history = model.fit(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), epochs=50, batch_size=16)
 
     predictions = model.predict(val_samples_stacked)
     predicted_labels = np.argmax(predictions, axis=1)
