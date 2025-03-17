@@ -124,7 +124,7 @@ def save_frame_stack(frame, vid, current_frame, frame_indices, bbox, dir):
     vid.write(frame)
 
 
-def extract_frames(video_dir:str, file_name:str, csv_dir:str, patient_id:str, REMclass:str, cropped_dir:str):
+def extract_frames(video_dir:str, file_name:str, csv_dir:str, patient_id:str, REMclass:str, cropped_dir:str, suffix:str="", temp_aug_offset=[3, 3]):
     video_input_path =  os.path.join(video_dir, file_name)
     cap = cv2.VideoCapture(video_input_path)
 
@@ -134,10 +134,8 @@ def extract_frames(video_dir:str, file_name:str, csv_dir:str, patient_id:str, RE
     frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
     fps = int(cap.get(cv2.CAP_PROP_FPS))
 
-
-    aug_frame_count = 3 #total number of frames used for temporal data augmentation = 3 frames before AND after original clip, so original clip is [3, length-4]
-    min_bounds = aug_frame_count
-    max_bounds = frame_count - 1 - aug_frame_count
+    min_bounds = temp_aug_offset
+    max_bounds = frame_count - 1 - temp_aug_offset
 
     frame_stack_count = 6
     df_bboxes = pd.read_csv(csv_dir)
@@ -152,11 +150,11 @@ def extract_frames(video_dir:str, file_name:str, csv_dir:str, patient_id:str, RE
     #print(f'Frame indices {frame_indices}')
 
 
-    center_frames_dir = os.path.join(cropped_dir, "center", patient_id, REMclass, file_name.replace(".mp4", ""))
+    center_frames_dir = os.path.join(cropped_dir, "center", patient_id, REMclass, file_name.replace(".mp4", "")+suffix)
     if not os.path.exists(center_frames_dir): os.makedirs(center_frames_dir)
-    interpolate_frames_dir = os.path.join(cropped_dir, "interpolate", patient_id, REMclass, file_name.replace(".mp4", ""))
+    interpolate_frames_dir = os.path.join(cropped_dir, "interpolate", patient_id, REMclass, file_name.replace(".mp4", "")+suffix)
     if not os.path.exists(interpolate_frames_dir): os.makedirs(interpolate_frames_dir)
-    every_frames_dir = os.path.join(cropped_dir, "every", patient_id, REMclass, file_name.replace(".mp4", ""))
+    every_frames_dir = os.path.join(cropped_dir, "every", patient_id, REMclass, file_name.replace(".mp4", "")+suffix)
     if not os.path.exists(every_frames_dir): os.makedirs(every_frames_dir)
 
 
@@ -224,5 +222,7 @@ def detect_vid():
                 bbox_csv = get_csv(os.path.join(frames_dir, patient, eye_state_dir, fragment_file.replace(".mp4", "")))
                 if (bbox_csv == None): continue
                 extract_frames(fragment_dir, fragment_file, bbox_csv, patient, eye_state_dir, cropped_dir)
+                extract_frames(fragment_dir, fragment_file, bbox_csv, patient, eye_state_dir, cropped_dir, suffix="TEMP1AUG", temp_aug_offset=[0, 6])
+                extract_frames(fragment_dir, fragment_file, bbox_csv, patient, eye_state_dir, cropped_dir, suffix="TEMP2AUG", temp_aug_offset=[6, 0])
 
 detect_vid()
