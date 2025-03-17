@@ -20,20 +20,20 @@ def get_csv(folder_path):
     return csv_files[0] if csv_files else None
 
 #get the xyxy, as 1:1 square ratio
-def xyxy_to_square(x1, y1, x2, y2, size):
+def xyxy_to_square(x1, y1, x2, y2, size, offset = 0):
     #get bounding box center
     x_center = (x1 + x2) / 2
     y_center = (y1 + y2) / 2
 
     #get new xyxy positions, with 1:1 ratio
-    x1 = int(x_center - size / 2)
-    x2 = int(x_center + size / 2)
-    y1 = int(y_center - size / 2)
-    y2 = int(y_center + size / 2)
+    x1 = int((x_center - size / 2) + (size * offset))
+    x2 = int((x_center + size / 2) + (size * offset))
+    y1 = int((y_center - size / 2) + (size * offset))
+    y2 = int((y_center + size / 2) + (size * offset))
 
     return [x1, y1, x2, y2]
 
-def center_pos_frames(df_bboxes,  min_bounds, max_bounds):
+def center_pos_frames(df_bboxes,  min_bounds, max_bounds, pos_offset = 0):
     #+1, because max_bounds is valid index, not length
     frame_count = max_bounds + 1 - min_bounds
 
@@ -55,12 +55,13 @@ def center_pos_frames(df_bboxes,  min_bounds, max_bounds):
 
     #Get bbox data, top left (x1, y1) bottom right (x2, y2)
     _, x1, y1, x2, y2 = df_bboxes.loc[df_bboxes['frame'] == center_index].iloc[0]
-    bbox = xyxy_to_square(x1, y1, x2, y2 , size)
+    bbox = xyxy_to_square(x1, y1, x2, y2 , size, pos_offset)
+
     cutouts = [bbox for _ in range(frame_count)]
 
     return cutouts    
 
-def interpolate_pos_frames(df_bboxes,  min_bounds, max_bounds):
+def interpolate_pos_frames(df_bboxes,  min_bounds, max_bounds, pos_offset = 0):
     #+1, because max_bounds is valid index, not length
     frame_count = max_bounds + 1 - min_bounds
 
@@ -76,9 +77,9 @@ def interpolate_pos_frames(df_bboxes,  min_bounds, max_bounds):
 
     #Get bbox data, top left (x1, y1) bottom right (x2, y2)
     _, x1, y1, x2, y2 = df_bboxes.loc[df_bboxes['frame'] == first_index].iloc[0]
-    x1_first, y1_first, x2_first, y2_first = xyxy_to_square(x1, y1, x2, y2, size)
+    x1_first, y1_first, x2_first, y2_first = xyxy_to_square(x1, y1, x2, y2, size, pos_offset)
     _, x1, y1, x2, y2 = df_bboxes.loc[df_bboxes['frame'] == last_index].iloc[0]
-    x1_last, y1_last, x2_last, y2_last =  xyxy_to_square(x1, y1, x2, y2, size)
+    x1_last, y1_last, x2_last, y2_last =  xyxy_to_square(x1, y1, x2, y2, size, pos_offset)
 
     x1_vals = np.linspace(x1_first, x1_last, frame_count, dtype=int)
     y1_vals = np.linspace(y1_first, y1_last, frame_count, dtype=int)
@@ -88,7 +89,7 @@ def interpolate_pos_frames(df_bboxes,  min_bounds, max_bounds):
     cutouts = list(zip(x1_vals, y1_vals, x2_vals, y2_vals))
     return cutouts  
 
-def every_pos_frames(df_bboxes,  min_bounds, max_bounds):
+def every_pos_frames(df_bboxes,  min_bounds, max_bounds, pos_offset = 0):
     cutouts = []
 
     #Get the frame closest to the first and last, with a valid detection (cecause not every frame might have a bbox detection)
@@ -105,7 +106,7 @@ def every_pos_frames(df_bboxes,  min_bounds, max_bounds):
         #not every frame has a localisation, so in that case take the frame closest by that does have a localisation
         index = min(df_bboxes['frame'], key=lambda v: abs(v - i))
         _, x1, y1, x2, y2 = df_bboxes.loc[df_bboxes['frame'] == index].iloc[0]
-        bbox = xyxy_to_square(x1, y1, x2, y2, size)
+        bbox = xyxy_to_square(x1, y1, x2, y2, size, pos_offset)
 
         cutouts.append(bbox)
 
@@ -124,7 +125,7 @@ def save_frame_stack(frame, vid, current_frame, frame_indices, bbox, dir):
     vid.write(frame)
 
 
-def extract_frames(video_dir:str, file_name:str, csv_dir:str, patient_id:str, REMclass:str, cropped_dir:str, suffix:str="", temp_aug_offset=[3, 3]):
+def extract_frames(video_dir:str, file_name:str, csv_dir:str, patient_id:str, REMclass:str, cropped_dir:str, suffix:str="", temp_aug_offset=[3, 3], pos_aug_offset=0):
     video_input_path =  os.path.join(video_dir, file_name)
     cap = cv2.VideoCapture(video_input_path)
 
@@ -142,9 +143,9 @@ def extract_frames(video_dir:str, file_name:str, csv_dir:str, patient_id:str, RE
 
     print(f'PROCESSING VIDEO - {video_input_path}')
 
-    center_frames = center_pos_frames(df_bboxes, min_bounds, max_bounds)
-    interpolate_frames = interpolate_pos_frames(df_bboxes, min_bounds, max_bounds)
-    every_frames = every_pos_frames(df_bboxes, min_bounds, max_bounds)
+    center_frames = center_pos_frames(df_bboxes, min_bounds, max_bounds, pos_aug_offset)
+    interpolate_frames = interpolate_pos_frames(df_bboxes, min_bounds, max_bounds, pos_aug_offset)
+    every_frames = every_pos_frames(df_bboxes, min_bounds, max_bounds, pos_aug_offset)
 
 
     frame_indices = np.linspace(min_bounds, max_bounds, frame_stack_count, dtype=int).tolist()
@@ -203,5 +204,7 @@ def detect_vid():
                 extract_frames(fragment_dir, fragment_file, bbox_csv, patient, eye_state_dir, cropped_dir)
                 extract_frames(fragment_dir, fragment_file, bbox_csv, patient, eye_state_dir, cropped_dir, suffix="TEMP1AUG", temp_aug_offset=[0, 6])
                 extract_frames(fragment_dir, fragment_file, bbox_csv, patient, eye_state_dir, cropped_dir, suffix="TEMP2AUG", temp_aug_offset=[6, 0])
+                extract_frames(fragment_dir, fragment_file, bbox_csv, patient, eye_state_dir, cropped_dir, suffix="POS1AUG", pos_aug_offset=0.1)
+                extract_frames(fragment_dir, fragment_file, bbox_csv, patient, eye_state_dir, cropped_dir, suffix="POS2AUG", pos_aug_offset=-0.1)
 
 detect_vid()
