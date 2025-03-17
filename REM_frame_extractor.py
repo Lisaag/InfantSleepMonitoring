@@ -21,6 +21,8 @@ def get_csv(folder_path):
 
 #get the xyxy, as 1:1 square ratio
 def xyxy_to_square(x1, y1, x2, y2, size, offset = [0, 0]):
+    print(offset)
+
     #get bounding box center
     x_center = (x1 + x2) / 2
     y_center = (y1 + y2) / 2
@@ -64,8 +66,6 @@ def center_pos_frames(df_bboxes,  min_bounds, max_bounds, pos_offset = 0):
     return cutouts    
 
 def interpolate_pos_frames(df_bboxes,  min_bounds, max_bounds, pos_offset = 0):
-    print(pos_offset)
-
     #+1, because max_bounds is valid index, not length
     frame_count = max_bounds + 1 - min_bounds
 
