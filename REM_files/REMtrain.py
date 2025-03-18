@@ -78,9 +78,9 @@ def REMtrain():
                 images = list()
                 #frame_indices = np.linspace(0, max_bounds, frame_stack_count, dtype=int).tolist()
                 frames = glob.glob(os.path.join(sample_dir, "*.jpg"))
-                print(frames)
+                for f in frames: print(f)
                 sorted_frames = sorted(frames, key=extract_number)
-                print(sorted_frames)
+                for f in sorted_frames: print(f)
                 return
 
 
