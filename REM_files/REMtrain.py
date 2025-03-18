@@ -63,8 +63,8 @@ def REMtrain():
             if(not is_OREM and (eye_state == "O" or eye_state == "OR")): continue
             eye_state_dir = os.path.join(patient_dir, eye_state)
             for sample in os.listdir(eye_state_dir):
-                print(sample[-3:0])
-                if(patient_id in val_ids and sample[-3:0] == "AUG"):
+                print(sample[-3:])
+                if(patient_id in val_ids and sample[-3:] == "AUG"):
                     continue
                 sample_dir = os.path.join(eye_state_dir, sample)
                 images = list()
