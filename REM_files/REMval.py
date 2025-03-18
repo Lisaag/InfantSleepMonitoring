@@ -99,6 +99,7 @@ classes = ['O', 'OR'] if settings.is_OREM else ['C', 'CR']
 # ax = fig.add_subplot(111)
 for idx, c in enumerate(colors):
     indices = [i for i, l in enumerate(predicted_labels) if idx == l]
+    print(f'{classes[idx]} - {indices}')
     current_tx = np.take(tx, indices)
     current_ty = np.take(ty, indices)
     plt.scatter(current_tx, current_ty, c=c, label=classes[idx])
