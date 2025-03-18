@@ -63,7 +63,9 @@ def REMtrain():
             if(not is_OREM and (eye_state == "O" or eye_state == "OR")): continue
             eye_state_dir = os.path.join(patient_dir, eye_state)
             for sample in os.listdir(eye_state_dir):
-                print(sample[-3:-1])
+                print(sample[-3:0])
+                if(patient_id in val_ids and sample[-3:0] == "AUG"):
+                    continue
                 sample_dir = os.path.join(eye_state_dir, sample)
                 images = list()
                 for frame in os.listdir(sample_dir):
@@ -86,7 +88,6 @@ def REMtrain():
                     print(f'from {patient_id} add to train')
                     train_samples.append(stacked_images)
                     train_labels.append(label)
-    return
 
     train_samples_stacked = np.stack(train_samples, axis=0)
     train_labels_numpy = np.array(train_labels, dtype=int)
