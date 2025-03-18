@@ -76,4 +76,8 @@ with open(os.path.join(os.path.abspath(os.getcwd()),"REM-results", "true_labels.
         file.write(f"{label}\n")
 
 
+model2 = tf.keras.Model(inputs=model.input, outputs=model.layers[-2].output)
+
+
+
 
