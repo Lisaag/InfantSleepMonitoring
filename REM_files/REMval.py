@@ -81,8 +81,9 @@ with open(os.path.join(os.path.abspath(os.getcwd()),"REM-results", "true_labels.
     for label in val_labels:
         file.write(f"{label}\n")
 
+print(model.layers)
 
-model2 = tf.keras.Model(inputs=model.input, outputs=model.layers[-2].output)
+model2 = tf.keras.Model(inputs=model.input, outputs=model.layers[-1].output)
 features = model2(val_samples_stacked)
 tsne = TSNE(n_components=2).fit_transform(features)
 
