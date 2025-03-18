@@ -95,15 +95,15 @@ ty = scale_to_01_range(ty)
 colors = ['red', 'blue']
 classes = ['O', 'OR'] if settings.is_OREM else ['C', 'CR']
 
-fig = plt.figure()
-ax = fig.add_subplot(111)
+# fig = plt.figure()
+# ax = fig.add_subplot(111)
 for idx, c in enumerate(colors):
     indices = [i for i, l in enumerate(predicted_labels) if idx == l]
     current_tx = np.take(tx, indices)
     current_ty = np.take(ty, indices)
-    ax.scatter(current_tx, current_ty, c=c, label=classes[idx])
+    plt.scatter(current_tx, current_ty, c=c, label=classes[idx])
 
-ax.legend(loc='best')
+plt.legend(loc='best')
 plt.savefig(os.path.join(os.path.abspath(os.getcwd()),"REM-results", "tsne.jpg"), format='jpg')  
 
 
