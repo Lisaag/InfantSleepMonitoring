@@ -8,6 +8,8 @@ import os
 import numpy as np
 import cv2
 
+from sklearn.manifold import TSNE
+
 import settings
 
 def load_model_json(path):
