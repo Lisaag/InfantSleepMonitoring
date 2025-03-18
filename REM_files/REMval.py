@@ -11,7 +11,7 @@ import cv2
 import settings
 
 def load_model_json(path):
-    with open("model_architecture.json", "r") as json_file:
+    with open(path, "r") as json_file:
         loaded_model_json = json_file.read()
 
     return models.model_from_json(loaded_model_json)
