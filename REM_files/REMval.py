@@ -81,7 +81,10 @@ with open(os.path.join(os.path.abspath(os.getcwd()),"REM-results", "true_labels.
     for label in val_labels:
         file.write(f"{label}\n")
 
-print(model.layers[-4])
+print('OUTPUT -4')
+print(model.layers[-4].output)
+print('OUTPUT -1')
+print(model.layers[-1].output)
 
 model2 = tf.keras.Model(inputs=model.input, outputs=model.layers[-4].output)
 features = model2(val_samples_stacked)
