@@ -7,10 +7,17 @@ import csv
 import os
 import numpy as np
 import cv2
+import matplotlib as plt
 
 from sklearn.manifold import TSNE
 
 import settings
+
+def scale_to_01_range(x):
+
+    value_range = (np.max(x) - np.min(x))
+    starts_from_zero = x - np.min(x)
+    return starts_from_zero / value_range
 
 def load_model_json(path):
     with open(path, "r") as json_file:
@@ -56,7 +63,6 @@ def get_validation_data():
     return val_samples_stacked, val_labels
 
 
-
 model = load_model_json(settings.model_filepath)
 model.load_weights(settings.checkpoint_filepath)
 
@@ -80,6 +86,25 @@ model2 = tf.keras.Model(inputs=model.input, outputs=model.layers[-2].output)
 features = model2(val_samples_stacked)
 tsne = TSNE(n_components=2).fit_transform(features)
 
+tx = tsne[:, 0]
+ty = tsne[:, 1]
+
+tx = scale_to_01_range(tx)
+ty = scale_to_01_range(ty)
+
+colors = ['red', 'blue']
+classes = ['O', 'OR'] if settings.is_OREM else ['C', 'CR']
+
+fig = plt.figure()
+ax = fig.add_subplot(111)
+for idx, c in enumerate(colors):
+    indices = [i for i, l in enumerate(predicted_labels) if idx == l]
+    current_tx = np.take(tx, indices)
+    current_ty = np.take(ty, indices)
+    ax.scatter(current_tx, current_ty, c=c, label=classes[idx])
+
+ax.legend(loc='best')
+plt.savefig(os.path.join(os.path.abspath(os.getcwd()),"REM-results", "tsne.jpg"), format='jpg')  
 
 
 
