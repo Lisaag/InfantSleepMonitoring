@@ -8,16 +8,21 @@ import os
 import numpy as np
 import cv2
 import matplotlib.pyplot as plt
+import glob
+import re
 
 from sklearn.manifold import TSNE
 
 import settings
 
 def scale_to_01_range(x):
-
     value_range = (np.max(x) - np.min(x))
     starts_from_zero = x - np.min(x)
     return starts_from_zero / value_range
+
+def extract_number(filename):
+    match = re.search(r'(\d+)(?=\.jpg$)', filename)
+    return int(match.group(1)) if match else float('inf')
 
 def load_model_json(path):
     with open(path, "r") as json_file:
@@ -41,12 +46,18 @@ def get_validation_data():
                 if(patient_id in settings.val_ids and sample[-3:] == "AUG"): continue
                 sample_dir = os.path.join(eye_state_dir, sample)
                 images = list()
-                for frame in os.listdir(sample_dir):
-                    if frame.endswith(".jpg"):
-                        image = cv2.imread(os.path.join(sample_dir, frame), cv2.IMREAD_GRAYSCALE) 
-                        image = cv2.resize(image, (64, 64))
-                        image = image / 255
-                        images.append(image)
+
+                frames = glob.glob(os.path.join(sample_dir, "*.jpg"))
+                sorted_frames = sorted(frames, key=extract_number)
+                for f in sorted_frames: print(f)
+
+                frame_indices = np.linspace(0, len(sorted_frames), settings.frame_stack_count, dtype=int).tolist()
+
+                for idx in frame_indices:
+                    image = cv2.imread(os.path.join(sample_dir, sorted_frames[idx]), cv2.IMREAD_GRAYSCALE) 
+                    image = cv2.resize(image, (64, 64))
+                    image = image / 255
+                    images.append(image)
             
                 expanded_stack = np.expand_dims(images, axis=-1) 
                 stacked_images = np.stack(expanded_stack, axis=0)

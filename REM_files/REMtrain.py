@@ -76,20 +76,17 @@ def REMtrain():
                     continue
                 sample_dir = os.path.join(eye_state_dir, sample)
                 images = list()
-                #frame_indices = np.linspace(0, max_bounds, frame_stack_count, dtype=int).tolist()
                 frames = glob.glob(os.path.join(sample_dir, "*.jpg"))
-                for f in frames: print(f)
                 sorted_frames = sorted(frames, key=extract_number)
                 for f in sorted_frames: print(f)
-                return
 
+                frame_indices = np.linspace(0, len(sorted_frames), settings.frame_stack_count, dtype=int).tolist()
 
-                for frame in os.listdir(sample_dir):
-                    if frame.endswith(".jpg"):
-                        image = cv2.imread(os.path.join(sample_dir, frame), cv2.IMREAD_GRAYSCALE) 
-                        image = cv2.resize(image, (64, 64))
-                        image = image / 255
-                        images.append(image)
+                for idx in frame_indices:
+                    image = cv2.imread(os.path.join(sample_dir, sorted_frames[idx]), cv2.IMREAD_GRAYSCALE) 
+                    image = cv2.resize(image, (64, 64))
+                    image = image / 255
+                    images.append(image)
             
                 expanded_stack = np.expand_dims(images, axis=-1) 
                 stacked_images = np.stack(expanded_stack, axis=0)

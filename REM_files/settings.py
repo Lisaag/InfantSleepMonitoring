@@ -8,6 +8,8 @@ is_OREM = True
 val_ids = ['416', '440'] #fold4
 #val_ids = ['614', '704'] #fold5
 
+frame_stack_count = 6
+
 data_dir = os.path.join(os.path.abspath(os.getcwd()),"REM", "raw", "cropped", "every")
 checkpoint_filepath = os.path.join(os.path.abspath(os.getcwd()),"REM-results","checkpoint.model.keras")
 model_filepath = os.path.join(os.path.abspath(os.getcwd()),"REM-results","model_architecture.json")
