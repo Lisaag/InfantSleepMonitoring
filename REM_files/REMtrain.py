@@ -8,8 +8,16 @@ import os
 import numpy as np
 import cv2
 
+import settings
+
 def lr_schedule(epoch):
     return 0.0001 * (0.5 ** (epoch // 5))  # Reduce LR every 5 epochs
+
+def save_model_json(model, path):
+    model_json = model.to_json()
+
+    with open(os.path.join(path, "model_architecture.json"), "w") as json_file:
+        json_file.write(model_json)
 
 def create_3dcnn_model(input_shape=(1, 6, 64, 64), num_classes=2):
     model = models.Sequential([
@@ -43,28 +51,21 @@ def REMtrain():
 
     model = create_3dcnn_model(input_shape=input_shape, num_classes=num_classes)
     model.summary()
+    save_model_json(model, os.path.join(os.path.abspath(os.getcwd()),"REM-results"))
 
-    data_dir = os.path.join(os.path.abspath(os.getcwd()),"REM", "raw", "cropped", "every")
-
-    is_OREM = True
-    #val_ids = ['554', '778'] #fold1
-    #val_ids = ['004', '866'] #fold2
-    #val_ids = ['399', '657'] #fold3
-    val_ids = ['416', '440'] #fold4
-    #val_ids = ['614', '704'] #fold5
     val_samples = list(); val_labels = list(); train_samples = list(); train_labels = list()
 
-    for patient in os.listdir(data_dir):
-        patient_dir:str = os.path.join(data_dir, patient)
+    for patient in os.listdir(settings.data_dir):
+        patient_dir:str = os.path.join(settings.data_dir, patient)
         patient_id:str = patient[0:3]
         print(patient_id)
         for eye_state in os.listdir(patient_dir):
-            if(is_OREM and (eye_state == "C" or eye_state == "CR")): continue
-            if(not is_OREM and (eye_state == "O" or eye_state == "OR")): continue
+            if(settings.is_OREM and (eye_state == "C" or eye_state == "CR")): continue
+            if(not settings.is_OREM and (eye_state == "O" or eye_state == "OR")): continue
             eye_state_dir = os.path.join(patient_dir, eye_state)
             for sample in os.listdir(eye_state_dir):
                 print(sample[-3:])
-                if(patient_id in val_ids and sample[-3:] == "AUG"):
+                if(patient_id in settings.val_ids and sample[-3:] == "AUG"):
                     continue
                 sample_dir = os.path.join(eye_state_dir, sample)
                 images = list()
@@ -80,7 +81,7 @@ def REMtrain():
 
                 label = 0 if eye_state == "O" or eye_state == "C" else 1
 
-                if(patient_id in val_ids): 
+                if(patient_id in settings.val_ids): 
                     print(f'from {patient_id} add to val')
                     val_samples.append(stacked_images)
                     val_labels.append(label)
@@ -96,53 +97,13 @@ def REMtrain():
     val_labels_numpy = np.array(val_labels, dtype=int)
     val_labels_bce = tf.one_hot(val_labels_numpy, depth=2)
 
-    # print(f'TRAIN SHAPE {train_samples_stacked.shape}')
-    # print(f'TRAIN LABELS {len(train_labels)}')
-
-
-    # val_samples = list()
-    # val_labels = list()
-    # for eye_state in os.listdir(val_dir):
-    #     eye_state_dir = os.path.join(val_dir, eye_state)
-    #     for sample in os.listdir(eye_state_dir):
-    #         sample_dir = os.path.join(eye_state_dir, sample)
-    #         images = list()
-    #         for frame in os.listdir(sample_dir):
-    #             image = cv2.imread(os.path.join(sample_dir, frame), cv2.IMREAD_GRAYSCALE) 
-    #             image = image / 255
-    #             images.append(image)
-            
-    #         expanded_stack = np.expand_dims(images, axis=-1) 
-    #         stacked_images = np.stack(expanded_stack, axis=0)
-
-    #         val_samples.append(stacked_images)
-    #         label = 0 if eye_state == "O" else 1
-    #         val_labels.append(label)
-
-    
-
-    # val_samples_stacked = np.stack(val_samples, axis=0)
-    # val_labels_numpy = np.array(val_labels, dtype=int)
-    # val_labels_bce = tf.one_hot(val_labels_numpy, depth=2)
-
-    # print(f'VAL SHAPE {val_samples_stacked.shape}')
-    # print(f'VAL LABELS {len(val_labels)}')
-
-    checkpoint_filepath = os.path.join(os.path.abspath(os.getcwd()),"REM-results","checkpoint.model.keras")
-
-    checkpoint = keras.callbacks.ModelCheckpoint(filepath = checkpoint_filepath, monitor='val_loss', verbose=1, save_best_only=True, save_weights_only=False, mode='min', save_freq="epoch")
+    checkpoint = keras.callbacks.ModelCheckpoint(filepath = settings.checkpoint_filepath, monitor='val_loss', verbose=1, save_best_only=True, save_weights_only=False, mode='min', save_freq="epoch")
     #lr_callback = keras.callbacks.LearningRateScheduler(lr_schedule)
     #save_callback = keras.callbacks.ModelCheckpoint(filepath = (os.path.abspath(os.getcwd()),"REM-results"), save_weights_only = True, monitor='val_loss', mode='min', save_best_only=True)
 
     history = model.fit(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), epochs=50, batch_size=16, callbacks=[checkpoint])
     #history = model.fit(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), epochs=75, batch_size=16)
 
-    model.load_weights(checkpoint_filepath)
-
-    predictions = model.predict(val_samples_stacked)
-    predicted_labels = np.argmax(predictions, axis=1)
-
-    print(predicted_labels)
 
     with open(os.path.join(os.path.abspath(os.getcwd()),"REM-results", "loss.txt"), 'w', newline='') as csvfile:
         fieldnames = ['loss', 'val_loss']
@@ -152,6 +113,17 @@ def REMtrain():
         
         for loss, val_loss in zip(history.history['loss'], history.history['val_loss']):
             writer.writerow({'loss': loss, 'val_loss': val_loss})
+
+
+    return
+    model.load_weights(settings.checkpoint_filepath)
+
+    predictions = model.predict(val_samples_stacked)
+    predicted_labels = np.argmax(predictions, axis=1)
+
+    print(predicted_labels)
+
+
 
     with open(os.path.join(os.path.abspath(os.getcwd()),"REM-results", "predictions.txt"), 'w') as file:
         for label in predicted_labels:
