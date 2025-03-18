@@ -78,9 +78,8 @@ def REMtrain():
                 images = list()
                 frames = glob.glob(os.path.join(sample_dir, "*.jpg"))
                 sorted_frames = sorted(frames, key=extract_number)
-                for f in sorted_frames: print(f)
 
-                frame_indices = np.linspace(0, len(sorted_frames), settings.frame_stack_count, dtype=int).tolist()
+                frame_indices = np.linspace(0, len(sorted_frames) - 1, settings.frame_stack_count, dtype=int).tolist()
 
                 for idx in frame_indices:
                     image = cv2.imread(os.path.join(sample_dir, sorted_frames[idx]), cv2.IMREAD_GRAYSCALE) 
