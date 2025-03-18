@@ -10,6 +10,8 @@ import cv2
 
 import settings
 
+import glob
+
 def lr_schedule(epoch):
     return 0.0001 * (0.5 ** (epoch // 5))  # Reduce LR every 5 epochs
 
@@ -44,6 +46,10 @@ def create_3dcnn_model(input_shape=(1, 6, 64, 64), num_classes=2):
 
     return model
 
+def extract_number(filename):
+    match = re.search(r'(\d+)(?=\.jpg$)', filename)
+    return int(match.group(1)) if match else float('inf')
+
 def REMtrain():
     K.set_image_data_format('channels_last')
     input_shape = (6, 64, 64, 1)
@@ -69,6 +75,14 @@ def REMtrain():
                     continue
                 sample_dir = os.path.join(eye_state_dir, sample)
                 images = list()
+                #frame_indices = np.linspace(0, max_bounds, frame_stack_count, dtype=int).tolist()
+                frames = glob.glob(os.path.join(sample_dir, "*.jpg"))
+                print(frames)
+                sorted_frames = sorted(frames, key=extract_number)
+                print(sorted_frames)
+                return
+
+
                 for frame in os.listdir(sample_dir):
                     if frame.endswith(".jpg"):
                         image = cv2.imread(os.path.join(sample_dir, frame), cv2.IMREAD_GRAYSCALE) 
