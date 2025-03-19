@@ -33,8 +33,9 @@ def plot_confusion_matrix(true_labels = list(), predicted_labels = list()):
 
 def plot_loss_curve(train_losses = list(), val_losses = list()):
     if(len(train_losses) == 0 or len(val_losses) == 0):
-        print(f"Fetching losses from {os.path.join(os.path.abspath(os.getcwd()),"REM-results", "loss.txt")}")
-        with open(os.path.join(os.path.abspath(os.getcwd()),"REM-results", "loss.txt"), newline='') as csvfile:
+        loss_path = os.path.join(os.path.abspath(os.getcwd()),"REM-results", "loss.txt")
+        print(f"Fetching losses from {loss_path}")
+        with open(loss_path, newline='') as csvfile:
             reader = csv.DictReader(csvfile)
             for row in reader:
                 train_losses.append(float(row['loss']))
