@@ -11,8 +11,8 @@ is_OREM = False
 #val_ids = ['416', '773'] #REM goed, OREM goed
 #val_ids = ['004', '778', '875'] #REM acceptabel/goed, OREM heel goed
 #val_ids = ['399', '704', '440'] #REM goed , OREM goed
-val_ids = ['554', '866'] #REM goed, OREM goed
-#val_ids = ['614', '657'] #REM acceptabel, OREM heel goed
+#val_ids = ['554', '866'] #REM goed, OREM goed  
+val_ids = ['614', '657'] #REM acceptabel, OREM heel goed
 
 
 
