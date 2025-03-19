@@ -13,6 +13,8 @@ import settings
 import glob
 import re
 
+import REMmodelvis
+
 def lr_schedule(epoch):
     return 0.0001 * (0.5 ** (epoch // 5))  # Reduce LR every 5 epochs
 
@@ -116,6 +118,7 @@ def REMtrain():
     #history = model.fit(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), epochs=75, batch_size=16)
 
 
+    #save training and vall loss values and plot in graph
     with open(os.path.join(os.path.abspath(os.getcwd()),"REM-results", "loss.txt"), 'w', newline='') as csvfile:
         fieldnames = ['loss', 'val_loss']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
@@ -124,6 +127,8 @@ def REMtrain():
         
         for loss, val_loss in zip(history.history['loss'], history.history['val_loss']):
             writer.writerow({'loss': loss, 'val_loss': val_loss})
+    
+    REMmodelvis.plot_loss_curve(history.history['loss'], history.history['val_loss'])
 
 
     return
