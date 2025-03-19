@@ -111,10 +111,10 @@ def REMtrain():
     val_labels_bce = tf.one_hot(val_labels_numpy, depth=2)
 
     checkpoint = keras.callbacks.ModelCheckpoint(filepath = settings.checkpoint_filepath, monitor='val_loss', verbose=1, save_best_only=True, save_weights_only=False, mode='min', save_freq="epoch")
-    #lr_callback = keras.callbacks.LearningRateScheduler(lr_schedule)
+    lr_callback = keras.callbacks.LearningRateScheduler(lr_schedule)
     #save_callback = keras.callbacks.ModelCheckpoint(filepath = (os.path.abspath(os.getcwd()),"REM-results"), save_weights_only = True, monitor='val_loss', mode='min', save_best_only=True)
 
-    history = model.fit(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), epochs=50, batch_size=8, callbacks=[checkpoint])
+    history = model.fit(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), epochs=50, batch_size=8, callbacks=[lr, lr_callback, checkpoint])
     #history = model.fit(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), epochs=75, batch_size=16)
 
 
