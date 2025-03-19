@@ -44,7 +44,7 @@ def plot_tsne(model, val_samples_stacked, true_labels):
     features2 = model3(val_samples_stacked)
     for f in features2: print(f)
 
-    tsne = TSNE(n_components=2).fit_transform(features)
+    tsne = TSNE(n_components=2, perplexity=25.0).fit_transform(features)
 
     tx = tsne[:, 0]
     ty = tsne[:, 1]
