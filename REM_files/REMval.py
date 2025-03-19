@@ -34,7 +34,7 @@ def load_model_json(path):
 
 def plot_tsne(model, val_samples_stacked, true_labels):
     print('OUTPUT -4')
-    print(model.layers[-4].output)
+    #print(model.layers[-4].output)
     model2 = tf.keras.Model(inputs=model.input, outputs=model.layers[-4].output)
     features = model2(val_samples_stacked)
     for f in features: print(f)
