@@ -15,6 +15,8 @@ from sklearn.manifold import TSNE
 
 import settings
 
+import REMmodelvis
+
 def scale_to_01_range(x):
     value_range = (np.max(x) - np.min(x))
     starts_from_zero = x - np.min(x)
@@ -29,6 +31,51 @@ def load_model_json(path):
         loaded_model_json = json_file.read()
 
     return models.model_from_json(loaded_model_json)
+
+def plot_tsne(model, val_samples_stacked, true_labels):
+    print('OUTPUT -4')
+    print(model.layers[-4].output)
+    model2 = tf.keras.Model(inputs=model.input, outputs=model.layers[-4].output)
+    features = model2(val_samples_stacked)
+    for f in features: print(f)
+    print('OUTPUT -1')
+    print(model.layers[-1].output)
+    model3 = tf.keras.Model(inputs=model.input, outputs=model.layers[-1].output)
+    features2 = model3(val_samples_stacked)
+    for f in features2: print(f)
+
+    tsne = TSNE(n_components=2).fit_transform(features)
+
+    tx = tsne[:, 0]
+    ty = tsne[:, 1]
+
+    tx = scale_to_01_range(tx)
+    ty = scale_to_01_range(ty)
+
+    colors = ['red', 'blue']
+    classes = ['O', 'OR'] if settings.is_OREM else ['C', 'CR']
+    
+    for idx, c in enumerate(colors):
+        indices = [i for i, l in enumerate(true_labels) if idx == l]
+        print(f'{classes[idx]} - {indices}')
+        current_tx = np.take(tx, indices)
+        current_ty = np.take(ty, indices)
+        plt.scatter(current_tx, current_ty, c=c, label=classes[idx])
+
+    plt.legend(loc='best')
+    plt.savefig(os.path.join(os.path.abspath(os.getcwd()),"REM-results", "tsne.jpg"), format='jpg')  
+
+def visualize_results(model, predicted_labels, true_labels, val_samples):
+    with open(os.path.join(os.path.abspath(os.getcwd()),"REM-results", "predictions.txt"), 'w') as file:
+        for label in predicted_labels:
+            file.write(f"{label}\n")
+    with open(os.path.join(os.path.abspath(os.getcwd()),"REM-results", "true_labels.txt"), 'w') as file:
+        for label in true_labels:
+            file.write(f"{label}\n")
+
+    REMmodelvis.plot_confusion_matrix(true_labels, predicted_labels)
+    plot_tsne(model, val_samples, true_labels)
+
 
 def get_validation_data():
     val_samples = list(); val_labels = list()
@@ -76,55 +123,12 @@ def get_validation_data():
 model = load_model_json(settings.model_filepath)
 model.load_weights(settings.checkpoint_filepath)
 
+val_samples, true_labels = get_validation_data()
 
-val_samples_stacked, val_labels = get_validation_data()
-
-predictions = model.predict(val_samples_stacked)
+predictions = model.predict(val_samples)
 predicted_labels = np.argmax(predictions, axis=1)
 
 print(predicted_labels)
 
-with open(os.path.join(os.path.abspath(os.getcwd()),"REM-results", "predictions.txt"), 'w') as file:
-    for label in predicted_labels:
-        file.write(f"{label}\n")
-with open(os.path.join(os.path.abspath(os.getcwd()),"REM-results", "true_labels.txt"), 'w') as file:
-    for label in val_labels:
-        file.write(f"{label}\n")
-
-print('OUTPUT -4')
-print(model.layers[-4].output)
-model2 = tf.keras.Model(inputs=model.input, outputs=model.layers[-4].output)
-features = model2(val_samples_stacked)
-for f in features: print(f)
-print('OUTPUT -1')
-print(model.layers[-1].output)
-model3 = tf.keras.Model(inputs=model.input, outputs=model.layers[-1].output)
-features2 = model3(val_samples_stacked)
-for f in features2: print(f)
-
-
-tsne = TSNE(n_components=2).fit_transform(features)
-
-tx = tsne[:, 0]
-ty = tsne[:, 1]
-
-tx = scale_to_01_range(tx)
-ty = scale_to_01_range(ty)
-
-colors = ['red', 'blue']
-classes = ['O', 'OR'] if settings.is_OREM else ['C', 'CR']
-
-# fig = plt.figure()
-# ax = fig.add_subplot(111)
-for idx, c in enumerate(colors):
-    indices = [i for i, l in enumerate(val_labels) if idx == l]
-    print(f'{classes[idx]} - {indices}')
-    current_tx = np.take(tx, indices)
-    current_ty = np.take(ty, indices)
-    plt.scatter(current_tx, current_ty, c=c, label=classes[idx])
-
-plt.legend(loc='best')
-plt.savefig(os.path.join(os.path.abspath(os.getcwd()),"REM-results", "tsne.jpg"), format='jpg')  
-
-
+visualize_results(model, predicted_labels, true_labels, val_samples)
 
