@@ -4,6 +4,7 @@ import os
 #from sklearn.metrics import confusion_matrix
 import seaborn as sns
 import numpy as np
+import settings
 
 
 def plot_confusion_matrix(true_labels = list(), predicted_labels = list()):
@@ -22,8 +23,11 @@ def plot_confusion_matrix(true_labels = list(), predicted_labels = list()):
 
     plt.figure(figsize=(10, 7))
     h = sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=np.arange(2), yticklabels=np.arange(2))
-    h.set_xticklabels(['O', 'OR'])
-    h.set_yticklabels(['O', 'OR'])
+    ticklabels = ['C', 'CR']
+    if settings.is_OREM: ticklabels=['O', 'OR']
+    h.set_xticklabels(ticklabels)
+    h.set_yticklabels(ticklabels)
+    
     plt.xlabel('Predicted Labels')
     plt.ylabel('True Labels')
     plt.title('Confusion Matrix')
