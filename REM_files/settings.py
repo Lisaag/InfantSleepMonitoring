@@ -1,6 +1,6 @@
 import os
 
-is_OREM = False
+is_OREM = True
 
 val_ids = ['554', '778'] #fold1
 #val_ids = ['004', '866'] #fold2
