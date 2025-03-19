@@ -29,13 +29,15 @@ def create_3dcnn_model(input_shape=(1, 6, 64, 64), num_classes=2):
         layers.Conv3D(32, kernel_size=(1, 3, 3), activation='relu', padding='same', input_shape=input_shape),
         layers.Conv3D(32, kernel_size=(3, 3, 3), activation='relu', padding='same'),
         layers.MaxPooling3D(pool_size=(2, 2, 2)),
+        layers.Dropout(0.6),
+
 
         layers.Conv3D(64, kernel_size=(3, 3, 3), activation='relu', padding='same'),
         layers.MaxPooling3D(pool_size=(2, 2, 2)),   
         layers.Dropout(0.6),
 
         layers.Flatten(),
-        layers.Dense(64, activation='relu', kernel_regularizer=regularizers.L2(0.5), kernel_initializer=tf.keras.initializers.HeNormal()),
+        layers.Dense(64, activation='relu', kernel_regularizer=regularizers.L2(2), kernel_initializer=tf.keras.initializers.HeNormal()),
         layers.BatchNormalization(),
         layers.Dropout(0.6),
         layers.Dense(num_classes, activation='softmax')
