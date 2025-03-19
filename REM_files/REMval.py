@@ -55,6 +55,7 @@ def plot_tsne(model, val_samples_stacked, true_labels):
     colors = ['red', 'blue']
     classes = ['O', 'OR'] if settings.is_OREM else ['C', 'CR']
     
+    plt.figure()
     for idx, c in enumerate(colors):
         indices = [i for i, l in enumerate(true_labels) if idx == l]
         print(f'{classes[idx]} - {indices}')
@@ -74,7 +75,7 @@ def visualize_results(model, predicted_labels, true_labels, val_samples):
             file.write(f"{label}\n")
 
     REMmodelvis.plot_confusion_matrix(true_labels, predicted_labels)
-    #plot_tsne(model, val_samples, true_labels)
+    plot_tsne(model, val_samples, true_labels)
 
 
 def get_validation_data():
