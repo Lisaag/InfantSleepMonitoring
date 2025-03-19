@@ -8,7 +8,7 @@ is_OREM = False
 #val_ids = ['416', '440'] #fold4
 #val_ids = ['614', '704'] #fold5
 
-val_vids = ['416', '440']
+val_ids = ['416', '440']
 #val_ids = ['004', '773', '875'] #REM acceptabel/goed, OREM acceptabel/goed
 #val_ids = ['399', '704', '866'] #REM goed , OREM goed
 #val_ids = ['554', '778'] #REM goed, OREM goed
