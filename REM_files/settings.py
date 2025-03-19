@@ -8,7 +8,7 @@ is_OREM = False
 #val_ids = ['416', '440'] #fold4
 #val_ids = ['614', '704'] #fold5
 
-val_ids = ['004', '773', '875']
+val_ids = ['614', '657']
 
 
 frame_stack_count = 6
