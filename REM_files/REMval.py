@@ -74,7 +74,7 @@ def visualize_results(model, predicted_labels, true_labels, val_samples):
             file.write(f"{label}\n")
 
     REMmodelvis.plot_confusion_matrix(true_labels, predicted_labels)
-    plot_tsne(model, val_samples, true_labels)
+    #plot_tsne(model, val_samples, true_labels)
 
 
 def get_validation_data():
