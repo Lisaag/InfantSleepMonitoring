@@ -120,16 +120,19 @@ def get_validation_data():
 
     return val_samples_stacked, val_labels
 
+def validate_model():
+    model = load_model_json(settings.model_filepath)
+    model.load_weights(settings.checkpoint_filepath)
 
-model = load_model_json(settings.model_filepath)
-model.load_weights(settings.checkpoint_filepath)
+    val_samples, true_labels = get_validation_data()
 
-val_samples, true_labels = get_validation_data()
+    predictions = model.predict(val_samples)
+    predicted_labels = np.argmax(predictions, axis=1)
 
-predictions = model.predict(val_samples)
-predicted_labels = np.argmax(predictions, axis=1)
+    print(predicted_labels)
 
-print(predicted_labels)
+    visualize_results(model, predicted_labels, true_labels, val_samples)
 
-visualize_results(model, predicted_labels, true_labels, val_samples)
+
+validate_model()
 
