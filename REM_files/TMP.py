@@ -17,7 +17,7 @@ def get_dataset_statistics():
             eye_state_dir = os.path.join(patient_dir, eye_state)
             for sample in os.listdir(eye_state_dir):
                 if(patient_id in settings.val_ids and sample[-3:] == "AUG"): continue
-                ps[patient_id][eye_state_dir] += 1
+                ps[patient_id][eye_state] += 1
 
     print(dict(ps))
 
