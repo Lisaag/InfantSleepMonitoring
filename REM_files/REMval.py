@@ -1,10 +1,11 @@
+import os
+os.environ["SM_FRAMEWORK"] = "tf.keras"
 import tensorflow as tf
 from tensorflow.keras import layers, models, regularizers
 from keras import backend as K
 
 import tensorflow.keras as keras
 import csv
-import os
 import numpy as np
 import cv2
 import matplotlib.pyplot as plt
@@ -16,6 +17,7 @@ from sklearn.manifold import TSNE
 import settings
 
 import REMmodelvis
+
 
 def scale_to_01_range(x):
     value_range = (np.max(x) - np.min(x))
