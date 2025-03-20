@@ -167,4 +167,4 @@ def REMtrain(val_ids, idx):
 
 
 for idx, val_ids in enumerate(settings.val_ids):
-    REMtrain(idx, val_ids)
+    REMtrain(val_ids, idx)
