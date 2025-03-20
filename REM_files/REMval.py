@@ -20,6 +20,7 @@ import REMmodelvis
 
 from sklearn.metrics import precision_score, recall_score, roc_auc_score, accuracy_score
 
+import statistics
 
 def scale_to_01_range(x):
     value_range = (np.max(x) - np.min(x))
@@ -125,7 +126,7 @@ def get_validation_data(fold):
 
     return val_samples_stacked, val_labels
 
-def validate_model(fold, path):
+def validate_model(run, fold, path):
     print(path)
     model = load_model_json(os.path.join(path, settings.model_filename))
     model.load_weights(os.path.join(path, settings.checkpoint_filename))
@@ -140,14 +141,24 @@ def validate_model(fold, path):
     precision = precision_score(true_labels, predicted_labels)
     recall = recall_score(true_labels, predicted_labels)
 
-    with open(os.path.join(path, "metrics.csv"), "a") as file:
-        file.write(f"{accuracy},{precision},{recall},{auc}" + "\n")
+    with open(os.path.join(settings.results_dir, run, "metrics.csv"), "a") as file:
+        file.write(f"{run},{fold},{accuracy},{precision},{recall},{auc}" + "\n")
 
     visualize_results(model, predicted_labels, true_labels, val_samples, path)
 
+    return accuracy, precision, recall, auc
+
+with open(os.path.join(settings.results_dir, "metrics.csv"), "w") as file:
+    file.write("run,m_accuracy,m_precision,m_recall,m_AUC,sd_accuracy,sd_precision,sd_recall,sd_AUC" + "\n")
 for run in os.listdir(settings.results_dir):
+    with open(os.path.join(settings.results_dir, run, "metrics.csv"), "w") as file:
+        file.write("run,fold,accuracy,precision,recall,AUC" + "\n")
+    metrics = []
+   
     for fold in range(len(settings.val_ids)):
-        with open(os.path.join(settings.results_dir, run, str(fold), "metrics.csv"), "w") as file:
-            file.write("run,fold,accuracy,precision,recall,AUC" + "\n")
-        validate_model(fold, os.path.join(settings.results_dir, run, str(fold)))
+        metrics.append(validate_model(run, fold, os.path.join(settings.results_dir, run, str(fold))))
+   
+    metrics = np.array(metrics).T
+    with open(os.path.join(settings.results_dir, "metrics.csv"), "a") as file:
+        file.write(f'{run},{statistics.mean(metrics[0])},{statistics.mean(metrics[1])},{statistics.mean(metrics[2])},{statistics.mean(metrics[3])},{statistics.stdev(metrics[0])},{statistics.stdev(metrics[1])},{statistics.stdev(metrics[2])},{statistics.stdev(metrics[3])}' + "\n")
 
