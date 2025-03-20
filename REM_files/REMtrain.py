@@ -69,6 +69,7 @@ def extract_number(filename):
 
 def REMtrain(val_ids, idx):
     save_directory = os.path.join(create_next_numbered_dir(os.path.join(os.path.abspath(os.getcwd()),"REM-results")),str(idx))
+    os.makedirs(save_directory)
 
     K.set_image_data_format('channels_last')
     input_shape = (6, 64, 64, 1)
@@ -127,8 +128,7 @@ def REMtrain(val_ids, idx):
     val_labels_bce = tf.one_hot(val_labels_numpy, depth=2)
 
 
-    checkpoint_filepath = os.path.join(save_directory,"checkpoint.model.keras")
-    checkpoint = keras.callbacks.ModelCheckpoint(filepath = checkpoint_filepath, monitor='val_loss', verbose=1, save_best_only=True, save_weights_only=False, mode='min', save_freq="epoch")
+    checkpoint = keras.callbacks.ModelCheckpoint(filepath = os.path.join(save_directory,"checkpoint.model.keras"), monitor='val_loss', verbose=1, save_best_only=True, save_weights_only=False, mode='min', save_freq="epoch")
     lr_callback = keras.callbacks.LearningRateScheduler(lr_schedule)
     es_callback = keras.callbacks.EarlyStopping(monitor='val_loss', patience=10, mode='min', restore_best_weights=True, verbose=1)
 
