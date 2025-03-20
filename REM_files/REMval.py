@@ -38,13 +38,13 @@ def load_model_json(path):
     return models.model_from_json(loaded_model_json)
 
 def plot_tsne(model, path, val_samples_stacked, true_labels):
-    print('OUTPUT -4')
+    #print('OUTPUT -4')
     #print(model.layers[-4].output)
     model2 = tf.keras.Model(inputs=model.input, outputs=model.layers[-4].output)
     features = model2(val_samples_stacked)
     for f in features: print(f)
-    print('OUTPUT -1')
-    print(model.layers[-1].output)
+    #print('OUTPUT -1')
+    #print(model.layers[-1].output)
     model3 = tf.keras.Model(inputs=model.input, outputs=model.layers[-1].output)
     features2 = model3(val_samples_stacked)
     for f in features2: print(f)
@@ -133,7 +133,9 @@ def validate_model(run, fold, path):
 
     val_samples, true_labels = get_validation_data(fold)
 
-    predictions = model.predict(val_samples)
+    #predictions = model.predict(val_samples)
+    predictions = model(val_samples)
+    #predictions = tf.keras.Model(inputs=model.input, outputs=model.layers[-1].output)
     predicted_labels = np.argmax(predictions, axis=1)
 
     accuracy = accuracy_score(true_labels, predicted_labels)
