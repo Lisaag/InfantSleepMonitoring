@@ -124,6 +124,7 @@ def get_validation_data():
     return val_samples_stacked, val_labels
 
 def validate_model(path):
+    print(path)
     model = load_model_json(os.path.join(path, settings.model_filename))
     model.load_weights(os.path.join(settings.checkpoint_filename))
 
