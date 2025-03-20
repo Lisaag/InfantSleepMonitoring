@@ -126,7 +126,7 @@ def get_validation_data():
 def validate_model(path):
     print(path)
     model = load_model_json(os.path.join(path, settings.model_filename))
-    model.load_weights(os.path.join(settings.checkpoint_filename))
+    model.load_weights(os.path.join(path, settings.checkpoint_filename))
 
     val_samples, true_labels = get_validation_data()
 
