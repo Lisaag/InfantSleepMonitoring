@@ -59,7 +59,7 @@ def create_3dcnn_model(input_shape=(1, 6, 64, 64), num_classes=2):
     # Compile the model
     model.compile(optimizer=optimizer,
                   loss=keras.losses.BinaryCrossentropy(from_logits=False),
-                  metrics=['accuracy', tf.keras.metrics.AUC(), tf.keras.metrics.Precision(), tf.keras.metrics.Recall()])
+                  metrics=['accuracy', tf.keras.metrics.AUC(), tf.keras.metrics.Precision(), tf.keras.metrics.Recall(), tf.keras.metrics.F1()])
 
     return model
 
@@ -67,11 +67,11 @@ def extract_number(filename):
     match = re.search(r'(\d+)(?=\.jpg$)', filename)
     return int(match.group(1)) if match else float('inf')
 
-def REMtrain(val_ids, idx):
-    save_directory = os.path.join(create_next_numbered_dir(os.path.join(os.path.abspath(os.getcwd()),"REM-results")),str(idx))
+def REMtrain(val_ids, idx, dir):
+    save_directory = os.path.join(dir, str(idx))
     os.makedirs(save_directory)
 
-    K.set_image_data_format('channels_last')
+    K.set_image_data_format('chwnnels_last')
     input_shape = (6, 64, 64, 1)
     num_classes = 2
 
@@ -91,8 +91,9 @@ def REMtrain(val_ids, idx):
             if(not settings.is_OREM and (eye_state == "O" or eye_state == "OR")): continue
             eye_state_dir = os.path.join(patient_dir, eye_state)
             for sample in os.listdir(eye_state_dir):
-                if(patient_id in val_ids and sample[-3:] == "AUG"):
-                    continue
+                # if(patient_id in val_ids and sample[-3:] == "AUG"):
+                #     continue
+                if(sample[-3:] == "AUG"): continue
                 sample_dir = os.path.join(eye_state_dir, sample)
                 images = list()
                 frames = glob.glob(os.path.join(sample_dir, "*.jpg"))
@@ -165,6 +166,6 @@ def REMtrain(val_ids, idx):
         for label in val_labels:
             file.write(f"{label}\n")
 
-
+save_dir = create_next_numbered_dir(os.path.join(os.path.abspath(os.getcwd()),"REM-results"))
 for idx, val_ids in enumerate(settings.val_ids):
-    REMtrain(val_ids, idx)
+    REMtrain(val_ids, idx, save_dir)
