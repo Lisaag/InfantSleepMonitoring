@@ -148,9 +148,12 @@ def validate_model(run, fold, path):
 
     return accuracy, precision, recall, auc
 
+
 with open(os.path.join(settings.results_dir, "metrics.csv"), "w") as file:
     file.write("run,m_accuracy,m_precision,m_recall,m_AUC,sd_accuracy,sd_precision,sd_recall,sd_AUC" + "\n")
+
 for run in os.listdir(settings.results_dir):
+    if(not run.isdigit()): continue
     with open(os.path.join(settings.results_dir, run, "metrics.csv"), "w") as file:
         file.write("run,fold,accuracy,precision,recall,AUC" + "\n")
     metrics = []
