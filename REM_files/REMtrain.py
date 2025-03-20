@@ -35,7 +35,7 @@ def create_next_numbered_dir(directory):
 def save_model_json(model, path):
     model_json = model.to_json()
 
-    with open(os.path.join(path, "model_architecture.json"), "w") as json_file:
+    with open(os.path.join(path, settings.model_filename), "w") as json_file:
         json_file.write(model_json)
 
 def create_3dcnn_model(input_shape=(1, 6, 64, 64), num_classes=2):
@@ -129,7 +129,7 @@ def REMtrain(val_ids, idx, dir):
     val_labels_bce = tf.one_hot(val_labels_numpy, depth=2)
 
 
-    checkpoint = keras.callbacks.ModelCheckpoint(filepath = os.path.join(save_directory,"checkpoint.model.keras"), monitor='val_loss', verbose=1, save_best_only=True, save_weights_only=False, mode='min', save_freq="epoch")
+    checkpoint = keras.callbacks.ModelCheckpoint(filepath = os.path.join(save_directory,settings.checkpoint_filename), monitor='val_loss', verbose=1, save_best_only=True, save_weights_only=False, mode='min', save_freq="epoch")
     lr_callback = keras.callbacks.LearningRateScheduler(lr_schedule)
     es_callback = keras.callbacks.EarlyStopping(monitor='val_loss', patience=10, mode='min', restore_best_weights=True, verbose=1)
 

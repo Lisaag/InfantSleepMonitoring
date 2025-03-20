@@ -34,7 +34,7 @@ def load_model_json(path):
 
     return models.model_from_json(loaded_model_json)
 
-def plot_tsne(model, val_samples_stacked, true_labels):
+def plot_tsne(model, path, val_samples_stacked, true_labels):
     print('OUTPUT -4')
     #print(model.layers[-4].output)
     model2 = tf.keras.Model(inputs=model.input, outputs=model.layers[-4].output)
@@ -66,18 +66,18 @@ def plot_tsne(model, val_samples_stacked, true_labels):
         plt.scatter(current_tx, current_ty, c=c, label=classes[idx])
 
     plt.legend(loc='best')
-    plt.savefig(os.path.join(os.path.abspath(os.getcwd()),"REM-results", "tsne.jpg"), format='jpg')  
+    plt.savefig(os.path.join(path,"tsne.jpg"), format='jpg')  
 
-def visualize_results(model, predicted_labels, true_labels, val_samples):
-    with open(os.path.join(os.path.abspath(os.getcwd()),"REM-results", "predictions.txt"), 'w') as file:
+def visualize_results(model, predicted_labels, true_labels, val_samples, path):
+    with open(os.path.join(path, "predictions.txt"), 'w') as file:
         for label in predicted_labels:
             file.write(f"{label}\n")
-    with open(os.path.join(os.path.abspath(os.getcwd()),"REM-results", "true_labels.txt"), 'w') as file:
+    with open(os.path.join(path, "true_labels.txt"), 'w') as file:
         for label in true_labels:
             file.write(f"{label}\n")
 
     REMmodelvis.plot_confusion_matrix(true_labels, predicted_labels)
-    plot_tsne(model, val_samples, true_labels)
+    plot_tsne(model, path, val_samples, true_labels)
 
 
 def get_validation_data():
@@ -123,9 +123,9 @@ def get_validation_data():
 
     return val_samples_stacked, val_labels
 
-def validate_model():
-    model = load_model_json(settings.model_filepath)
-    model.load_weights(settings.checkpoint_filepath)
+def validate_model(path):
+    model = load_model_json(os.path.join(path, settings.model_filename))
+    model.load_weights(os.path.join(settings.checkpoint_filename))
 
     val_samples, true_labels = get_validation_data()
 
@@ -134,8 +134,9 @@ def validate_model():
 
     print(predicted_labels)
 
-    visualize_results(model, predicted_labels, true_labels, val_samples)
+    visualize_results(model, predicted_labels, true_labels, val_samples, path)
 
-
-validate_model()
+for run in os.listdir(settings.results_dir):
+    for fold in os.listdir(os.path.join(settings.results_dir, run)):
+        validate_model(os.path.join(settings.results_dir, run, fold))
 

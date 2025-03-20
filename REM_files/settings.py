@@ -21,5 +21,9 @@ val_ids = [['416', '773'],
 frame_stack_count = 6
 
 data_dir = os.path.join(os.path.abspath(os.getcwd()),"REM", "raw", "cropped", "center")
+results_dir = os.path.join(os.path.abspath(os.getcwd()),"REM-results")
+
+model_filename = "model_architecture.json"
+checkpoint_filename = "checkpoint.model.keras"
 #checkpoint_filepath = os.path.join(os.path.abspath(os.getcwd()),"REM-results","checkpoint.model.keras")
 #model_filepath = os.path.join(os.path.abspath(os.getcwd()),"REM-results","model_architecture.json")
