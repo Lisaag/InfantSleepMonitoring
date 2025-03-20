@@ -15,8 +15,12 @@ import re
 
 import REMmodelvis
 
+initial_lr = 0.0001
+
 def lr_schedule(epoch):
-    return 0.0001 * (0.5 ** (epoch // 5))  # Reduce LR every 5 epochs
+    global initial_lr
+    print(f"INITIAL LR {initial_lr}")
+    return initial_lr * (0.5 ** (epoch // 5))  # Reduce LR every 5 epochs
 
 def create_next_numbered_dir(directory):
     existing_folders = []
@@ -38,7 +42,7 @@ def save_model_json(model, path):
     with open(os.path.join(path, settings.model_filename), "w") as json_file:
         json_file.write(model_json)
 
-def create_3dcnn_model(input_shape=(1, 6, 64, 64), num_classes=2):
+def create_3dcnn_model(lr = 0.0001, dropout=0.5, l2=0.5, input_shape=(1, 6, 64, 64), num_classes=2):
     model = models.Sequential([
         layers.Conv3D(32, kernel_size=(1, 3, 3), activation='relu', padding='same', input_shape=input_shape),
         layers.Conv3D(32, kernel_size=(3, 3, 3), activation='relu', padding='same'),
@@ -46,16 +50,16 @@ def create_3dcnn_model(input_shape=(1, 6, 64, 64), num_classes=2):
 
         layers.Conv3D(64, kernel_size=(3, 3, 3), activation='relu', padding='same'),
         layers.MaxPooling3D(pool_size=(2, 2, 2)),   
-        layers.Dropout(0.6),
+        layers.Dropout(dropout),
 
         layers.Flatten(),
-        layers.Dense(64, activation='relu', kernel_regularizer=regularizers.L2(0.5), kernel_initializer=tf.keras.initializers.HeNormal()),
+        layers.Dense(64, activation='relu', kernel_regularizer=regularizers.L2(l2), kernel_initializer=tf.keras.initializers.HeNormal()),
         layers.BatchNormalization(),
-        layers.Dropout(0.6),
+        layers.Dropout(dropout),
         layers.Dense(num_classes, activation='softmax')
     ])
 
-    optimizer = keras.optimizers.Adam(lr=0.0001)
+    optimizer = keras.optimizers.Adam(lr=lr)
     # Compile the model
     model.compile(optimizer=optimizer,
                   loss=keras.losses.BinaryCrossentropy(from_logits=False),
@@ -67,7 +71,7 @@ def extract_number(filename):
     match = re.search(r'(\d+)(?=\.jpg$)', filename)
     return int(match.group(1)) if match else float('inf')
 
-def REMtrain(val_ids, idx, dir):
+def REMtrain(val_ids, idx, dir, batch_size, lr, l2, dropout):
     save_directory = os.path.join(dir, str(idx))
     os.makedirs(save_directory)
 
@@ -75,7 +79,7 @@ def REMtrain(val_ids, idx, dir):
     input_shape = (6, 64, 64, 1)
     num_classes = 2
 
-    model = create_3dcnn_model(input_shape=input_shape, num_classes=num_classes)
+    model = create_3dcnn_model(lr, dropout, l2, input_shape=input_shape, num_classes=num_classes)
     model.summary()
     save_model_json(model, save_directory)
 
@@ -133,7 +137,7 @@ def REMtrain(val_ids, idx, dir):
     lr_callback = keras.callbacks.LearningRateScheduler(lr_schedule)
     es_callback = keras.callbacks.EarlyStopping(monitor='val_loss', patience=10, mode='min', restore_best_weights=True, verbose=1)
 
-    history = model.fit(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), epochs=50, batch_size=4, callbacks=[lr_callback, es_callback, checkpoint])
+    history = model.fit(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), epochs=50, batch_size=batch_size, callbacks=[lr_callback, es_callback, checkpoint])
 
     #save training and vall loss values and plot in graph
     with open(os.path.join(save_directory, "loss.txt"), 'w', newline='') as csvfile:
@@ -147,25 +151,14 @@ def REMtrain(val_ids, idx, dir):
     
     REMmodelvis.plot_loss_curve(history.history['loss'], history.history['val_loss'], save_directory)
 
-
-    return
-    model.load_weights(settings.checkpoint_filepath)
-
-    predictions = model.predict(val_samples_stacked)
-    predicted_labels = np.argmax(predictions, axis=1)
-
-    print(predicted_labels)
-
-
-
-    with open(os.path.join(os.path.abspath(os.getcwd()),"REM-results", "predictions.txt"), 'w') as file:
-        for label in predicted_labels:
-            file.write(f"{label}\n")
-
-    with open(os.path.join(os.path.abspath(os.getcwd()),"REM-results", "true_labels.txt"), 'w') as file:
-        for label in val_labels:
-            file.write(f"{label}\n")
-
-save_dir = create_next_numbered_dir(os.path.join(os.path.abspath(os.getcwd()),"REM-results"))
-for idx, val_ids in enumerate(settings.val_ids):
-    REMtrain(val_ids, idx, save_dir)
+for batch_size in settings.train_batch_size:
+    for lr in settings.train_initial_lr:
+        initial_lr=lr
+        for l2 in settings.train_l2:
+            for dropout in settings.train_dropout:   
+                save_dir = create_next_numbered_dir(os.path.join(os.path.abspath(os.getcwd()),"REM-results"))    
+                with open(os.path.join(save_dir, "train_config.csv"), "w") as file:
+                    file.write("batch_size,lr,l2,dropout" + "\n")   
+                    file.write(f'{batch_size},{lr},{l2},{dropout}' + "\n")   
+                for idx, val_ids in enumerate(settings.val_ids):
+                    REMtrain(val_ids, idx, save_dir, batch_size, lr, l2, dropout)

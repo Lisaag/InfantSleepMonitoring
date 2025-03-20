@@ -9,13 +9,12 @@ is_OREM = True
 #val_ids = ['614', '657'] #REM acceptabel, OREM heel goed
 
 val_ids = [['416', '773'],
-           ['004', '778', '875'],
+           ['004', '657', '875'],
            ['399', '704', '440'],
            ['554', '866'],
-           ['614', '657']] 
+           ['614', '778']] 
 
 #val_ids = ['416', '875'] #<-- SLECHTE FOLD EXAMPLE
-
 
 
 frame_stack_count = 6
@@ -27,3 +26,14 @@ model_filename = "model_architecture.json"
 checkpoint_filename = "checkpoint.model.keras"
 #checkpoint_filepath = os.path.join(os.path.abspath(os.getcwd()),"REM-results","checkpoint.model.keras")
 #model_filepath = os.path.join(os.path.abspath(os.getcwd()),"REM-results","model_architecture.json")
+
+
+# train_batch_size = [4, 8, 16, 32]
+# train_initial_lr = [0.001, 0.0001, 0.00001]
+# train_l2 = [0.1, 1.0, 10.0]
+# train_dropout = [0.3, 0.5, 0.7]
+
+train_batch_size = [4]
+train_initial_lr = [0.0001]
+train_l2 = [0.5]
+train_dropout = [0.6]
