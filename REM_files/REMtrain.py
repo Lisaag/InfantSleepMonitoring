@@ -71,7 +71,7 @@ def REMtrain(val_ids, idx, dir):
     save_directory = os.path.join(dir, str(idx))
     os.makedirs(save_directory)
 
-    K.set_image_data_format('chwnnels_last')
+    K.set_image_data_format('channels_last')
     input_shape = (6, 64, 64, 1)
     num_classes = 2
 
