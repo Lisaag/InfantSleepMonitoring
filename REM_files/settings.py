@@ -15,7 +15,7 @@ is_OREM = True
 #val_ids = ['614', '657'] #REM acceptabel, OREM heel goed
 
 
-val_ids = ['416', '866'] #TEST
+val_ids = ['416', '875'] #TEST
 
 
 
