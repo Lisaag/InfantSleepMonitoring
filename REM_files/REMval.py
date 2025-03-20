@@ -76,7 +76,7 @@ def visualize_results(model, predicted_labels, true_labels, val_samples, path):
         for label in true_labels:
             file.write(f"{label}\n")
 
-    REMmodelvis.plot_confusion_matrix(true_labels, predicted_labels)
+    REMmodelvis.plot_confusion_matrix(path, true_labels, predicted_labels)
     plot_tsne(model, path, val_samples, true_labels)
 
 

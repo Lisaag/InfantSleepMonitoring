@@ -7,12 +7,12 @@ import numpy as np
 import settings
 
 
-def plot_confusion_matrix(true_labels = list(), predicted_labels = list()):
+def plot_confusion_matrix(path, true_labels = list(), predicted_labels = list()):
     if(len(true_labels) == 0 or len(predicted_labels) == 0):
-        print(f'Getting cf data from {os.path.join(os.path.abspath(os.getcwd()),"REM-results")}')
-        with open(os.path.join(os.path.abspath(os.getcwd()),"REM-results", "predictions.txt"), 'r') as file:
+        print(f'Getting cf data from {path}')
+        with open(os.path.join(path, "predictions.txt"), 'r') as file:
             for line in file: predicted_labels.append(int(line.strip()))
-        with open(os.path.join(os.path.abspath(os.getcwd()),"REM-results", "true_labels.txt"), 'r') as file:
+        with open(os.path.join(path, "true_labels.txt"), 'r') as file:
             for line in file: true_labels.append(int(line.strip()))
 
     num_classes = 2
@@ -32,7 +32,7 @@ def plot_confusion_matrix(true_labels = list(), predicted_labels = list()):
     plt.ylabel('True Labels')
     plt.title('Confusion Matrix')
 
-    plt.savefig(os.path.join(os.path.abspath(os.getcwd()),"REM-results", "confusion_matrix.jpg"), format='jpg')  
+    plt.savefig(os.path.join(path, "confusion_matrix.jpg"), format='jpg')  
 
 
 def plot_loss_curve(train_losses = list(), val_losses = list(), save_directory=os.path.join(os.path.abspath(os.getcwd()),"REM-results")):
