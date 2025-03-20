@@ -59,7 +59,7 @@ def create_3dcnn_model(input_shape=(1, 6, 64, 64), num_classes=2):
     # Compile the model
     model.compile(optimizer=optimizer,
                   loss=keras.losses.BinaryCrossentropy(from_logits=False),
-                  metrics=['accuracy', tf.keras.metrics.AUC(), tf.keras.metrics.Precision(), tf.keras.metrics.Recall(), tf.keras.metrics.F1Score()])
+                  metrics=['accuracy', tf.keras.metrics.AUC(), tf.keras.metrics.Precision(), tf.keras.metrics.Recall()])
 
     return model
 
