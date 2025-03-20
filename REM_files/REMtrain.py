@@ -18,6 +18,20 @@ import REMmodelvis
 def lr_schedule(epoch):
     return 0.0001 * (0.5 ** (epoch // 5))  # Reduce LR every 5 epochs
 
+def create_next_numbered_dir(directory):
+    existing_folders = []
+    for dir in os.listdir(directory):
+        if os.path.isdir(os.path.join(directory, dir)):
+            if(dir.isdigit()):
+                existing_folders.append(int(dir))
+    
+    next_folder = max(existing_folders, default=0) + 1  # Default to 0 if no numeric folders exist
+    
+    new_folder_path = os.path.join(directory, str(next_folder))
+    os.makedirs(new_folder_path)
+
+    return new_folder_path
+    
 def save_model_json(model, path):
     model_json = model.to_json()
 
@@ -53,14 +67,16 @@ def extract_number(filename):
     match = re.search(r'(\d+)(?=\.jpg$)', filename)
     return int(match.group(1)) if match else float('inf')
 
-def REMtrain():
+def REMtrain(val_ids, idx):
+    save_directory = os.path.join(create_next_numbered_dir(os.path.join(os.path.abspath(os.getcwd()),"REM-results")),str(idx))
+
     K.set_image_data_format('channels_last')
     input_shape = (6, 64, 64, 1)
     num_classes = 2
 
     model = create_3dcnn_model(input_shape=input_shape, num_classes=num_classes)
     model.summary()
-    save_model_json(model, os.path.join(os.path.abspath(os.getcwd()),"REM-results"))
+    save_model_json(model, save_directory)
 
     val_samples = list(); val_labels = list(); train_samples = list(); train_labels = list()
 
@@ -74,7 +90,7 @@ def REMtrain():
             if(not settings.is_OREM and (eye_state == "O" or eye_state == "OR")): continue
             eye_state_dir = os.path.join(patient_dir, eye_state)
             for sample in os.listdir(eye_state_dir):
-                if(patient_id in settings.val_ids and sample[-3:] == "AUG"):
+                if(patient_id in val_ids and sample[-3:] == "AUG"):
                     continue
                 sample_dir = os.path.join(eye_state_dir, sample)
                 images = list()
@@ -94,7 +110,7 @@ def REMtrain():
 
                 label = 0 if eye_state == "O" or eye_state == "C" else 1
 
-                if(patient_id in settings.val_ids): 
+                if(patient_id in val_ids): 
                     print(f'from {patient_id} add to val')
                     val_samples.append(stacked_images)
                     val_labels.append(label)
@@ -110,17 +126,16 @@ def REMtrain():
     val_labels_numpy = np.array(val_labels, dtype=int)
     val_labels_bce = tf.one_hot(val_labels_numpy, depth=2)
 
-    checkpoint = keras.callbacks.ModelCheckpoint(filepath = settings.checkpoint_filepath, monitor='val_loss', verbose=1, save_best_only=True, save_weights_only=False, mode='min', save_freq="epoch")
+
+    checkpoint_filepath = os.path.join(save_directory,"checkpoint.model.keras")
+    checkpoint = keras.callbacks.ModelCheckpoint(filepath = checkpoint_filepath, monitor='val_loss', verbose=1, save_best_only=True, save_weights_only=False, mode='min', save_freq="epoch")
     lr_callback = keras.callbacks.LearningRateScheduler(lr_schedule)
     es_callback = keras.callbacks.EarlyStopping(monitor='val_loss', patience=10, mode='min', restore_best_weights=True, verbose=1)
-    #save_callback = keras.callbacks.ModelCheckpoint(filepath = (os.path.abspath(os.getcwd()),"REM-results"), save_weights_only = True, monitor='val_loss', mode='min', save_best_only=True)
 
     history = model.fit(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), epochs=50, batch_size=4, callbacks=[lr_callback, es_callback, checkpoint])
-    #history = model.fit(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), epochs=75, batch_size=16)
-
 
     #save training and vall loss values and plot in graph
-    with open(os.path.join(os.path.abspath(os.getcwd()),"REM-results", "loss.txt"), 'w', newline='') as csvfile:
+    with open(os.path.join(save_directory, "loss.txt"), 'w', newline='') as csvfile:
         fieldnames = ['loss', 'val_loss']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
@@ -129,7 +144,7 @@ def REMtrain():
         for loss, val_loss in zip(history.history['loss'], history.history['val_loss']):
             writer.writerow({'loss': loss, 'val_loss': val_loss})
     
-    REMmodelvis.plot_loss_curve(history.history['loss'], history.history['val_loss'])
+    REMmodelvis.plot_loss_curve(history.history['loss'], history.history['val_loss'], save_directory)
 
 
     return
@@ -151,5 +166,5 @@ def REMtrain():
             file.write(f"{label}\n")
 
 
-
-REMtrain()
+for idx, val_ids in enumerate(settings.val_ids):
+    REMtrain(idx, val_ids)

@@ -35,9 +35,9 @@ def plot_confusion_matrix(true_labels = list(), predicted_labels = list()):
     plt.savefig(os.path.join(os.path.abspath(os.getcwd()),"REM-results", "confusion_matrix.jpg"), format='jpg')  
 
 
-def plot_loss_curve(train_losses = list(), val_losses = list()):
+def plot_loss_curve(train_losses = list(), val_losses = list(), save_directory=os.path.join(os.path.abspath(os.getcwd()),"REM-results")):
     if(len(train_losses) == 0 or len(val_losses) == 0):
-        loss_path = os.path.join(os.path.abspath(os.getcwd()),"REM-results", "loss.txt")
+        loss_path = os.path.join(save_directory, "loss.txt")
         print(f"Fetching losses from {loss_path}")
         with open(loss_path, newline='') as csvfile:
             reader = csv.DictReader(csvfile)
@@ -60,6 +60,6 @@ def plot_loss_curve(train_losses = list(), val_losses = list()):
     plt.legend()
     plt.grid(True)
     plt.ylim(min(all_losses) - 0.01, max(all_losses) + 0.01)
-    plt.savefig(os.path.join(os.path.abspath(os.getcwd()),"REM-results", "plot.jpg"), dpi=500, format='jpg')  
+    plt.savefig(os.path.join(save_directory,"REM-results", "plot.jpg"), dpi=500, format='jpg')  
 
 
