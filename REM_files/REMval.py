@@ -136,8 +136,8 @@ def validate_model(fold, path):
     predicted_labels = np.argmax(predictions, axis=1)
 
     accuracy = accuracy_score(true_labels, predicted_labels)
-    auc = roc_auc_score(true_labels, predictions)
-    precision = precision_score(true_labels, predicted_labels[:,1])
+    auc = roc_auc_score(true_labels, predictions[:,1])
+    precision = precision_score(true_labels, predicted_labels)
     recall = recall_score(true_labels, predicted_labels)
 
     with open(os.path.join(path, "metrics.csv"), "a") as file:
