@@ -18,6 +18,8 @@ import settings
 
 import REMmodelvis
 
+from sklearn.metrics import precision_score, recall_score, roc_auc_score, accuracy_score
+
 
 def scale_to_01_range(x):
     value_range = (np.max(x) - np.min(x))
@@ -133,11 +135,19 @@ def validate_model(fold, path):
     predictions = model.predict(val_samples)
     predicted_labels = np.argmax(predictions, axis=1)
 
-    print(predicted_labels)
+    accuracy = accuracy_score(true_labels, predicted_labels)
+    auc = roc_auc_score(true_labels, predictions)
+    precision = precision_score(true_labels, predicted_labels)
+    recall = recall_score(true_labels, predicted_labels)
+
+    with open(os.path.join(path, "metrics.csv"), "a") as file:
+        file.write(f"{accuracy},{precision},{recall},{auc}" + "\n")
 
     visualize_results(model, predicted_labels, true_labels, val_samples, path)
 
 for run in os.listdir(settings.results_dir):
     for fold in range(len(settings.val_ids)):
+        with open(os.path.join(settings.results_dir, run, str(fold), "metrics.csv"), "w") as file:
+            file.write("run,fold,accuracy,precision,recall,AUC" + "\n")
         validate_model(fold, os.path.join(settings.results_dir, run, str(fold)))
 
