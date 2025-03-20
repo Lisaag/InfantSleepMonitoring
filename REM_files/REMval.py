@@ -93,8 +93,8 @@ def get_validation_data():
             if(not settings.is_OREM and (eye_state == "O" or eye_state == "OR")): continue
             eye_state_dir = os.path.join(patient_dir, eye_state)
             for sample in os.listdir(eye_state_dir):
-                if(patient_id not in settings.val_ids): continue
-                if(patient_id in settings.val_ids and sample[-3:] == "AUG"): continue
+                if(patient_id not in settings.val_ids[fold]): continue
+                if(patient_id in settings.val_ids[fold] and sample[-3:] == "AUG"): continue
                 sample_dir = os.path.join(eye_state_dir, sample)
                 images = list()
 
@@ -114,7 +114,7 @@ def get_validation_data():
 
                 label = 0 if eye_state == "O" or eye_state == "C" else 1
 
-                if(patient_id in settings.val_ids): 
+                if(patient_id in settings.val_ids[fold]): 
                     print(f'from {patient_id} add to val')
                     val_samples.append(stacked_images)
                     val_labels.append(label)
@@ -123,12 +123,12 @@ def get_validation_data():
 
     return val_samples_stacked, val_labels
 
-def validate_model(path):
+def validate_model(fold, path):
     print(path)
     model = load_model_json(os.path.join(path, settings.model_filename))
     model.load_weights(os.path.join(path, settings.checkpoint_filename))
 
-    val_samples, true_labels = get_validation_data()
+    val_samples, true_labels = get_validation_data(fold)
 
     predictions = model.predict(val_samples)
     predicted_labels = np.argmax(predictions, axis=1)
@@ -138,6 +138,6 @@ def validate_model(path):
     visualize_results(model, predicted_labels, true_labels, val_samples, path)
 
 for run in os.listdir(settings.results_dir):
-    for fold in os.listdir(os.path.join(settings.results_dir, run)):
-        validate_model(os.path.join(settings.results_dir, run, fold))
+    for fold in range(len(settings.val_ids)):
+        validate_model(fold, os.path.join(settings.results_dir, run, str(fold)))
 
