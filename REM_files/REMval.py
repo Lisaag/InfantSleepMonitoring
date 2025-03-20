@@ -137,7 +137,7 @@ def validate_model(fold, path):
 
     accuracy = accuracy_score(true_labels, predicted_labels)
     auc = roc_auc_score(true_labels, predictions)
-    precision = precision_score(true_labels, predicted_labels)
+    precision = precision_score(true_labels, predicted_labels[:,1])
     recall = recall_score(true_labels, predicted_labels)
 
     with open(os.path.join(path, "metrics.csv"), "a") as file:
