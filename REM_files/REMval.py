@@ -80,7 +80,7 @@ def visualize_results(model, predicted_labels, true_labels, val_samples, path):
     plot_tsne(model, path, val_samples, true_labels)
 
 
-def get_validation_data():
+def get_validation_data(fold):
     val_samples = list(); val_labels = list()
 
     for patient in os.listdir(settings.data_dir):
