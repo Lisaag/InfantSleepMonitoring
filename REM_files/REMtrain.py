@@ -54,7 +54,7 @@ def create_3dcnn_model(lr = 0.0001, dropout=0.5, l2=0.5, input_shape=(1, 6, 64, 
 
         layers.Flatten(),
         layers.Dense(64, activation='relu', kernel_regularizer=regularizers.L2(l2), kernel_initializer=tf.keras.initializers.HeNormal()),
-        layers.BatchNormalization(),
+        #layers.BatchNormalization(),
         layers.Dropout(dropout),
         layers.Dense(num_classes, activation='sigmoid')
     ])
