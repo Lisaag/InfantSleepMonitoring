@@ -44,26 +44,32 @@ def save_model_json(model, path):
 
 def create_3dcnn_model(lr = 0.0001, dropout=0.5, l2=0.5, input_shape=(1, 6, 64, 64), num_classes=2):
     model = models.Sequential([
+        # First 3D Convolutional Layer
         layers.Conv3D(32, kernel_size=(1, 3, 3), activation='relu', padding='same', input_shape=input_shape),
         layers.Conv3D(32, kernel_size=(3, 3, 3), activation='relu', padding='same'),
         layers.MaxPooling3D(pool_size=(2, 2, 2)),
 
+        # Second 3D Convolutional Layer
         layers.Conv3D(64, kernel_size=(3, 3, 3), activation='relu', padding='same'),
         layers.MaxPooling3D(pool_size=(2, 2, 2)),   
-        layers.Dropout(dropout),
+        layers.Dropout(0.25),
 
+        # # Third 3D Convolutional Layer
+        # layers.Conv3D(128, kernel_size=(3, 3, 3), activation='relu', padding='same'),
+        # layers.MaxPooling3D(pool_size=(2, 2, 2)),
+
+        # Flatten and Fully Connected Layers
         layers.Flatten(),
-        layers.Dense(64, activation='relu', kernel_regularizer=regularizers.L2(l2), kernel_initializer=tf.keras.initializers.HeNormal()),
-        layers.BatchNormalization(),
-        layers.Dropout(dropout),
+        layers.Dense(64, activation='relu', kernel_initializer=tf.keras.initializers.HeNormal()),
+        layers.Dropout(0.5),
         layers.Dense(num_classes, activation='softmax')
     ])
 
-    optimizer = keras.optimizers.Adam(lr=lr)
+    optimizer = keras.optimizers.Adam(lr=0.0001)
     # Compile the model
     model.compile(optimizer=optimizer,
                   loss=keras.losses.BinaryCrossentropy(from_logits=False),
-                  metrics=['accuracy', tf.keras.metrics.AUC(), tf.keras.metrics.Precision(), tf.keras.metrics.Recall()])
+                  metrics=['accuracy'])
 
     return model
 
@@ -137,7 +143,7 @@ def REMtrain(val_ids, idx, dir, batch_size, lr, l2, dropout):
     lr_callback = keras.callbacks.LearningRateScheduler(lr_schedule)
     es_callback = keras.callbacks.EarlyStopping(monitor='val_loss', patience=10, mode='min', restore_best_weights=True, verbose=1)
 
-    history = model.fit(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), epochs=100, batch_size=batch_size, callbacks=[lr_callback, es_callback, checkpoint])
+    history = model.fit(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), epochs=50, batch_size=4, callbacks=[es_callback, checkpoint])
 
     #save training and vall loss values and plot in graph
     with open(os.path.join(save_directory, "loss.txt"), 'w', newline='') as csvfile:
