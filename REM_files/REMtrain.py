@@ -56,7 +56,7 @@ def create_3dcnn_model(lr = 0.0001, dropout=0.5, l2=0.5, input_shape=(1, 6, 64, 
         layers.Dense(64, activation='relu', kernel_regularizer=regularizers.L2(l2), kernel_initializer=tf.keras.initializers.HeNormal()),
         layers.BatchNormalization(),
         layers.Dropout(dropout),
-        layers.Dense(num_classes, activation='softmax')
+        layers.Dense(num_classes, activation='sigmoid')
     ])
 
     optimizer = keras.optimizers.Adam(lr=lr)
@@ -130,7 +130,8 @@ def REMtrain(val_ids, idx, dir, batch_size, lr, l2, dropout):
     train_labels_bce = tf.one_hot(train_labels_numpy, depth=2)
     val_samples_stacked = np.stack(val_samples, axis=0)
     val_labels_numpy = np.array(val_labels, dtype=int)
-    val_labels_bce = tf.one_hot(val_labels_numpy, depth=2)
+    val_labels_bce = val_labels_numpy
+    #tf.one_hot(val_labels_numpy, depth=2)
 
 
     checkpoint = keras.callbacks.ModelCheckpoint(filepath = os.path.join(save_directory,settings.checkpoint_filename), monitor='val_loss', verbose=1, save_best_only=True, save_weights_only=False, mode='min', save_freq="epoch")
