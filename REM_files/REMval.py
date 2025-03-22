@@ -21,6 +21,7 @@ import REMmodelvis
 from sklearn.metrics import precision_score, recall_score, roc_auc_score, accuracy_score, precision_recall_curve, average_precision_score
 
 import statistics
+import seaborn as sns
 
 def scale_to_01_range(x):
     value_range = (np.max(x) - np.min(x))
@@ -38,12 +39,17 @@ def load_model_json(path):
     return models.model_from_json(loaded_model_json)
 
 def plot_pr_curve(precision, recall, best_idx, best_threshold, path):
-    plt.figure()
-    plt.plot(recall, precision, marker='.', label='PR Curve')
-    plt.scatter(recall[best_idx], precision[best_idx], color='red', label=f'Best Threshold: {best_threshold:.2f}')
-    plt.xlabel('Recall')
-    plt.ylabel('Precision')
-    plt.title('Precision-Recall Curve')
+    sns.set_style("whitegrid")
+
+    plt.figure(figsize=(8, 6))
+    sns.lineplot(x=recall, y=precision, marker='o', label="PR Curve", color="blue")
+    plt.scatter(recall[best_idx], precision[best_idx], color='red', s=100, label=f'Best Threshold: {best_threshold:.2f}')
+
+    # Labels and title
+    plt.xlabel("Recall", fontsize=12)
+    plt.ylabel("Precision", fontsize=12)
+    plt.title("Precision-Recall Curve", fontsize=14)
+    plt.legend()
     plt.savefig(os.path.join(path,"prcurve.jpg"), format='jpg', dpi=500)  
 
 def plot_tsne(model, path, val_samples_stacked, true_labels):
