@@ -32,7 +32,7 @@ def plot_confusion_matrix(path, true_labels = list(), predicted_labels = list())
     plt.ylabel('True Labels')
     plt.title('Confusion Matrix')
 
-    plt.savefig(os.path.join(path, "confusion_matrix.jpg"), format='jpg')  
+    plt.savefig(os.path.join(path, "confusion_matrix.jpg"), format='jpg', dpi=500)  
 
 
 def plot_loss_curve(train_losses = list(), val_losses = list(), save_directory=os.path.join(os.path.abspath(os.getcwd()),"REM-results")):

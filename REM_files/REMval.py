@@ -37,6 +37,14 @@ def load_model_json(path):
 
     return models.model_from_json(loaded_model_json)
 
+def plot_pr_curve(precision, recall, best_idx, best_threshold, path):
+    plt.plot(recall, precision, marker='.', label='PR Curve')
+    plt.scatter(recall[best_idx], precision[best_idx], color='red', label=f'Best Threshold: {best_threshold:.2f}')
+    plt.xlabel('Recall')
+    plt.ylabel('Precision')
+    plt.title('Precision-Recall Curve')
+    plt.savefig(os.path.join(path,"tsne.jpg"), format='jpg', dpi=500)  
+
 def plot_tsne(model, path, val_samples_stacked, true_labels):
     #print('OUTPUT -4')
     #print(model.layers[-4].output)
@@ -69,7 +77,7 @@ def plot_tsne(model, path, val_samples_stacked, true_labels):
         plt.scatter(current_tx, current_ty, c=c, label=classes[idx])
 
     plt.legend(loc='best')
-    plt.savefig(os.path.join(path,"tsne.jpg"), format='jpg')  
+    plt.savefig(os.path.join(path,"tsne.jpg"), format='jpg', dpi=500)  
 
 def visualize_results(model, predicted_labels, true_labels, val_samples, path):
     with open(os.path.join(path, "predictions.txt"), 'w') as file:
@@ -138,9 +146,7 @@ def validate_model(run, fold, path):
     precision, recall, thresholds = precision_recall_curve(true_labels, predictions)
     f1_scores = (2 * precision * recall) / (precision + recall + 1e-9)
 
-    best_idx = np.argmax(precision[:-1])
-
-    print(f'{len(precision)}, {len(thresholds)}')
+    best_idx = np.argmax(f1_scores[:-1])
 
     best_threshold = thresholds[best_idx]
     predicted_labels = [1 if x > best_threshold else 0 for x in predictions]
@@ -153,6 +159,7 @@ def validate_model(run, fold, path):
     with open(os.path.join(settings.results_dir, run, "metrics.csv"), "a") as file:
         file.write(f"{run},{fold},{accuracy},{precision},{recall},{ap}" + "\n")
 
+    plot_pr_curve(precision, recall, best_idx, best_threshold, path)
     visualize_results(model, predicted_labels, true_labels, val_samples, path)
 
     return accuracy, precision, recall, ap
