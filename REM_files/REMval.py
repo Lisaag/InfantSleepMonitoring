@@ -135,6 +135,10 @@ def validate_model(run, fold, path):
 
     #predictions = model.predict(val_samples)
     predictions = model(val_samples)
+
+    print(predictions)
+
+    return 0, 0, 0, 0
     #predictions = tf.keras.Model(inputs=model.input, outputs=model.layers[-1].output)
     predicted_labels = np.argmax(predictions, axis=1)
 
