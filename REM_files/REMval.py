@@ -18,7 +18,7 @@ import settings
 
 import REMmodelvis
 
-from sklearn.metrics import precision_score, recall_score, roc_auc_score, accuracy_score
+from sklearn.metrics import precision_score, recall_score, roc_auc_score, accuracy_score, precision_recall_curve, average_precision_score
 
 import statistics
 
@@ -133,26 +133,26 @@ def validate_model(run, fold, path):
 
     val_samples, true_labels = get_validation_data(fold)
 
-    #predictions = model.predict(val_samples)
     predictions = model(val_samples)
 
-    print(predictions)
+    precision, recall, thresholds = precision_recall_curve(true_labels, predictions)
+    f1_scores = (2 * precision * recall) / (precision + recall + 1e-9)
 
-    return 0, 0, 0, 0
-    #predictions = tf.keras.Model(inputs=model.input, outputs=model.layers[-1].output)
-    predicted_labels = np.argmax(predictions, axis=1)
+    best_idx = np.argmax(f1_scores)
+    best_threshold = thresholds[best_idx]
+    predicted_labels = [1 if x > best_threshold else 0 for x in predictions]
 
+    ap = average_precision_score(true_labels, predictions)
     accuracy = accuracy_score(true_labels, predicted_labels)
-    auc = roc_auc_score(true_labels, predictions[:,1])
     precision = precision_score(true_labels, predicted_labels)
     recall = recall_score(true_labels, predicted_labels)
 
     with open(os.path.join(settings.results_dir, run, "metrics.csv"), "a") as file:
-        file.write(f"{run},{fold},{accuracy},{precision},{recall},{auc}" + "\n")
+        file.write(f"{run},{fold},{accuracy},{precision},{recall},{ap}" + "\n")
 
     visualize_results(model, predicted_labels, true_labels, val_samples, path)
 
-    return accuracy, precision, recall, auc
+    return accuracy, precision, recall, ap
 
 
 with open(os.path.join(settings.results_dir, "metrics.csv"), "w") as file:
@@ -161,7 +161,7 @@ with open(os.path.join(settings.results_dir, "metrics.csv"), "w") as file:
 for run in os.listdir(settings.results_dir):
     if(not run.isdigit()): continue
     with open(os.path.join(settings.results_dir, run, "metrics.csv"), "w") as file:
-        file.write("run,fold,accuracy,precision,recall,AUC" + "\n")
+        file.write("run,fold,accuracy,precision,recall,AP" + "\n")
     metrics = []
    
     for fold in range(len(settings.val_ids)):
