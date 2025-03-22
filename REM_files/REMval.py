@@ -138,7 +138,7 @@ def validate_model(run, fold, path):
     precision, recall, thresholds = precision_recall_curve(true_labels, predictions)
     f1_scores = (2 * precision * recall) / (precision + recall + 1e-9)
 
-    best_idx = np.argmax(precision)
+    best_idx = np.argmax(precision[:-1])
 
     print(f'{len(precision)}, {len(thresholds)}')
 
