@@ -140,8 +140,8 @@ def validate_model(run, fold, path):
 
     print("PRECISION")
     print(f1_scores)
-    print(best_idx)
     best_idx = np.argmax(f1_scores)
+    print(best_idx)
 
     return
     best_threshold = thresholds[best_idx]
