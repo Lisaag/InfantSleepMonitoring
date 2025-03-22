@@ -139,7 +139,7 @@ def validate_model(run, fold, path):
     f1_scores = (2 * precision * recall) / (precision + recall + 1e-9)
 
     print("PRECISION")
-    print(precision)
+    print(f1_scores)
     best_idx = np.argmax(f1_scores)
 
     return
