@@ -130,7 +130,7 @@ def REMtrain(val_ids, idx, dir, batch_size, lr, l2, dropout):
     train_labels_bce = tf.one_hot(train_labels_numpy, depth=2)
     val_samples_stacked = np.stack(val_samples, axis=0)
     val_labels_numpy = np.array(val_labels, dtype=int)
-    val_labels_bce = val_labels_numpy
+    val_labels_bce = val_labels_numpy.reshape(-1, 1)
     print(val_labels_bce)
     #tf.one_hot(val_labels_numpy, depth=2)
 
