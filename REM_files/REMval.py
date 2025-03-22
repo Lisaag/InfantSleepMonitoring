@@ -38,12 +38,13 @@ def load_model_json(path):
     return models.model_from_json(loaded_model_json)
 
 def plot_pr_curve(precision, recall, best_idx, best_threshold, path):
+    plt.figure()
     plt.plot(recall, precision, marker='.', label='PR Curve')
     plt.scatter(recall[best_idx], precision[best_idx], color='red', label=f'Best Threshold: {best_threshold:.2f}')
     plt.xlabel('Recall')
     plt.ylabel('Precision')
     plt.title('Precision-Recall Curve')
-    plt.savefig(os.path.join(path,"tsne.jpg"), format='jpg', dpi=500)  
+    plt.savefig(os.path.join(path,"prcurve.jpg"), format='jpg', dpi=500)  
 
 def plot_tsne(model, path, val_samples_stacked, true_labels):
     #print('OUTPUT -4')
