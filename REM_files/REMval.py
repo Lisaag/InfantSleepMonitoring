@@ -138,14 +138,10 @@ def validate_model(run, fold, path):
     precision, recall, thresholds = precision_recall_curve(true_labels, predictions)
     f1_scores = (2 * precision * recall) / (precision + recall + 1e-9)
 
-    print("PRECISION")
-    print(precision)
-    print(len(precision))
     best_idx = np.argmax(precision)
-    print(best_idx) 
-    print(f1_scores[best_idx]) 
 
-    return
+    print(f'{len(precision)}, {len(thresholds)}')
+
     best_threshold = thresholds[best_idx]
     predicted_labels = [1 if x > best_threshold else 0 for x in predictions]
 
