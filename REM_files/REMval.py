@@ -151,6 +151,8 @@ def validate_model(run, fold, path):
     best_threshold = thresholds[best_idx]
     predicted_labels = [1 if x > best_threshold else 0 for x in predictions]
 
+    plot_pr_curve(precision, recall, best_idx, best_threshold, path)
+
     ap = average_precision_score(true_labels, predictions)
     accuracy = accuracy_score(true_labels, predicted_labels)
     precision = precision_score(true_labels, predicted_labels)
@@ -159,7 +161,6 @@ def validate_model(run, fold, path):
     with open(os.path.join(settings.results_dir, run, "metrics.csv"), "a") as file:
         file.write(f"{run},{fold},{accuracy},{precision},{recall},{ap}" + "\n")
 
-    plot_pr_curve(precision, recall, best_idx, best_threshold, path)
     visualize_results(model, predicted_labels, true_labels, val_samples, path)
 
     return accuracy, precision, recall, ap
