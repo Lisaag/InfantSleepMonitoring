@@ -1,14 +1,23 @@
+import settings
+
 import tensorflow as tf
+tf.random.set_seed(settings.seed)
 from tensorflow.keras import layers, models, regularizers
 from keras import backend as K
+session_conf = tf.ConfigProto(intra_op_parallelism_threads=1, inter_op_parallelism_threads=1)
+sess = tf.Session(graph=tf.get_default_graph(), config=session_conf)
+K.set_session(sess)
 
 import tensorflow.keras as keras
 import csv
 import os
+os.environ['PYTHONHASHSEED']=str(settings.seed)
 import numpy as np
+np.random.seed(settings.seed)
 import cv2
 
-import settings
+import random
+random.seed(settings.seed)
 
 import glob
 import re
@@ -50,12 +59,12 @@ def create_3dcnn_model(lr = 0.0001, dropout=0.5, l2=0.5, input_shape=(1, 6, 64, 
 
         layers.Conv3D(64, kernel_size=(3, 3, 3), activation='relu', padding='same'),
         layers.MaxPooling3D(pool_size=(2, 2, 2)),
-        layers.Dropout(dropout),
+        layers.Dropout(dropout, seed=settings.seed),
 
         layers.Flatten(),
         layers.Dense(64, activation='relu', kernel_regularizer=regularizers.L2(l2), kernel_initializer=tf.keras.initializers.HeNormal()),
         layers.BatchNormalization(),
-        layers.Dropout(dropout),
+        layers.Dropout(dropout, seed=settings.seed),
         layers.Dense(1, activation='sigmoid')
     ])
 
