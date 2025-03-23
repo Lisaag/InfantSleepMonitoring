@@ -5,8 +5,8 @@ tf.random.set_seed(settings.seed)
 from tensorflow.keras import layers, models, regularizers
 from keras import backend as K
 session_conf = tf.compat.v1.ConfigProto(intra_op_parallelism_threads=1, inter_op_parallelism_threads=1)
-sess = tf.compat.v1.Session(graph=tf.get_default_graph(), config=session_conf)
-K.set_session(sess)
+sess = tf.compat.v1.Session(graph=tf.compat.v1.get_default_graph(), config=session_conf)
+K.compat.v1.set_session(sess)
 
 import tensorflow.keras as keras
 import csv
