@@ -1,5 +1,14 @@
 import settings
 
+import csv
+import os
+os.environ['PYTHONHASHSEED']=str(settings.seed)
+import random
+random.seed(settings.seed)
+import numpy as np
+np.random.seed(settings.seed)
+import cv2
+
 import tensorflow as tf
 tf.random.set_seed(settings.seed)
 from tensorflow.keras import layers, models, regularizers
@@ -9,15 +18,6 @@ sess = tf.compat.v1.Session(graph=tf.compat.v1.get_default_graph(), config=sessi
 K.compat.v1.set_session(sess)
 
 import tensorflow.keras as keras
-import csv
-import os
-os.environ['PYTHONHASHSEED']=str(settings.seed)
-import numpy as np
-np.random.seed(settings.seed)
-import cv2
-
-import random
-random.seed(settings.seed)
 
 import glob
 import re
