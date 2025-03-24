@@ -26,6 +26,7 @@ for frame_centering in os.listdir(data_dir):
                     image_rotated2 = ndimage.rotate(image, -10)
                     image_flipped = cv2.flip(image, 0) 
 
+                    print(os.path.join(cropped_dir, frame_centering, patient, eye_state, sample, frame[:-4]+"ROT1AUG.jpg"))
                     cv2.imwrite(os.path.join(cropped_dir, frame_centering, patient, eye_state, sample, frame[:-4]+"ROT1AUG.jpg"), image_rotated1)
                     cv2.imwrite(os.path.join(cropped_dir, frame_centering, patient, eye_state, sample, frame[:-4]+"ROT2AUG.jpg"), image_rotated2)
                     cv2.imwrite(os.path.join(cropped_dir, frame_centering, patient, eye_state, sample, frame[:-4]+"FLIPAUG.jpg"), image_flipped)
