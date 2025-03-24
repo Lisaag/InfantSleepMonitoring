@@ -20,6 +20,8 @@ tf.compat.v1.keras.backend.set_session(sess)
 
 import tensorflow.keras as keras
 
+keras.utils.set_random_seed(settings.seed)
+
 import glob
 import re
 
@@ -57,9 +59,12 @@ def create_3dcnn_model(lr = 0.0001, dropout=0.5, l2=0.5, input_shape=(1, 6, 64, 
         layers.Conv3D(32, kernel_size=(1, 3, 3), activation='relu', padding='same', input_shape=input_shape),
         layers.Conv3D(32, kernel_size=(3, 3, 3), activation='relu', padding='same'),
         layers.MaxPooling3D(pool_size=(2, 2, 2)),
+        layers.BatchNormalization(),
+        layers.Dropout(dropout, seed=settings.seed),
 
         layers.Conv3D(64, kernel_size=(3, 3, 3), activation='relu', padding='same'),
         layers.MaxPooling3D(pool_size=(2, 2, 2)),
+        layers.BatchNormalization(),
         layers.Dropout(dropout, seed=settings.seed),
 
         layers.Flatten(),
