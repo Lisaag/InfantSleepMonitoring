@@ -3,7 +3,7 @@ import settings
 import csv
 import os
 os.environ['PYTHONHASHSEED']=str(settings.seed)
-#os.environ['TF_DETERMINISTIC_OPS'] = '1'
+os.environ['TF_DETERMINISTIC_OPS'] = '1'
 import random
 random.seed(settings.seed)
 import numpy as np
@@ -152,9 +152,9 @@ def REMtrain(val_ids, idx, dir, batch_size, lr, l2, dropout):
 
     checkpoint = keras.callbacks.ModelCheckpoint(filepath = os.path.join(save_directory,settings.checkpoint_filename), monitor='val_loss', verbose=1, save_best_only=True, save_weights_only=True, mode='min', save_freq="epoch")
     lr_callback = keras.callbacks.LearningRateScheduler(lr_schedule)
-    es_callback = keras.callbacks.EarlyStopping(monitor='val_loss', patience=10, min_delta=0, mode='min', restore_best_weights=True, verbose=1)
+    #es_callback = keras.callbacks.EarlyStopping(monitor='val_loss', patience=10, min_delta=0, mode='min', restore_best_weights=True, verbose=1)
 
-    history = model.fit(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), epochs=60, batch_size=batch_size, callbacks=[lr_callback, checkpoint, es_callback])
+    history = model.fit(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), epochs=60, batch_size=batch_size, callbacks=[lr_callback, checkpoint])
 
     #save training and vall loss values and plot in graph
     with open(os.path.join(save_directory, "loss.txt"), 'w', newline='') as csvfile:
