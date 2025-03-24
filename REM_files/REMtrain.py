@@ -62,7 +62,7 @@ def create_3dcnn_model(lr = 0.0001, dropout=0.5, l2=0.5, input_shape=(1, 6, 64, 
         layers.Dropout(dropout, seed=settings.seed),
 
         layers.Flatten(),
-        layers.Dense(64, activation='relu', kernel_regularizer=regularizers.L2(l2), kernel_initializer=tf.keras.initializers.HeNormal()),
+        layers.Dense(64, activation='relu', kernel_regularizer=regularizers.L2(l2), kernel_initializer=tf.keras.initializers.HeNormal(seed=settings.seed)),
         layers.BatchNormalization(),
         layers.Dropout(dropout, seed=settings.seed),
         layers.Dense(1, activation='sigmoid')
@@ -150,7 +150,7 @@ def REMtrain(val_ids, idx, dir, batch_size, lr, l2, dropout):
     lr_callback = keras.callbacks.LearningRateScheduler(lr_schedule)
     #es_callback = keras.callbacks.EarlyStopping(monitor='val_loss', patience=10, mode='min', restore_best_weights=True, verbose=1)
 
-    history = model.fit(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), epochs=100, batch_size=batch_size, callbacks=[lr_callback, checkpoint])
+    history = model.fit(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), epochs=20, batch_size=batch_size, callbacks=[lr_callback, checkpoint])
 
     #save training and vall loss values and plot in graph
     with open(os.path.join(save_directory, "loss.txt"), 'w', newline='') as csvfile:
