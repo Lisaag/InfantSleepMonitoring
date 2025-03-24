@@ -20,8 +20,6 @@ tf.compat.v1.keras.backend.set_session(sess)
 
 import tensorflow.keras as keras
 
-keras.utils.set_random_seed(settings.seed)
-
 import glob
 import re
 
