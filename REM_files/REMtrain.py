@@ -3,7 +3,7 @@ import settings
 import csv
 import os
 os.environ['PYTHONHASHSEED']=str(settings.seed)
-os.environ['TF_DETERMINISTIC_OPS'] = '1'
+#os.environ['TF_DETERMINISTIC_OPS'] = '1'
 import random
 random.seed(settings.seed)
 import numpy as np
