@@ -4,7 +4,7 @@ import cv2
 from scipy import ndimage
     
 cropped_dir = os.path.join(os.path.abspath(os.getcwd()), "REM", "tmp", "cropped")
-data_dir = os.listdir(os.path.join(os.path.abspath(os.getcwd()),"REM", "raw", "cropped"))
+data_dir = os.path.join(os.path.abspath(os.getcwd()),"REM", "raw", "cropped")
 for frame_centering in os.listdir(data_dir):
     for patient in os.listdir(os.path.join(data_dir, frame_centering)):
         patient_dir:str = os.path.join(settings.data_dir, patient)
