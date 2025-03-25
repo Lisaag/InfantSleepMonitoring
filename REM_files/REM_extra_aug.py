@@ -3,14 +3,14 @@ import os
 import cv2
 from scipy import ndimage
     
-cropped_dir = os.path.join(os.path.abspath(os.getcwd()), "REM", "tmp", "cropped")
+cropped_dir = os.path.join(os.path.abspath(os.getcwd()), "REM", "raw", "cropped")
 data_dir = os.path.join(os.path.abspath(os.getcwd()),"REM", "raw", "cropped")
 for frame_centering in os.listdir(data_dir):
     for patient in os.listdir(os.path.join(data_dir, frame_centering)):
         patient_dir:str = os.path.join(settings.data_dir, patient)
         patient_id:str = patient[0:3]
-        if(patient != '773_02-11-2022'):
-            continue
+        # if(patient != '773_02-11-2022'):
+        #     continue
         #if(settings.is_OREM and patient_id == '440'): continue
         print(patient_id)
         for eye_state in os.listdir(patient_dir):
