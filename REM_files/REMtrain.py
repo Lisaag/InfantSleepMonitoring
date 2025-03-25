@@ -108,9 +108,9 @@ def REMtrain(val_ids, idx, dir, batch_size, lr, l2, dropout):
             if(not settings.is_OREM and (eye_state == "O" or eye_state == "OR")): continue
             eye_state_dir = os.path.join(patient_dir, eye_state)
             for sample in os.listdir(eye_state_dir):
-                # if(patient_id in val_ids and sample[-3:] == "AUG"):
-                #     continue
-                if(sample[-3:] == "AUG"): continue
+                if(patient_id in val_ids and sample[-3:] == "AUG"):
+                    continue
+                #if(sample[-3:] == "AUG"): continue
                 sample_dir = os.path.join(eye_state_dir, sample)
                 images = list()
                 frames = glob.glob(os.path.join(sample_dir, "*.jpg"))
