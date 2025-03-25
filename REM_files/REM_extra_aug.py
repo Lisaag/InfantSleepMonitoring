@@ -19,7 +19,7 @@ for frame_centering in os.listdir(data_dir):
             for sample in os.listdir(eye_state_dir):
                 count +=1
 
-            print(f'{frame_centering}-{patient}-{eye_state}  :  count')
+            print(f'{frame_centering}-{patient}-{eye_state}  :  {count}')
                 # if(sample[-3:] == "AUG"): continue
                 # sample_dir = os.path.join(eye_state_dir, sample)
                 # for frame in os.listdir(sample_dir):
