@@ -22,7 +22,7 @@ for frame_centering in os.listdir(data_dir):
                     if frame[-4:] != ".jpg":
                         continue
 
-                    image = cv2.imread(os.path.join(sample_dir, frame), cv2.IMREAD_GRAYSCALE)
+                    image = cv2.imread(os.path.join(sample_dir, frame))
                     image_rotated1 = ndimage.rotate(image, 10)
                     image_rotated2 = ndimage.rotate(image, -10)
                     image_flipped = cv2.flip(image, 0) 
