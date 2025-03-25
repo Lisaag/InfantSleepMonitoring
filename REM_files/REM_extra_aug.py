@@ -19,15 +19,13 @@ for frame_centering in os.listdir(data_dir):
                 if(sample[-3:] == "AUG"): continue
                 sample_dir = os.path.join(eye_state_dir, sample)
                 for frame in os.listdir(sample_dir):
-                    print(frame)
-                    if frame[:-4] != ".jpg":
+                    if frame[-4:] != ".jpg":
                         continue
                     image = cv2.imread(os.path.join(sample_dir, frame), cv2.IMREAD_GRAYSCALE)
                     image_rotated1 = ndimage.rotate(image, 10)
                     image_rotated2 = ndimage.rotate(image, -10)
                     image_flipped = cv2.flip(image, 0) 
 
-                    print(os.path.join(cropped_dir, frame_centering, patient, eye_state, sample, frame[:-4]+"ROT1AUG.jpg"))
                     cv2.imwrite(os.path.join(cropped_dir, frame_centering, patient, eye_state, sample, frame[:-4]+"ROT1AUG.jpg"), image_rotated1)
                     cv2.imwrite(os.path.join(cropped_dir, frame_centering, patient, eye_state, sample, frame[:-4]+"ROT2AUG.jpg"), image_rotated2)
                     cv2.imwrite(os.path.join(cropped_dir, frame_centering, patient, eye_state, sample, frame[:-4]+"FLIPAUG.jpg"), image_flipped)
