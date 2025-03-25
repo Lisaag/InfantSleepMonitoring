@@ -43,7 +43,7 @@ def plot_pr_curve(precision, recall, best_idx, best_threshold, path):
 
     plt.figure(figsize=(8, 6))
     plt.plot(recall, precision, marker='.')
-    plt.scatter(recall[best_idx], precision[best_idx], s=10.0, color='red', label=f'Best Threshold: {best_threshold:.2f}')
+    plt.scatter(recall[best_idx], precision[best_idx], s=30.0, color='red', label=f'Best Threshold: {best_threshold:.2f}')
 
     # Labels and title
     plt.xlabel("Recall", fontsize=12)
