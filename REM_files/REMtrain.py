@@ -52,7 +52,7 @@ def save_model_json(model, path):
     with open(os.path.join(path, settings.model_filename), "w") as json_file:
         json_file.write(model_json)
 
-def create_3dcnn_model(lr = 0.0001, dropout=0.5, l2=0.5, input_shape=(1, 6, 64, 64), num_classes=2):
+def create_model(lr = 0.0001, dropout=0.3, l2=0.1, input_shape=(1, 6, 64, 64)):
     model = models.Sequential([
         layers.Conv3D(32, kernel_size=(1, 3, 3), activation='relu', padding='same', input_shape=input_shape),
         layers.Conv3D(32, kernel_size=(3, 3, 3), activation='relu', padding='same'),
@@ -62,17 +62,14 @@ def create_3dcnn_model(lr = 0.0001, dropout=0.5, l2=0.5, input_shape=(1, 6, 64, 
         layers.Conv3D(64, kernel_size=(3, 3, 3), activation='relu', padding='same'),
         layers.MaxPooling3D(pool_size=(2, 2, 2)),
         layers.BatchNormalization(),
-        #layers.Dropout(dropout, seed=settings.seed),
 
         layers.Flatten(),
         layers.Dense(64, activation='relu', kernel_regularizer=regularizers.L2(l2), kernel_initializer=tf.keras.initializers.HeNormal(seed=settings.seed)),
         layers.BatchNormalization(),
-        #layers.Dropout(dropout, seed=settings.seed),
         layers.Dense(1, activation='sigmoid')
     ])
 
     optimizer = keras.optimizers.Adam(lr=lr)
-    # Compile the model
     model.compile(optimizer=optimizer,
                   loss=keras.losses.BinaryCrossentropy(from_logits=False),
                   metrics=['accuracy', tf.keras.metrics.AUC(), tf.keras.metrics.Precision(), tf.keras.metrics.Recall()])
@@ -91,7 +88,7 @@ def REMtrain(val_ids, idx, dir, batch_size, lr, l2, dropout):
     input_shape = (6, 64, 64, 1)
     num_classes = 2
 
-    model = create_3dcnn_model(lr, dropout, l2, input_shape=input_shape, num_classes=num_classes)
+    model = create_model(lr, dropout, l2, input_shape=input_shape)
     model.summary()
     save_model_json(model, save_directory)
 
@@ -108,9 +105,9 @@ def REMtrain(val_ids, idx, dir, batch_size, lr, l2, dropout):
             if(not settings.is_OREM and (eye_state == "O" or eye_state == "OR")): continue
             eye_state_dir = os.path.join(patient_dir, eye_state)
             for sample in os.listdir(eye_state_dir):
-                if(patient_id in val_ids and sample[-3:] == "AUG"):
-                    continue
-                #if(sample[-3:] == "AUG"): continue
+                # if(patient_id in val_ids and sample[-3:] == "AUG"):
+                #     continue
+                if(sample[-3:] == "AUG"): continue
                 sample_dir = os.path.join(eye_state_dir, sample)
                 images = list()
                 frames = glob.glob(os.path.join(sample_dir, "*.jpg"))
