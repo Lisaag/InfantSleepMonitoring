@@ -197,13 +197,13 @@ def extract_frames(video_dir:str, file_name:str, csv_dir:str, patient_id:str, RE
 
 def detect_vid():
     #cropped_dir = os.path.join(os.path.abspath(os.getcwd()), "REM", "raw", "cropped")
-    cropped_dir = os.path.join(os.path.abspath(os.getcwd()), "REM", "tmp", "cropped")
+    cropped_dir = os.path.join(os.path.abspath(os.getcwd()), "REM", "raw", "cropped")
     #remove_folder_recursively(cropped_dir)
     video_dir:str = os.path.join(os.path.abspath(os.getcwd()), "REM", "raw", "cutout")
     frames_dir:str = os.path.join(os.path.abspath(os.getcwd()), "REM", "raw", "frames")
     for patient in os.listdir(video_dir):
-        if(patient != '773_02-11-2022'):
-            continue
+        # if(patient != '773_02-11-2022'):
+        #     continue
         patient_dir:str = os.path.join(video_dir, patient)
         for eye_state_dir in os.listdir(patient_dir):
             fragment_dir:str = os.path.join(patient_dir, eye_state_dir)
