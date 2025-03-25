@@ -42,8 +42,8 @@ def plot_pr_curve(precision, recall, best_idx, best_threshold, path):
     sns.set_style("whitegrid")
 
     plt.figure(figsize=(8, 6))
-    sns.lineplot(x=recall, y=precision, marker='o', label="PR Curve", color="blue")
-    plt.scatter(recall[best_idx], precision[best_idx], color='red', s=100, label=f'Best Threshold: {best_threshold:.2f}')
+    plt.plot(recall, precision, marker='.')
+    plt.scatter(recall[best_idx], precision[best_idx], s=[0.5], color='red', label=f'Best Threshold: {best_threshold:.2f}')
 
     # Labels and title
     plt.xlabel("Recall", fontsize=12)
