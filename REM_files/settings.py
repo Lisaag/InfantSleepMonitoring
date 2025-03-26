@@ -37,4 +37,4 @@ train_initial_lr = [0.0002]
 train_l2 = [0.15]
 train_dropout = [0.01]
 
-seed = 4
+seed = 3
