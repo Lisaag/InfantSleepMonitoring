@@ -59,7 +59,7 @@ def plot_loss_curve(train_losses = list(), val_losses = list(), save_directory=o
     plt.title(f'Training and validation loss')
     plt.legend()
     plt.grid(True)
-    plt.ylim(min(all_losses) - 0.01, max(all_losses) + 0.01)
+    plt.ylim(min(all_losses) - 0.01, 8.0) #max(all_losses) + 0.01)
     plt.savefig(os.path.join(save_directory,"plot.jpg"), dpi=500, format='jpg')  
 
 
