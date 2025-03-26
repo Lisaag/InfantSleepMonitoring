@@ -2,16 +2,16 @@ import settings
 
 import csv
 import os
-os.environ['PYTHONHASHSEED']=str(settings.seed)
+os.environ['PYTHONHASHSEED']=str(settings.seed[0])
 os.environ['TF_DETERMINISTIC_OPS'] = '1'
 import random
-random.seed(settings.seed)
+random.seed(settings.seed[0])
 import numpy as np
-np.random.seed(settings.seed)
+np.random.seed(settings.seed[0])
 import cv2
 
 import tensorflow as tf
-tf.random.set_seed(settings.seed)
+tf.random.set_seed(settings.seed[0])
 from tensorflow.keras import layers, models, regularizers
 from keras import backend as K 
 session_conf = tf.compat.v1.ConfigProto(intra_op_parallelism_threads=1, inter_op_parallelism_threads=1)
@@ -52,23 +52,23 @@ def save_model_json(model, path):
     with open(os.path.join(path, settings.model_filename), "w") as json_file:
         json_file.write(model_json)
 
-def create_model(lr = 0.0001, dropout=0.3, l2=0.1, input_shape=(1, 6, 64, 64)):
+def create_model(lr = 0.0001, dropout=0.3, l2=0.1, input_shape=(1, 6, 64, 64), seed = 0):
     model = models.Sequential([
         layers.Conv3D(32, kernel_size=(1, 3, 3), activation='relu', padding='same', input_shape=input_shape),
         layers.Conv3D(32, kernel_size=(3, 3, 3), activation='relu', padding='same'),
         layers.MaxPooling3D(pool_size=(2, 2, 2)),
-        # layers.BatchNormalization(),
-        layers.Dropout(dropout, seed=settings.seed),
+        layers.BatchNormalization(),
+        layers.Dropout(dropout, seed=seed),
 
         layers.Conv3D(64, kernel_size=(3, 3, 3), activation='relu', padding='same'),
         layers.MaxPooling3D(pool_size=(2, 2, 2)),
-        # layers.BatchNormalization(),
-        layers.Dropout(dropout, seed=settings.seed),
+        layers.BatchNormalization(),
+        layers.Dropout(dropout, seed=seed),
 
         layers.Flatten(),
-        layers.Dense(64, activation='relu', kernel_regularizer=regularizers.L2(l2), kernel_initializer=tf.keras.initializers.HeNormal(seed=settings.seed)),
+        layers.Dense(64, activation='relu', kernel_regularizer=regularizers.L2(l2), kernel_initializer=tf.keras.initializers.HeNormal(seed=seed)),
         # layers.BatchNormalization(),
-        layers.Dropout(dropout, seed=settings.seed),
+        layers.Dropout(dropout, seed=seed),
         layers.Dense(1, activation='sigmoid')
     ])
 
@@ -83,7 +83,7 @@ def extract_number(filename):
     match = re.search(r'(\d+)(?=\.jpg$)', filename)
     return int(match.group(1)) if match else float('inf')
 
-def REMtrain(val_ids, idx, dir, batch_size, lr, l2, dropout):
+def REMtrain(val_ids, idx, dir, batch_size, lr, l2, dropout, seed):
     save_directory = os.path.join(dir, str(idx))
     os.makedirs(save_directory)
 
@@ -91,7 +91,7 @@ def REMtrain(val_ids, idx, dir, batch_size, lr, l2, dropout):
     input_shape = (6, 64, 64, 1)
     num_classes = 2
 
-    model = create_model(lr, dropout, l2, input_shape=input_shape)
+    model = create_model(lr, dropout, l2, input_shape=input_shape, seed=seed)
     model.summary()
     save_model_json(model, save_directory)
 
@@ -172,9 +172,10 @@ for batch_size in settings.train_batch_size:
         initial_lr=lr
         for l2 in settings.train_l2:
             for dropout in settings.train_dropout:   
-                save_dir = create_next_numbered_dir(os.path.join(os.path.abspath(os.getcwd()),"REM-results"))    
-                with open(os.path.join(save_dir, "train_config.csv"), "w") as file:
-                    file.write("batch_size,lr,l2,dropout" + "\n")   
-                    file.write(f'{batch_size},{lr},{l2},{dropout}' + "\n")   
-                for idx, val_ids in enumerate(settings.val_ids):
-                    REMtrain(val_ids, idx, save_dir, batch_size, lr, l2, dropout)
+                for seed in settings.seeds:
+                    save_dir = create_next_numbered_dir(os.path.join(os.path.abspath(os.getcwd()),"REM-results"))    
+                    with open(os.path.join(save_dir, "train_config.csv"), "w") as file:
+                        file.write("batch_size,lr,l2,dropout" + "\n")   
+                        file.write(f'{batch_size},{lr},{l2},{dropout}' + "\n")   
+                    for idx, val_ids in enumerate(settings.val_ids):
+                        REMtrain(val_ids, idx, save_dir, batch_size, lr, l2, dropout, seed)
