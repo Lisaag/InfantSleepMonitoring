@@ -149,7 +149,7 @@ def REMtrain(val_ids, idx, dir, batch_size, lr, l2, dropout, seed):
     lr_callback = keras.callbacks.LearningRateScheduler(lr_schedule)
     #es_callback = keras.callbacks.EarlyStopping(monitor='val_loss', patience=10, min_delta=0, mode='min', restore_best_weights=True, verbose=1)
 
-    history = model.fit(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), epochs=60, batch_size=batch_size, callbacks=[lr_callback, checkpoint])
+    history = model.fit(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), epochs=60, batch_size=batch_size, callbacks=[checkpoint])
 
     #save training and vall loss values and plot in graph
     with open(os.path.join(save_directory, "loss.txt"), 'w', newline='') as csvfile:
