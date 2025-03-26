@@ -9,8 +9,8 @@ is_OREM = False
 #val_ids = ['614', '657'] #REM acceptabel, OREM heel goed
 
 val_ids = [['416', '773'],
-           ['004', '704', '875'],
-           ['399', '778', '440'],
+           ['004', '778', '875'],
+           ['399', '704', '440'],
            ['554', '866'],
            ['614', '657']] 
 
@@ -34,7 +34,7 @@ checkpoint_filename = "checkpoint.model.keras"
 
 train_batch_size = [8]
 train_initial_lr = [0.0001]
-train_l2 = [0.1]
-train_dropout = [0.25]
+train_l2 = [0.01]
+train_dropout = [0.05]
 
 seeds = [0]
