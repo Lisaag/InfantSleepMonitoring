@@ -1,6 +1,6 @@
 import os
 
-is_OREM = True
+is_OREM = False
 
 #val_ids = ['416', '773'] #REM goed, OREM goed
 #val_ids = ['004', '778', '875'] #REM acceptabel/goed, OREM heel goed
@@ -8,11 +8,11 @@ is_OREM = True
 #val_ids = ['554', '866'] #REM goed, OREM goed  
 #val_ids = ['614', '657'] #REM acceptabel, OREM heel goed
 
-val_ids = [['416', '704'],
+val_ids = [['416', '657'],
            ['004', '778', '773'],
            ['399', '875', '440'],
            ['554', '866'],
-           ['614', '657']] 
+           ['614', '704']] 
 
 #val_ids = ['416', '875'] #<-- SLECHTE FOLD EXAMPLE
 
