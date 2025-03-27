@@ -25,8 +25,6 @@ import re
 
 import REMmodelvis
 
-from custom_layers import GroupNorm3D
-
 
 initial_lr = 0.0001
 
@@ -74,15 +72,18 @@ def group_norm(x, G=32, eps=1e-5, scope='group_norm') :
 
 def create_model(lr = 0.0001, dropout=0.3, l2=0.1, input_shape=(1, 6, 64, 64), seed = 0):
     model = models.Sequential([
-        layers.Conv3D(32, kernel_size=(1, 3, 3), activation='relu', padding='same', input_shape=input_shape),
-        layers.Conv3D(32, kernel_size=(3, 3, 3), activation='relu', padding='same'),
+        layers.Conv3D(32, kernel_size=(1, 3, 3), padding='same', input_shape=input_shape),
+        layers.BatchNormalization(momentum=0.99, epsilon=1e-4, renorm=True),
+        layers.Activation('relu'),
+        layers.Conv3D(32, kernel_size=(3, 3, 3), padding='same'),
+        layers.BatchNormalization(momentum=0.99, epsilon=1e-4, renorm=True),
+        layers.Activation('relu'),
         layers.MaxPooling3D(pool_size=(2, 2, 2)),
-        GroupNorm3D(G=32),        
-        #layers.BatchNormalization(momentum=0.99, epsilon=1e-4, renorm=True),
-
-        layers.Conv3D(64, kernel_size=(3, 3, 3), activation='relu', padding='same'),
+       
+        layers.Conv3D(64, kernel_size=(3, 3, 3), padding='same'),
+        layers.BatchNormalization(momentum=0.99, epsilon=1e-4, renorm=True),
+        layers.Activation('relu'),
         layers.MaxPooling3D(pool_size=(2, 2, 2)),
-        GroupNorm3D(G=32),        
         #layers.BatchNormalization(momentum=0.99, epsilon=1e-4, renorm=True),
         #layers.Dropout(dropout, seed=seed),
 
