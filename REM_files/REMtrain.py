@@ -25,7 +25,6 @@ import re
 
 import REMmodelvis
 
-import tensorflow_addons as tfa
 
 initial_lr = 0.0001
 
