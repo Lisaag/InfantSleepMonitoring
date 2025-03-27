@@ -149,7 +149,7 @@ def validate_model(run, fold, path):
 
     val_samples, true_labels = get_validation_data(fold)
 
-    predictions = model(val_samples)
+    predictions = model(val_samples, training=False)
     #predictions = model.predict(val_samples)
 
     precision, recall, thresholds = precision_recall_curve(true_labels, predictions)

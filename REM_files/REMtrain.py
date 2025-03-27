@@ -57,16 +57,15 @@ def create_model(lr = 0.0001, dropout=0.3, l2=0.1, input_shape=(1, 6, 64, 64), s
         layers.Conv3D(32, kernel_size=(1, 3, 3), activation='relu', padding='same', input_shape=input_shape),
         layers.Conv3D(32, kernel_size=(3, 3, 3), activation='relu', padding='same'),
         layers.MaxPooling3D(pool_size=(2, 2, 2)),
-        layers.BatchNormalization(momentum=0.7),
+        layers.BatchNormalization(momentum=0.99, epsilon=1e-4, renorm=True),
 
         layers.Conv3D(64, kernel_size=(3, 3, 3), activation='relu', padding='same'),
         layers.MaxPooling3D(pool_size=(2, 2, 2)),
-        layers.BatchNormalization(momentum=0.7),
+        layers.BatchNormalization(momentum=0.99, epsilon=1e-4, renorm=True),
         #layers.Dropout(dropout, seed=seed),
 
         layers.Flatten(),
         layers.Dense(64, activation='relu', kernel_regularizer=regularizers.L2(l2), kernel_initializer=tf.keras.initializers.HeNormal(seed=seed)),
-        layers.BatchNormalization(momentum=0.7),
         #layers.Dropout(dropout * 1.5, seed=seed),
         layers.Dense(1, activation='sigmoid')
     ])
