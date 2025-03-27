@@ -1,6 +1,6 @@
 import os
 
-is_OREM = True
+is_OREM = False
 
 #val_ids = ['416', '773'] #REM goed, OREM goed
 #val_ids = ['004', '778', '875'] #REM acceptabel/goed, OREM heel goed
