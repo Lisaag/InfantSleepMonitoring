@@ -33,8 +33,8 @@ checkpoint_filename = "checkpoint.model.keras"
 # train_dropout = [0.3, 0.5, 0.7]
 
 train_batch_size = [32]
-train_initial_lr = [0.0001]
-train_l2 = [0.08]
-train_dropout = [0.4]
+train_initial_lr = [0.00008]
+train_l2 = [0.15]
+train_dropout = [0.5]
 
-seeds = [0, 1, 2]
+seeds = [0, 1]
