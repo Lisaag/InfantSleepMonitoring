@@ -176,7 +176,8 @@ def validate_model(run, fold, path):
 
 
 with open(os.path.join(settings.results_dir, "metrics.csv"), "w") as file:
-    file.write("run,m_accuracy,m_precision,m_recall,m_AUC,sd_accuracy,sd_precision,sd_recall,sd_AUC" + "\n")
+    #file.write("run,m_accuracy,m_precision,m_recall,m_AUC,sd_accuracy,sd_precision,sd_recall,sd_AUC" + "\n")
+    file.write("run,m_accuracy,m_precision,m_recall,m_AUC" + "\n")
 
 for run in os.listdir(settings.results_dir):
     if(not run.isdigit()): continue
@@ -189,5 +190,7 @@ for run in os.listdir(settings.results_dir):
    
     metrics = np.array(metrics).T
     with open(os.path.join(settings.results_dir, "metrics.csv"), "a") as file:
-        file.write(f'{run},{statistics.mean(metrics[0])},{statistics.mean(metrics[1])},{statistics.mean(metrics[2])},{statistics.mean(metrics[3])},{statistics.stdev(metrics[0])},{statistics.stdev(metrics[1])},{statistics.stdev(metrics[2])},{statistics.stdev(metrics[3])}' + "\n")
+        file.write(f'{run},{metrics[0]},{metrics[1]},{metrics[2]},{metrics[3]}' + "\n")
+
+        #file.write(f'{run},{statistics.mean(metrics[0])},{statistics.mean(metrics[1])},{statistics.mean(metrics[2])},{statistics.mean(metrics[3])},{statistics.stdev(metrics[0])},{statistics.stdev(metrics[1])},{statistics.stdev(metrics[2])},{statistics.stdev(metrics[3])}' + "\n")
 
