@@ -196,7 +196,7 @@ for batch_size in settings.train_batch_size:
         for l2 in settings.train_l2:
             for dropout in settings.train_dropout:   
                 for seed in settings.seeds:
-                    save_dir = create_next_numbered_dir(os.path.join(os.path.abspath(os.getcwd()),"REM-results2"))    
+                    save_dir = create_next_numbered_dir(os.path.join(os.path.abspath(os.getcwd()),"REM-results"))    
                     with open(os.path.join(save_dir, "train_config.csv"), "w") as file:
                         file.write("batch_size,lr,l2,dropout" + "\n")   
                         file.write(f'{batch_size},{lr},{l2},{dropout}' + "\n")   
