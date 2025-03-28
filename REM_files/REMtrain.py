@@ -90,7 +90,7 @@ def create_model(lr = 0.0001, dropout=0.3, l2=0.1, input_shape=(1, 6, 64, 64), s
         #layers.Dropout(dropout, seed=seed),
 
         layers.Flatten(),
-        layers.Dense(64, activation='relu', kernel_initializer=tf.keras.initializers.HeNormal(seed=seed)),
+        layers.Dense(64, activation='relu', kernel_regularizer=regularizers.L2(l2), kernel_initializer=tf.keras.initializers.HeNormal(seed=seed)),
         #layers.Dropout(dropout * 1.5, seed=seed),
         layers.Dense(1, activation='sigmoid')
     ])
