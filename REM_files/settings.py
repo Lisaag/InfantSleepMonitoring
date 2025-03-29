@@ -1,6 +1,6 @@
 import os
 
-is_OREM = False
+is_OREM = True
 
 #val_ids = ['416', '773'] #REM goed, OREM goed
 #val_ids = ['004', '778', '875'] #REM acceptabel/goed, OREM heel goed
@@ -34,8 +34,8 @@ checkpoint_filename = "checkpoint.model.keras"
 # train_l2 = [0.01, 0.1, 1.0]
 # train_dropout = [0.3, 0.5, 0.7]
 
-train_batch_size = [64]
-train_initial_lr = [0.000325]
+train_batch_size = [32]
+train_initial_lr = [0.00025]
 train_l2 = [0.04]
 train_dropout = [0.6]
 
