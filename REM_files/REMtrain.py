@@ -72,26 +72,20 @@ def group_norm(x, G=32, eps=1e-5, scope='group_norm') :
 
 def create_model(lr = 0.0001, dropout=0.3, l2=0.1, input_shape=(1, 6, 64, 64), seed = 0):
     model = models.Sequential([
-        layers.Conv3D(32, kernel_size=(1, 3, 3), padding='same', input_shape=input_shape),
-        #layers.BatchNormalization(momentum=0.99, epsilon=1e-4, renorm=True, center=False, scale=False),
-        layers.Activation('relu'),
-        layers.Conv3D(32, kernel_size=(3, 3, 3), padding='same'),
+        layers.Conv3D(32, kernel_size=(1, 3, 3), padding='same',activation='relu', input_shape=input_shape),
+        #layers.Activation('relu'),
+        layers.Conv3D(32, kernel_size=(3, 3, 3), activation='relu', padding='same'),
         layers.Dropout(dropout, seed=seed),
-        #layers.BatchNormalization(momentum=0.99, epsilon=1e-4, renorm=True, center=False, scale=False),
-        layers.Activation('relu'),
+        #layers.Activation('relu'),
         layers.MaxPooling3D(pool_size=(2, 2, 2)),
        
-        layers.Conv3D(64, kernel_size=(3, 3, 3), padding='same'),
-        #layers.BatchNormalization(momentum=0.99, epsilon=1e-4, renorm=True, center=False, scale=False),
+        layers.Conv3D(64, kernel_size=(3, 3, 3), activation='relu', padding='same'),
         layers.Dropout(dropout, seed=seed),
-        layers.Activation('relu'),
+        #layers.Activation('relu'),
         layers.MaxPooling3D(pool_size=(2, 2, 2)),
-        #layers.BatchNormalization(momentum=0.99, epsilon=1e-4, renorm=True),
-        #layers.Dropout(dropout, seed=seed),
 
         layers.Flatten(),
         layers.Dense(64, activation='relu', kernel_regularizer=regularizers.L2(l2), kernel_initializer=tf.keras.initializers.HeNormal(seed=seed)),
-        #layers.Dropout(dropout * 1.5, seed=seed),
         layers.Dense(1, activation='sigmoid')
     ])
 
