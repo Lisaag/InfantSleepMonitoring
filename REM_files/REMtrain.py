@@ -31,7 +31,7 @@ initial_lr = 0.0001
 def lr_schedule(epoch):
     global initial_lr
     print(f"INITIAL LR {initial_lr}")
-    return initial_lr * (0.75 ** (epoch // 5))  # Reduce LR every 5 epochs
+    return initial_lr * (0.8 ** (epoch // 5))  # Reduce LR every 5 epochs
 
 def create_next_numbered_dir(directory):
     existing_folders = []
