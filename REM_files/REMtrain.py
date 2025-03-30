@@ -74,7 +74,7 @@ def create_model(lr = 0.0001, dropout=0.3, l2=0.1, input_shape=(1, 6, 64, 64), s
     model = models.Sequential([
         layers.Conv3D(32, kernel_size=(1, 3, 3), padding='same',activation='relu', input_shape=input_shape),
         #layers.Activation('relu'),
-        layers.Conv3D(32, kernel_size=(3, 3, 3), activation='relu', padding='same'),
+        layers.Conv3D(32, kernel_size=(3, 3, 3), activation='relu', padding='valid'),
         layers.Dropout(dropout, seed=seed),
         #layers.Activation('relu'),
         layers.MaxPooling3D(pool_size=(2, 2, 2)),
@@ -125,9 +125,9 @@ def REMtrain(val_ids, idx, dir, batch_size, lr, l2, dropout, seed):
             if(not settings.is_OREM and (eye_state == "O" or eye_state == "OR")): continue
             eye_state_dir = os.path.join(patient_dir, eye_state)
             for sample in os.listdir(eye_state_dir):
-                if(patient_id in val_ids and sample[-3:] == "AUG"):
-                    continue
-                #if(sample[-3:] == "AUG"): continue
+                # if(patient_id in val_ids and sample[-3:] == "AUG"):
+                #     continue
+                if(sample[-3:] == "AUG"): continue
                 sample_dir = os.path.join(eye_state_dir, sample)
                 images = list()
                 frames = glob.glob(os.path.join(sample_dir, "*.jpg"))
