@@ -145,13 +145,9 @@ def validate_model(run, fold, path):
     val_samples, true_labels = get_validation_data(fold)
 
     predictions = model(val_samples, training=False)
-    #predictions = model.predict(val_samples)
 
     precision, recall, thresholds = precision_recall_curve(true_labels, predictions)
     f1_scores = (2 * precision * recall) / (precision + recall + 1e-9)
-
-    print(f1_scores)
-    print(f"{len(precision)}, {len(recall)}, {len(thresholds)}")
 
     best_idx = np.argmax(f1_scores[:-1])
 
