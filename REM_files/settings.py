@@ -1,6 +1,6 @@
 import os
 
-is_OREM = True
+is_OREM = False
 
 #val_ids = ['416', '773'] #REM goed, OREM goed
 #val_ids = ['004', '778', '875'] #REM acceptabel/goed, OREM heel goed
@@ -21,7 +21,7 @@ val_ids = [['416', '778'],
 
 frame_stack_count = 6
 
-data_dir = os.path.join(os.path.abspath(os.getcwd()),"REM", "raw", "cropped", "interpolate")
+data_dir = os.path.join(os.path.abspath(os.getcwd()),"REM", "raw", "cropped", "every")
 results_dir = os.path.join(os.path.abspath(os.getcwd()),"REM-results")
 
 model_filename = "model_architecture.json"
