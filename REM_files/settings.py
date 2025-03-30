@@ -20,7 +20,7 @@ val_ids = [['416', '704'],
 
 frame_stack_count = 6
 
-data_dir = os.path.join(os.path.abspath(os.getcwd()),"REM", "raw", "cropped", "interpolate")
+data_dir = os.path.join(os.path.abspath(os.getcwd()),"REM", "raw", "cropped", "center")
 results_dir = os.path.join(os.path.abspath(os.getcwd()),"REM-results")
 
 model_filename = "model_architecture.json"
