@@ -53,16 +53,11 @@ def plot_pr_curve(precision, recall, best_idx, best_threshold, path):
     plt.savefig(os.path.join(path,"prcurve.jpg"), format='jpg', dpi=500)  
 
 def plot_tsne(model, path, val_samples_stacked, true_labels):
-    #print('OUTPUT -4')
+    print('OUTPUT -2')
+    print(model.layers[-2])
     #print(model.layers[-4].output)
-    model2 = tf.keras.Model(inputs=model.input, outputs=model.layers[-4].output)
+    model2 = tf.keras.Model(inputs=model.input, outputs=model.layers[-2].output)
     features = model2(val_samples_stacked)
-    #for f in features: print(f)
-    #print('OUTPUT -1')
-    #print(model.layers[-1].output)
-    model3 = tf.keras.Model(inputs=model.input, outputs=model.layers[-1].output)
-    features2 = model3(val_samples_stacked)
-    #for f in features2: print(f)
 
     tsne = TSNE(n_components=2, perplexity=25.0).fit_transform(features)
 
