@@ -122,7 +122,7 @@ def create_model_complex(lr = 0.0001, dropout=0.3, l2=0.1, input_shape=(1, 6, 64
         layers.Dropout(dropout, seed=seed),
         layers.MaxPooling3D(pool_size=(2, 2, 2)),
        
-        layers.Conv3D(64, kernel_size=(3, 3, 3), activation='relu', padding='same'),
+        layers.Conv3D(64, kernel_size=(3, 3, 3), activation='relu', padding='valid'),
         layers.Dropout(dropout, seed=seed),
         layers.MaxPooling3D(pool_size=(2, 2, 2)),
 
@@ -147,10 +147,11 @@ def REMtrain(val_ids, idx, dir, batch_size, lr, l2, dropout, seed):
     os.makedirs(save_directory)
 
     K.set_image_data_format('channels_last')
-    input_shape = (6, 64, 64, 1)
+    input_shape = (12, 64, 64, 1)
     num_classes = 2
 
-    model = create_model(lr, dropout, l2, input_shape=input_shape, seed=seed)
+    #model = create_model(lr, dropout, l2, input_shape=input_shape, seed=seed)
+    model = create_model_complex(lr, dropout, l2, input_shape=input_shape, seed=seed)
     model.summary()
     save_model_json(model, save_directory)
 
