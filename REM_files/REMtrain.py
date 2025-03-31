@@ -147,11 +147,11 @@ def REMtrain(val_ids, idx, dir, batch_size, lr, l2, dropout, seed):
     os.makedirs(save_directory)
 
     K.set_image_data_format('channels_last')
-    input_shape = (12, 64, 64, 1)
-    num_classes = 2
+    input_shape = (settings.frame_stack_count, 64, 64, 1)
 
     #model = create_model(lr, dropout, l2, input_shape=input_shape, seed=seed)
-    model = create_model_complex(lr, dropout, l2, input_shape=input_shape, seed=seed)
+    #model = create_model_complex(lr, dropout, l2, input_shape=input_shape, seed=seed)
+    model = create_model_simple(lr, dropout, l2, input_shape=input_shape, seed=seed)
     model.summary()
     save_model_json(model, save_directory)
 
