@@ -66,8 +66,8 @@ def plot_tsne_both(model, path, samples, val_labels, train_labels):
     tx = scale_to_01_range(tx)
     ty = scale_to_01_range(ty)
 
-    colors = ['#FF0000', '#0000FF', '#FF6666', '#66B2FF']
-    classes = ['O', 'OR', 'O_t', 'OR_t'] if settings.is_OREM else ['C', 'CR', 'C_t', 'CR_t']
+    colors = ['#FF6666', '#66B2FF', '#FF0000', '#0000FF']
+    classes = ['O_t', 'OR_t', 'O', 'OR'] if settings.is_OREM else ['C_t', 'CR_t', 'C', 'CR']
 
     val_labels = [2 if x == 0 else 3 for x in val_labels]
     all_labels = val_labels+train_labels
@@ -78,7 +78,7 @@ def plot_tsne_both(model, path, samples, val_labels, train_labels):
         print(f'{classes[idx]} - {indices}')
         current_tx = np.take(tx, indices)
         current_ty = np.take(ty, indices)
-        plt.scatter(current_tx, current_ty, c=c, label=classes[idx])
+        plt.scatter(current_tx, current_ty, s=40.0, c=c, label=classes[idx])
 
     plt.legend(loc='best')
     plt.savefig(os.path.join(path,"tsne_both.jpg"), format='jpg', dpi=500)  
@@ -241,12 +241,12 @@ for run in os.listdir(settings.results_dir):
 
    
     metrics = np.array(metrics).T
-    all_APs.append(metrics[3])
+    all_APs.append([metrics[3]])
 
     with open(os.path.join(settings.results_dir, "metrics.csv"), "a") as file:
         file.write(f'{run},{metrics[0]},{metrics[1]},{metrics[2]},{metrics[3]},{metrics[4]}' + "\n")
 
-
+print(all_APs)
 make_boxplot(all_APs, os.path.join(settings.results_dir,run,"box.jpg"))
 
 
