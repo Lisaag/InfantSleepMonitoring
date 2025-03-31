@@ -217,11 +217,13 @@ def make_boxplot(data, path):
     length = len(data[0])
     data = data.flatten()
     print(data)
+
+    classes = np.array([["A"] * length + ["B"] * length + ["C"] * length + ["D"] * length + ["E"] * length])
     df = pd.DataFrame({
-    "Group": ["A"] * length + ["B"] * length + ["C"] * length + ["D"] * length + ["E"] * length,
+    "Group": classes,
     "Values": data
     })
-    sns.boxplot(x="Category", y="Values", hue="Type", data=df)
+    sns.boxplot(x="Category", y="Values", data=df)
 
     plt.title("Grouped Box Plots with Seaborn")
     plt.savefig(path, format='jpg', dpi=500)  
@@ -235,30 +237,28 @@ with open(os.path.join(settings.results_dir, "metrics.csv"), "w") as file:
 all_APs = []
 tmp = 0
 
-print(["A"] * 3 + ["B"] * 3 + ["C"] * 3 + ["D"] * 3 + ["E"] * 3)
-
-# for run in os.listdir(settings.results_dir):
-#     if tmp > 3: break
-#     if(not run.isdigit()): continue
-#     with open(os.path.join(settings.results_dir, run, "metrics.csv"), "w") as file:
-#         file.write("run,fold,accuracy,precision,recall,AP,auc" + "\n")
-#     metrics = []
+for run in os.listdir(settings.results_dir):
+    if tmp > 3: break
+    if(not run.isdigit()): continue
+    with open(os.path.join(settings.results_dir, run, "metrics.csv"), "w") as file:
+        file.write("run,fold,accuracy,precision,recall,AP,auc" + "\n")
+    metrics = []
    
-#     for fold in range(len(settings.val_ids)):
-#         metrics.append(validate_model(run, fold, os.path.join(settings.results_dir, run, str(fold))))
+    for fold in range(len(settings.val_ids)):
+        metrics.append(validate_model(run, fold, os.path.join(settings.results_dir, run, str(fold))))
 
    
-#     metrics = np.array(metrics).T
-#     all_APs.append([metrics[3]])
+    metrics = np.array(metrics).T
+    all_APs.append([metrics[3]])
 
-#     with open(os.path.join(settings.results_dir, "metrics.csv"), "a") as file:
-#         file.write(f'{run},{metrics[0]},{metrics[1]},{metrics[2]},{metrics[3]},{metrics[4]}' + "\n")
+    with open(os.path.join(settings.results_dir, "metrics.csv"), "a") as file:
+        file.write(f'{run},{metrics[0]},{metrics[1]},{metrics[2]},{metrics[3]},{metrics[4]}' + "\n")
 
-#     tmp+=1
+    tmp+=1
 
 
-# print(all_APs)
-# make_boxplot(all_APs, os.path.join(settings.results_dir,run,"box.jpg"))
+print(all_APs)
+make_boxplot(all_APs, os.path.join(settings.results_dir,run,"box.jpg"))
 
 
         #file.write(f'{run},{statistics.mean(metrics[0])},{statistics.mean(metrics[1])},{statistics.mean(metrics[2])},{statistics.mean(metrics[3])},{statistics.stdev(metrics[0])},{statistics.stdev(metrics[1])},{statistics.stdev(metrics[2])},{statistics.stdev(metrics[3])}' + "\n")
