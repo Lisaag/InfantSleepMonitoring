@@ -214,9 +214,9 @@ def make_boxplot(data, path):
     print(data)
     data = np.array(data).T
     print(data)
+    length = len(data[0])
     data = data.flatten()
     print(data)
-    length = len(data[0])
     df = pd.DataFrame({
     "Group": ["A"] * length + ["B"] * length + ["C"] * length + ["D"] * length + ["E"] * length,
     "Values": data
