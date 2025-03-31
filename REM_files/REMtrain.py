@@ -62,10 +62,10 @@ def create_model(lr = 0.0001, dropout=0.3, l2=0.1, input_shape=(1, 6, 64, 64), s
        
         layers.Conv3D(64, kernel_size=(3, 3, 3), activation='elu', padding='same'),
         layers.Dropout(dropout, seed=seed),
-        layers.MaxPooling3D(pool_size=(2, 4, 4)),
+        layers.MaxPooling3D(pool_size=(2, 2, 2)),
 
         layers.Flatten(),
-        layers.Dense(128, activation='relu', kernel_initializer=tf.keras.initializers.he_normal(seed=seed)),
+        layers.Dense(64, activation='relu', kernel_initializer=tf.keras.initializers.he_normal(seed=seed)),
         layers.Dense(1, activation='sigmoid')
     ])
 
