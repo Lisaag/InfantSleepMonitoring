@@ -14,7 +14,7 @@ is_OREM = False
 #            ['399', '875', '440'],
 #            ['554', '866'],
 #            ['614', '657']] 
-val_ids = [['399', '875', '440']]
+val_ids = [['004', '704', '773']]
 
 #val_ids = ['416', '875'] #<-- SLECHTE FOLD EXAMPLE
 
@@ -38,6 +38,6 @@ checkpoint_filename = "checkpoint.model.keras"
 train_batch_size = [8]
 train_initial_lr = [0.00015]
 train_l2 = [0.04]
-train_dropout = [0.1]
+train_dropout = [0.3]
 
 seeds = [6, 7, 8, 9, 10, 11, 12, 13]

@@ -57,11 +57,11 @@ def create_model(lr = 0.0001, dropout=0.3, l2=0.1, input_shape=(1, 6, 64, 64), s
     model = models.Sequential([
         layers.Conv3D(32, kernel_size=(1, 3, 3), padding='same',activation='elu', input_shape=input_shape),
         layers.Conv3D(32, kernel_size=(3, 3, 3), activation='elu', padding='valid'),
-        #layers.Dropout(dropout, seed=seed),
+        layers.Dropout(dropout, seed=seed),
         layers.MaxPooling3D(pool_size=(2, 2, 2)),
        
         layers.Conv3D(64, kernel_size=(3, 3, 3), activation='elu', padding='same'),
-        #layers.Dropout(dropout, seed=seed),
+        layers.Dropout(dropout, seed=seed),
         layers.MaxPooling3D(pool_size=(2, 4, 4)),
 
         layers.Flatten(),
