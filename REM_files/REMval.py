@@ -217,7 +217,6 @@ def make_boxplot(data, path):
     length = len(data[0])
     data = data.flatten()
     print(data)
-
     df = pd.DataFrame({
     "Group": ["A"] * length + ["B"] * length + ["C"] * length + ["D"] * length + ["E"] * length,
     "Values": data
@@ -256,8 +255,7 @@ for run in os.listdir(settings.results_dir):
     tmp+=1
 
 
-print(all_APs)
-make_boxplot(all_APs, os.path.join(settings.results_dir,run,"box.jpg"))
+#make_boxplot(all_APs, os.path.join(settings.results_dir,run,"box.jpg"))
 
 
         #file.write(f'{run},{statistics.mean(metrics[0])},{statistics.mean(metrics[1])},{statistics.mean(metrics[2])},{statistics.mean(metrics[3])},{statistics.stdev(metrics[0])},{statistics.stdev(metrics[1])},{statistics.stdev(metrics[2])},{statistics.stdev(metrics[3])}' + "\n")
