@@ -149,10 +149,10 @@ def REMtrain(val_ids, idx, dir, batch_size, lr, l2, dropout, seed):
     K.set_image_data_format('channels_last')
     input_shape = (settings.frame_stack_count, 64, 64, 1)
 
-    #model = create_model(lr, dropout, l2, input_shape=input_shape, seed=seed)
+    model = create_model(lr, dropout, l2, input_shape=input_shape, seed=seed)
     #model = create_model_complex(lr, dropout, l2, input_shape=input_shape, seed=seed)
-    model = create_model_simple(lr, dropout, l2, input_shape=input_shape, seed=seed)
-    model.summary()
+    #model = create_model_simple(lr, dropout, l2, input_shape=input_shape, seed=seed)
+    print(model.summary())
     save_model_json(model, save_directory)
 
     val_samples = list(); val_labels = list(); train_samples = list(); train_labels = list()
@@ -190,11 +190,11 @@ def REMtrain(val_ids, idx, dir, batch_size, lr, l2, dropout, seed):
                 label = 0 if eye_state == "O" or eye_state == "C" else 1
 
                 if(patient_id in val_ids): 
-                    print(f'from {patient_id} add to val')
+                    #print(f'from {patient_id} add to val')
                     val_samples.append(stacked_images)
                     val_labels.append(label)
                 else:
-                    print(f'from {patient_id} add to train')
+                    #print(f'from {patient_id} add to train')
                     train_samples.append(stacked_images)
                     train_labels.append(label)
 
@@ -205,7 +205,7 @@ def REMtrain(val_ids, idx, dir, batch_size, lr, l2, dropout, seed):
     val_samples_stacked = np.stack(val_samples, axis=0)
     val_labels_numpy = np.array(val_labels, dtype=int)
     val_labels_bce = val_labels_numpy.reshape(-1, 1)
-    print(val_labels_bce)
+    #print(val_labels_bce)
     #tf.one_hot(val_labels_numpy, depth=2)
 
 
