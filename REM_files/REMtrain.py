@@ -31,7 +31,7 @@ initial_lr = 0.0001
 def lr_schedule(epoch):
     global initial_lr
     print(f"INITIAL LR {initial_lr}")
-    return initial_lr * (0.5 ** (epoch // 5))  # Reduce LR every 5 epochs
+    return initial_lr * (0.8 ** (epoch // 5))  # Reduce LR every 5 epochs
 
 def create_next_numbered_dir(directory):
     existing_folders = []
@@ -55,14 +55,14 @@ def save_model_json(model, path):
 
 def create_model(lr = 0.0001, dropout=0.3, l2=0.1, input_shape=(1, 6, 64, 64), seed = 0):
     model = models.Sequential([
-        layers.Conv3D(32, kernel_size=(1, 3, 3), padding='same',activation='elu', input_shape=input_shape),
-        layers.Conv3D(32, kernel_size=(3, 3, 3), activation='elu', padding='valid'),
+        layers.Conv3D(32, kernel_size=(1, 3, 3), padding='same',activation='relu', input_shape=input_shape),
+        layers.Conv3D(32, kernel_size=(3, 3, 3), activation='relu', padding='valid'),
         layers.Dropout(dropout, seed=seed),
         layers.MaxPooling3D(pool_size=(2, 2, 2)),
        
-        layers.Conv3D(64, kernel_size=(3, 3, 3), activation='elu', padding='same'),
+        layers.Conv3D(64, kernel_size=(3, 3, 3), activation='relu', padding='same'),
         layers.Dropout(dropout, seed=seed),
-        layers.MaxPooling3D(pool_size=(2, 4, 4)),
+        layers.MaxPooling3D(pool_size=(2, 2, 2)),
 
         layers.Flatten(),
         layers.Dense(64, activation='relu', kernel_regularizer=regularizers.L2(l2), kernel_initializer=tf.keras.initializers.HeNormal(seed=seed)),
