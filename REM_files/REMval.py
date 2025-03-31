@@ -213,7 +213,7 @@ def validate_model(run, fold, path):
 def make_boxplot(data, path):
     plt.figure()
     data = np.array(data).T
-    length = len(len(data))
+    length = len(data[0])
     df = pd.DataFrame({
     "Group": ["A"] * length + ["B"] * length + ["C"] * length + ["D"] * length + ["E"] * length,
     "Values": data
@@ -230,7 +230,9 @@ with open(os.path.join(settings.results_dir, "metrics.csv"), "w") as file:
 
 
 all_APs = []
+tmp = 0
 for run in os.listdir(settings.results_dir):
+    if tmp > 3: break
     if(not run.isdigit()): continue
     with open(os.path.join(settings.results_dir, run, "metrics.csv"), "w") as file:
         file.write("run,fold,accuracy,precision,recall,AP,auc" + "\n")
@@ -245,6 +247,8 @@ for run in os.listdir(settings.results_dir):
 
     with open(os.path.join(settings.results_dir, "metrics.csv"), "a") as file:
         file.write(f'{run},{metrics[0]},{metrics[1]},{metrics[2]},{metrics[3]},{metrics[4]}' + "\n")
+
+    tmp+=1
 
 print(all_APs)
 make_boxplot(all_APs, os.path.join(settings.results_dir,run,"box.jpg"))
