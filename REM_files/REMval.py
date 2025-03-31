@@ -238,14 +238,15 @@ for run in os.listdir(settings.results_dir):
    
     for fold in range(len(settings.val_ids)):
         metrics.append(validate_model(run, fold, os.path.join(settings.results_dir, run, str(fold))))
+
    
     metrics = np.array(metrics).T
-
     all_APs.append(metrics[3])
 
     with open(os.path.join(settings.results_dir, "metrics.csv"), "a") as file:
         file.write(f'{run},{metrics[0]},{metrics[1]},{metrics[2]},{metrics[3]},{metrics[4]}' + "\n")
 
+    print(all_APs)
     make_boxplot(all_APs, os.path.join(settings.results_dir,run,"box.jpg"))
 
 
