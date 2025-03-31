@@ -5,18 +5,18 @@ import os
 os.environ['PYTHONHASHSEED']=str(settings.seeds[0])
 os.environ['TF_DETERMINISTIC_OPS'] = '1'
 import random
-#random.seed(settings.seeds[0])
+random.seed(settings.seeds[0])
 import numpy as np
-#np.random.seed(settings.seeds[0])
+np.random.seed(settings.seeds[0])
 import cv2
 
 import tensorflow as tf
-#tf.random.set_seed(settings.seeds[0])
+tf.random.set_seed(settings.seeds[0])
 from tensorflow.keras import layers, models, regularizers
 from keras import backend as K 
-# session_conf = tf.compat.v1.ConfigProto(intra_op_parallelism_threads=1, inter_op_parallelism_threads=1)
-# sess = tf.compat.v1.Session(graph=tf.compat.v1.get_default_graph(), config=session_conf)
-# tf.compat.v1.keras.backend.set_session(sess)
+session_conf = tf.compat.v1.ConfigProto(intra_op_parallelism_threads=1, inter_op_parallelism_threads=1)
+sess = tf.compat.v1.Session(graph=tf.compat.v1.get_default_graph(), config=session_conf)
+tf.compat.v1.keras.backend.set_session(sess)
 
 import tensorflow.keras as keras
 
