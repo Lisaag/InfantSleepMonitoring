@@ -246,6 +246,7 @@ for run in os.listdir(settings.results_dir):
     with open(os.path.join(settings.results_dir, "metrics.csv"), "a") as file:
         file.write(f'{run},{metrics[0]},{metrics[1]},{metrics[2]},{metrics[3]},{metrics[4]}' + "\n")
 
+
     print(all_APs)
     make_boxplot(all_APs, os.path.join(settings.results_dir,run,"box.jpg"))
 
