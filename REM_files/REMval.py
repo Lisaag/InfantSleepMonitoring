@@ -52,6 +52,35 @@ def plot_pr_curve(precision, recall, best_idx, best_threshold, path):
     plt.legend()
     plt.savefig(os.path.join(path,"prcurve.jpg"), format='jpg', dpi=500)  
 
+def plot_tsne_both(model, path, samples, val_labels, train_labels):
+    model2 = tf.keras.Model(inputs=model.input, outputs=model.layers[-2].output)
+    features = model2(samples)
+
+    tsne = TSNE(n_components=2, perplexity=25.0).fit_transform(features)
+
+    tx = tsne[:, 0]
+    ty = tsne[:, 1]
+
+    tx = scale_to_01_range(tx)
+    ty = scale_to_01_range(ty)
+
+    colors = ['red', 'blue', 'orange', 'green']
+    classes = ['O', 'OR', 'O_t', 'OR_t'] if settings.is_OREM else ['C', 'CR', 'C_t', 'CR_t']
+
+    train_labels = [2 if x == 0 else 3 for x in train_labels]
+    all_labels = val_labels+train_labels
+    
+    plt.figure()
+    for idx, c in enumerate(colors):
+        indices = [i for i, l in enumerate(all_labels) if idx == l]
+        print(f'{classes[idx]} - {indices}')
+        current_tx = np.take(tx, indices)
+        current_ty = np.take(ty, indices)
+        plt.scatter(current_tx, current_ty, c=c, label=classes[idx])
+
+    plt.legend(loc='best')
+    plt.savefig(os.path.join(path,"tsne_both.jpg"), format='jpg', dpi=500)  
+
 def plot_tsne(model, path, val_samples_stacked, true_labels):
     print('OUTPUT -2')
     print(model.layers[-2])
@@ -95,6 +124,7 @@ def visualize_results(model, predicted_labels, true_labels, val_samples, path):
 
 def get_validation_data(fold):
     val_samples = list(); val_labels = list()
+    train_samples = list(); train_labels = list()
 
     for patient in os.listdir(settings.data_dir):
         patient_dir:str = os.path.join(settings.data_dir, patient)
@@ -107,7 +137,7 @@ def get_validation_data(fold):
             if(not settings.is_OREM and (eye_state == "O" or eye_state == "OR")): continue
             eye_state_dir = os.path.join(patient_dir, eye_state)
             for sample in os.listdir(eye_state_dir):
-                if(patient_id not in settings.val_ids[fold]): continue
+                #if(patient_id not in settings.val_ids[fold]): continue
                 if(patient_id in settings.val_ids[fold] and sample[-3:] == "AUG"): continue
                 sample_dir = os.path.join(eye_state_dir, sample)
                 images = list()
@@ -132,17 +162,22 @@ def get_validation_data(fold):
                     print(f'from {patient_id} add to val')
                     val_samples.append(stacked_images)
                     val_labels.append(label)
+                else:
+                    train_samples.append(stacked_images)
+                    train_labels.append(label)
+
 
     val_samples_stacked = np.stack(val_samples, axis=0)
+    train_samples_stacked = np.stack(train_samples, axis=0)
 
-    return val_samples_stacked, val_labels
+    return val_samples_stacked, val_labels, train_samples_stacked, train_labels
 
 def validate_model(run, fold, path):
     print(path)
     model = load_model_json(os.path.join(path, settings.model_filename))
     model.load_weights(os.path.join(path, settings.checkpoint_filename))
 
-    val_samples, true_labels = get_validation_data(fold)
+    val_samples, true_labels, train_samples, train_labels = get_validation_data(fold)
 
     predictions = model(val_samples, training=False)
 
@@ -165,6 +200,9 @@ def validate_model(run, fold, path):
         file.write(f"{run},{fold},{accuracy},{precision},{recall},{ap}" + "\n")
 
     visualize_results(model, predicted_labels, true_labels, val_samples, path)
+
+    plot_tsne_both(model, path, val_samples+train_samples, true_labels, train_labels)
+
 
     return accuracy, precision, recall, ap
 
