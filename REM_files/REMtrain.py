@@ -31,7 +31,7 @@ initial_lr = 0.0001
 def lr_schedule(epoch):
     global initial_lr
     print(f"INITIAL LR {initial_lr}")
-    return initial_lr * (0.8 ** (epoch // 5))  # Reduce LR every 5 epochs
+    return initial_lr * (0.5 ** (epoch // 5))  # Reduce LR every 5 epochs
 
 def create_next_numbered_dir(directory):
     existing_folders = []
@@ -196,7 +196,7 @@ def REMtrain(val_ids, idx, dir, batch_size, lr, l2, dropout, seed):
     lr_callback = keras.callbacks.LearningRateScheduler(lr_schedule)
     es_callback = keras.callbacks.EarlyStopping(monitor='val_loss', patience=15, min_delta=0, mode='min', restore_best_weights=True, verbose=1)
 
-    history = model.fit(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), epochs=50, batch_size=batch_size, callbacks=[checkpoint])
+    history = model.fit(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), epochs=50, batch_size=batch_size, callbacks=[lr_callback, checkpoint])
 
     #save training and vall loss values and plot in graph
     with open(os.path.join(save_directory, "loss.txt"), 'w', newline='') as csvfile:
