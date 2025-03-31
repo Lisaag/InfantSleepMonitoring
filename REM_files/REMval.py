@@ -23,6 +23,8 @@ from sklearn.metrics import precision_score, recall_score, roc_auc_score, accura
 import statistics
 import seaborn as sns
 
+import pandas as pd
+
 def scale_to_01_range(x):
     value_range = (np.max(x) - np.min(x))
     starts_from_zero = x - np.min(x)
@@ -208,10 +210,26 @@ def validate_model(run, fold, path):
     return accuracy, precision, recall, ap, auc
 
 
+def make_boxplot(data, path):
+    plt.figure()
+    data = np.array(data).T
+    length = len(len(data))
+    df = pd.DataFrame({
+    "Group": ["A"] * length + ["B"] * length + ["C"] * length + ["D"] * length + ["E"] * length,
+    "Values": data
+    })
+    sns.boxplot(x="Category", y="Values", hue="Type", data=df)
+
+    plt.title("Grouped Box Plots with Seaborn")
+    plt.savefig(path, format='jpg', dpi=500)  
+
 with open(os.path.join(settings.results_dir, "metrics.csv"), "w") as file:
     #file.write("run,m_accuracy,m_precision,m_recall,m_AUC,sd_accuracy,sd_precision,sd_recall,sd_AUC" + "\n")
     file.write("run,m_accuracy,m_precision,m_recall,m_AUC,auc" + "\n")
 
+
+
+all_APs = []
 for run in os.listdir(settings.results_dir):
     if(not run.isdigit()): continue
     with open(os.path.join(settings.results_dir, run, "metrics.csv"), "w") as file:
@@ -222,8 +240,14 @@ for run in os.listdir(settings.results_dir):
         metrics.append(validate_model(run, fold, os.path.join(settings.results_dir, run, str(fold))))
    
     metrics = np.array(metrics).T
+
+    all_APs.append(metrics[3])
+
     with open(os.path.join(settings.results_dir, "metrics.csv"), "a") as file:
         file.write(f'{run},{metrics[0]},{metrics[1]},{metrics[2]},{metrics[3]},{metrics[4]}' + "\n")
+
+    make_boxplot(all_APs, os.path.join(settings.results_dir,run,"box.jpg"))
+
 
         #file.write(f'{run},{statistics.mean(metrics[0])},{statistics.mean(metrics[1])},{statistics.mean(metrics[2])},{statistics.mean(metrics[3])},{statistics.stdev(metrics[0])},{statistics.stdev(metrics[1])},{statistics.stdev(metrics[2])},{statistics.stdev(metrics[3])}' + "\n")
 
