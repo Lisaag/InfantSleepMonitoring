@@ -65,7 +65,7 @@ def create_model(lr = 0.0001, dropout=0.3, l2=0.1, input_shape=(1, 6, 64, 64), s
         layers.MaxPooling3D(pool_size=(2, 4, 4)),
 
         layers.Flatten(),
-        layers.Dense(64, activation='relu', kernel_initializer=tf.keras.initializers.he_normal(seed=seed)),
+        layers.Dense(64, activation='elu', kernel_initializer=tf.keras.initializers.HeNormal(seed=seed)),
         layers.Dense(1, activation='sigmoid')
     ])
 
