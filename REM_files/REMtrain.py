@@ -53,23 +53,6 @@ def save_model_json(model, path):
     with open(os.path.join(path, settings.model_filename), "w") as json_file:
         json_file.write(model_json)
 
-def group_norm(x, G=32, eps=1e-5, scope='group_norm') :
-    with tf.variable_scope(scope) :
-        N, H, W, C = x.get_shape().as_list()
-        G = min(G, C)
-
-        x = tf.reshape(x, [N, H, W, G, C // G])
-        mean, var = tf.nn.moments(x, [1, 2, 4], keep_dims=True)
-        x = (x - mean) / tf.sqrt(var + eps)
-
-        gamma = tf.get_variable('gamma', [1, 1, 1, C], initializer=tf.constant_initializer(1.0))
-        beta = tf.get_variable('beta', [1, 1, 1, C], initializer=tf.constant_initializer(0.0))
-
-
-        x = tf.reshape(x, [N, H, W, C]) * gamma + beta
-
-    return x
-
 def create_model(lr = 0.0001, dropout=0.3, l2=0.1, input_shape=(1, 6, 64, 64), seed = 0):
     model = models.Sequential([
         layers.Conv3D(32, kernel_size=(1, 3, 3), padding='same',activation='relu', input_shape=input_shape),

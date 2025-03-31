@@ -149,7 +149,7 @@ def get_validation_data(fold):
 
                 for idx in frame_indices:
                     image = cv2.imread(os.path.join(sample_dir, sorted_frames[idx]), cv2.IMREAD_GRAYSCALE) 
-                    image = cv2.resize(image, (64, 64))
+                    image = cv2.resize(image, (settings.img_size, settings.img_size))
                     image = image / 255
                     images.append(image)
             
