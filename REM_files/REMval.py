@@ -203,16 +203,19 @@ def validate_model(run, fold, path):
         file.write(f"{run},{fold},{accuracy},{precision},{recall},{ap},{auc}" + "\n")
 
     visualize_results(model, predicted_labels, true_labels, val_samples, path)
-
     plot_tsne_both(model, path, np.concatenate((val_samples, train_samples), axis=0), true_labels, train_labels)
-
+    plt.close('all')
 
     return accuracy, precision, recall, ap, auc
 
 
 def make_boxplot(data, path):
     plt.figure()
+    print(data)
     data = np.array(data).T
+    print(data)
+    data = data.flatten()
+    print(data)
     length = len(data[0])
     df = pd.DataFrame({
     "Group": ["A"] * length + ["B"] * length + ["C"] * length + ["D"] * length + ["E"] * length,
@@ -249,6 +252,7 @@ for run in os.listdir(settings.results_dir):
         file.write(f'{run},{metrics[0]},{metrics[1]},{metrics[2]},{metrics[3]},{metrics[4]}' + "\n")
 
     tmp+=1
+
 
 print(all_APs)
 make_boxplot(all_APs, os.path.join(settings.results_dir,run,"box.jpg"))
