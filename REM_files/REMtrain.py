@@ -62,7 +62,7 @@ def create_model(lr = 0.0001, dropout=0.3, l2=0.1, input_shape=(1, 6, 64, 64), s
        
         layers.Conv3D(64, kernel_size=(3, 3, 3), activation='elu', padding='same'),
         layers.Dropout(dropout, seed=seed),
-        layers.MaxPooling3D(pool_size=(2, 2, 2)),
+        layers.MaxPooling3D(pool_size=(2, 4, 4)),
 
         layers.Flatten(),
         layers.Dense(64, activation='relu', kernel_initializer=tf.keras.initializers.he_normal(seed=seed)),
@@ -196,7 +196,7 @@ def REMtrain(val_ids, idx, dir, batch_size, lr, l2, dropout, seed):
     lr_callback = keras.callbacks.LearningRateScheduler(lr_schedule)
     es_callback = keras.callbacks.EarlyStopping(monitor='val_loss', patience=15, min_delta=0, mode='min', restore_best_weights=True, verbose=1)
 
-    history = model.fit(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), shuffle=False, epochs=60, batch_size=batch_size, callbacks=[lr_callback, checkpoint])
+    history = model.fit(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), epochs=50, batch_size=batch_size, callbacks=[lr_callback, checkpoint])
 
     #save training and vall loss values and plot in graph
     with open(os.path.join(save_directory, "loss.txt"), 'w', newline='') as csvfile:
