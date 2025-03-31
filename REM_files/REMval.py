@@ -192,29 +192,30 @@ def validate_model(run, fold, path):
     plot_pr_curve(precision, recall, best_idx, best_threshold, path)
 
     ap = average_precision_score(true_labels, predictions)
+    auc = roc_auc_score(true_labels, predictions)
     accuracy = accuracy_score(true_labels, predicted_labels)
     precision = precision_score(true_labels, predicted_labels)
     recall = recall_score(true_labels, predicted_labels)
 
     with open(os.path.join(settings.results_dir, run, "metrics.csv"), "a") as file:
-        file.write(f"{run},{fold},{accuracy},{precision},{recall},{ap}" + "\n")
+        file.write(f"{run},{fold},{accuracy},{precision},{recall},{ap},{auc}" + "\n")
 
     visualize_results(model, predicted_labels, true_labels, val_samples, path)
 
     plot_tsne_both(model, path, np.concatenate((val_samples, train_samples), axis=0), true_labels, train_labels)
 
 
-    return accuracy, precision, recall, ap
+    return accuracy, precision, recall, ap, auc
 
 
 with open(os.path.join(settings.results_dir, "metrics.csv"), "w") as file:
     #file.write("run,m_accuracy,m_precision,m_recall,m_AUC,sd_accuracy,sd_precision,sd_recall,sd_AUC" + "\n")
-    file.write("run,m_accuracy,m_precision,m_recall,m_AUC" + "\n")
+    file.write("run,m_accuracy,m_precision,m_recall,m_AUC,auc" + "\n")
 
 for run in os.listdir(settings.results_dir):
     if(not run.isdigit()): continue
     with open(os.path.join(settings.results_dir, run, "metrics.csv"), "w") as file:
-        file.write("run,fold,accuracy,precision,recall,AP" + "\n")
+        file.write("run,fold,accuracy,precision,recall,AP,auc" + "\n")
     metrics = []
    
     for fold in range(len(settings.val_ids)):
@@ -222,7 +223,7 @@ for run in os.listdir(settings.results_dir):
    
     metrics = np.array(metrics).T
     with open(os.path.join(settings.results_dir, "metrics.csv"), "a") as file:
-        file.write(f'{run},{metrics[0]},{metrics[1]},{metrics[2]},{metrics[3]}' + "\n")
+        file.write(f'{run},{metrics[0]},{metrics[1]},{metrics[2]},{metrics[3]},{metrics[4]}' + "\n")
 
         #file.write(f'{run},{statistics.mean(metrics[0])},{statistics.mean(metrics[1])},{statistics.mean(metrics[2])},{statistics.mean(metrics[3])},{statistics.stdev(metrics[0])},{statistics.stdev(metrics[1])},{statistics.stdev(metrics[2])},{statistics.stdev(metrics[3])}' + "\n")
 
