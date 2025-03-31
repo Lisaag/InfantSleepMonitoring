@@ -9,12 +9,12 @@ is_OREM = False
 #val_ids = ['614', '657'] #REM acceptabel, OREM heel goed
 
 
-val_ids = [['416', '778'],
-           ['004', '704', '773'],
-           ['399', '875', '440'],
-           ['554', '866'],
-           ['614', '657']] 
-#val_ids = [['004', '704', '773']]
+# val_ids = [['416', '778'],
+#            ['004', '704', '773'],
+#            ['399', '875', '440'],
+#            ['554', '866'],
+#            ['614', '657']] 
+val_ids = [['004', '704', '773']]
 
 #val_ids = ['416', '875'] #<-- SLECHTE FOLD EXAMPLE
 
@@ -35,7 +35,7 @@ checkpoint_filename = "checkpoint.model.keras"
 # train_dropout = [0.3, 0.5, 0.7]
 
 train_batch_size = [32]
-train_initial_lr = [0.00025]
+train_initial_lr = [0.0001, 0.00015, 0.0002, 0.0003]
 train_l2 = [0.04]
 train_dropout = [0.6]
 
