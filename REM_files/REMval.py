@@ -67,7 +67,7 @@ def plot_tsne_both(model, path, samples, val_labels, train_labels):
     colors = ['#FF0000', '#0000FF', '#FF6666', '#66B2FF']
     classes = ['O', 'OR', 'O_t', 'OR_t'] if settings.is_OREM else ['C', 'CR', 'C_t', 'CR_t']
 
-    train_labels = [2 if x == 0 else 3 for x in train_labels]
+    val_labels = [2 if x == 0 else 3 for x in val_labels]
     all_labels = val_labels+train_labels
     
     plt.figure()
