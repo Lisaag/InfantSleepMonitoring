@@ -218,9 +218,8 @@ def make_boxplot(data, path):
     data = data.flatten()
     print(data)
 
-    classes = np.array([["A"] * length + ["B"] * length + ["C"] * length + ["D"] * length + ["E"] * length])
     df = pd.DataFrame({
-    "Group": classes,
+    "Group": ["A"] * length + ["B"] * length + ["C"] * length + ["D"] * length + ["E"] * length,
     "Values": data
     })
     sns.boxplot(x="Category", y="Values", data=df)
