@@ -138,7 +138,7 @@ def get_validation_data(fold):
             eye_state_dir = os.path.join(patient_dir, eye_state)
             for sample in os.listdir(eye_state_dir):
                 #if(patient_id not in settings.val_ids[fold]): continue
-                if(patient_id in settings.val_ids[fold] and sample[-3:] == "AUG"): continue
+                if(sample[-3:] == "AUG"): continue
                 sample_dir = os.path.join(eye_state_dir, sample)
                 images = list()
 
@@ -201,7 +201,7 @@ def validate_model(run, fold, path):
 
     visualize_results(model, predicted_labels, true_labels, val_samples, path)
 
-    plot_tsne_both(model, path, val_samples+train_samples, true_labels, train_labels)
+    plot_tsne_both(model, path, np.concatenate((val_samples, train_samples), axis=0), true_labels, train_labels)
 
 
     return accuracy, precision, recall, ap
