@@ -69,7 +69,7 @@ def create_model(lr = 0.0001, dropout=0.3, l2=0.1, input_shape=(1, 6, 64, 64), s
         layers.Dense(1, activation='sigmoid')
     ])
 
-    optimizer = keras.optimizers.Adam(lr=lr)
+    optimizer = keras.optimizers.RMSprop(lr=lr)
     model.compile(optimizer=optimizer,
                   loss=keras.losses.BinaryCrossentropy(from_logits=False),
                   metrics=['accuracy', tf.keras.metrics.AUC(), tf.keras.metrics.Precision(), tf.keras.metrics.Recall()])
