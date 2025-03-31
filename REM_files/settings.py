@@ -19,7 +19,7 @@ val_ids = [['004', '704', '773']]
 #val_ids = ['416', '875'] #<-- SLECHTE FOLD EXAMPLE
 
 frame_stack_count = 6
-img_size = 32
+img_size = 64
 
 data_dir = os.path.join(os.path.abspath(os.getcwd()),"REM", "raw", "cropped", "interpolate")
 results_dir = os.path.join(os.path.abspath(os.getcwd()),"REM-results")
@@ -35,8 +35,8 @@ checkpoint_filename = "checkpoint.model.keras"
 # train_l2 = [0.01, 0.1, 1.0]
 # train_dropout = [0.3, 0.5, 0.7]
 
-train_batch_size = [32]
-train_initial_lr = [0.00025]
+train_batch_size = [8]
+train_initial_lr = [0.00015]
 train_l2 = [0.04]
 train_dropout = [0.1]
 
