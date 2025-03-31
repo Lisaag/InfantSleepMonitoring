@@ -40,4 +40,4 @@ train_initial_lr = [0.00025]
 train_l2 = [0.04]
 train_dropout = [0.1]
 
-seeds = [1, 2, 3, 4, 5]
+seeds = [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
