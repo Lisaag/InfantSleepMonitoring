@@ -147,7 +147,7 @@ def REMtrain(val_ids, idx, dir, batch_size, lr, l2, dropout, seed):
     os.makedirs(save_directory)
 
     K.set_image_data_format('channels_last')
-    input_shape = (settings.frame_stack_count, 64, 64, 1)
+    input_shape = (settings.frame_stack_count, settings.img_size, settings.img_size, 1)
 
     model = create_model(lr, dropout, l2, input_shape=input_shape, seed=seed)
     #model = create_model_complex(lr, dropout, l2, input_shape=input_shape, seed=seed)
@@ -180,7 +180,7 @@ def REMtrain(val_ids, idx, dir, batch_size, lr, l2, dropout, seed):
 
                 for idx in frame_indices:
                     image = cv2.imread(os.path.join(sample_dir, sorted_frames[idx]), cv2.IMREAD_GRAYSCALE) 
-                    image = cv2.resize(image, (64, 64))
+                    image = cv2.resize(image, (settings.img_size, settings.img_size))
                     image = image / 255
                     images.append(image)
             

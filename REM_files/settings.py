@@ -19,6 +19,7 @@ val_ids = [['004', '704', '773']]
 #val_ids = ['416', '875'] #<-- SLECHTE FOLD EXAMPLE
 
 frame_stack_count = 6
+img_size = 32
 
 data_dir = os.path.join(os.path.abspath(os.getcwd()),"REM", "raw", "cropped", "interpolate")
 results_dir = os.path.join(os.path.abspath(os.getcwd()),"REM-results")
