@@ -31,9 +31,10 @@ for run in os.listdir(settings.results_dir):
 
     metrics = pd.read_csv(path)
 
-    for fold in range(len(settings.val_ids)):
+    for fold in range(5):
         result = metrics[metrics['fold'] == fold]
-        print(result)
+        print(fold)
+        print(result["AP"])
 
 
 
