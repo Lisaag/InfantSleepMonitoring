@@ -9,6 +9,7 @@ import numpy as np
 
 def make_boxplot(data, classes):
     plt.figure()
+    sns.set_style("whitegrid")
 
     palette = sns.color_palette("husl", 5)
 
@@ -17,7 +18,7 @@ def make_boxplot(data, classes):
     "AP": data
     })
 
-    sns.boxplot(x="Fold", y="AP", hue="Fold", data=df, palette=palette, width=0.6, legend=False, fill=False)
+    sns.boxplot(x="Fold", y="AP", hue="Fold", data=df, palette=palette, width=0.6, legend=False)
     #sns.stripplot(x="Folds", y="AP", hue="Folds", palette=palette,  data=df, color="black", jitter=True, alpha=0.6, legend=False)
     for i, fold in enumerate(df["Fold"].unique()):
         values = df[df["Fold"] == fold]["AP"]
