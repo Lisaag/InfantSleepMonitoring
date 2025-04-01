@@ -7,22 +7,21 @@ import settings
 
 import numpy as np
 
-def make_boxplot(data, path):
+def make_boxplot(data, classes):
     plt.figure()
-    print(data)
-    data = np.array(data).T
-    print(data)
-    length = len(data[0])
-    data = data.flatten()
-    print(data)
+
     df = pd.DataFrame({
-    "Group": ["A"] * length + ["B"] * length + ["C"] * length + ["D"] * length + ["E"] * length,
-    "Values": data
+    "Fold": classes,
+    "AP": data
     })
-    sns.boxplot(x="Category", y="Values", data=df)
+    sns.boxplot(x="Fold", y="AP", data=df)
 
     plt.title("Grouped Box Plots with Seaborn")
-    plt.savefig(path, format='jpg', dpi=500)  
+    plt.savefig(os.path.join(settings.results_dir, "boxplot.jpg"), format='jpg', dpi=500)  
+
+
+APs = []
+classes = []
 
 for run in os.listdir(settings.results_dir):
     if(not run.isdigit()): continue
@@ -34,8 +33,12 @@ for run in os.listdir(settings.results_dir):
     for fold in range(5):
         result = metrics.loc[metrics["fold"] == fold, "AP"]
         AP = result.iloc[0] if not result.empty else None
+        APs.append(AP)
+        classes.append(fold)
         print(fold)
         print(AP)
+
+make_boxplot(APs, classes)
 
 
 
