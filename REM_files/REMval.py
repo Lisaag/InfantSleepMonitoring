@@ -233,10 +233,8 @@ with open(os.path.join(settings.results_dir, "metrics.csv"), "w") as file:
 
 
 all_APs = []
-tmp = 0
 
 for run in os.listdir(settings.results_dir):
-    if tmp > 3: break
     if(not run.isdigit()): continue
     with open(os.path.join(settings.results_dir, run, "metrics.csv"), "w") as file:
         file.write("run,fold,accuracy,precision,recall,AP,auc" + "\n")
@@ -252,7 +250,6 @@ for run in os.listdir(settings.results_dir):
     with open(os.path.join(settings.results_dir, "metrics.csv"), "a") as file:
         file.write(f'{run},{metrics[0]},{metrics[1]},{metrics[2]},{metrics[3]},{metrics[4]}' + "\n")
 
-    tmp+=1
 
 
 #make_boxplot(all_APs, os.path.join(settings.results_dir,run,"box.jpg"))
