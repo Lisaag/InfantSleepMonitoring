@@ -16,8 +16,8 @@ def make_boxplot(data, classes):
     "Fold": classes,
     "AP": data
     })
-    sns.boxplot(x="Fold", y="AP", data=df, palette=palette)
-    sns.stripplot(x="Fold", y="AP", data=df, color="black", jitter=True, alpha=0.6)
+    sns.boxplot(x="Fold", y="AP", hue="Fold", data=df, palette=palette, legend=False)
+    sns.stripplot(x="Fold", y="AP",  data=df, color="black", jitter=True, alpha=0.6)
 
     plt.title("AP per fold over 10 train runs")
     plt.savefig(os.path.join(settings.results_dir, "boxplot.jpg"), format='jpg', dpi=500)  
