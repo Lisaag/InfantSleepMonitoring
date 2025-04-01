@@ -62,7 +62,7 @@ def save_boxes_csv(boxes:defaultdict):
     for detection in boxes.keys():
         for frame in boxes[detection].keys():
             box,cls,conf = boxes[detection][frame]
-            with open(os.path.join(settings.eye_loc_path+".csv", settings.cur_vid), "a") as file:
+            with open(os.path.join(settings.eye_loc_path, settings.cur_vid+".csv"), "a") as file:
                 file.write(str(frame) + "," + str(box[0]) + "," + str(box[1]) + "," + str(box[2]) + "," + str(box[3]) + "," + str(cls) + "," + str(conf) + "\n")
 
 
