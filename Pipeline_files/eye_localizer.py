@@ -41,7 +41,7 @@ def track_vid_aabb(frag_idx:int):
 
             for box, track_id in zip(boxes, track_ids):
                 x1, y1, x2, y2 = map(int, box.xyxy[0])
-                box_history[track_id][frag_idx * settings.fragment_length + frame_idx] = [[x1,y1,x2,y2], box.cls, box.conf]
+                box_history[track_id][frag_idx * settings.fragment_length + frame_idx] = [[x1,y1,x2,y2], box.cls[0], box.conf[0]]
 
     #Delete track instances with only few detections    
     to_del = list()
