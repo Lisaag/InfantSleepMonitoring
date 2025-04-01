@@ -80,7 +80,7 @@ def detect_vid():
 
     for i in range(fragment_count):
         boxes = track_vid_aabb(i)
-        save_boxes_csv(boxes)
+        save_boxes_csv(boxes, i)
     
 
 detect_vid()
