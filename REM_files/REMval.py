@@ -209,23 +209,6 @@ def validate_model(run, fold, path):
     return accuracy, precision, recall, ap, auc
 
 
-def make_boxplot(data, path):
-    plt.figure()
-    print(data)
-    data = np.array(data).T
-    print(data)
-    length = len(data[0])
-    data = data.flatten()
-    print(data)
-    df = pd.DataFrame({
-    "Group": ["A"] * length + ["B"] * length + ["C"] * length + ["D"] * length + ["E"] * length,
-    "Values": data
-    })
-    sns.boxplot(x="Category", y="Values", data=df)
-
-    plt.title("Grouped Box Plots with Seaborn")
-    plt.savefig(path, format='jpg', dpi=500)  
-
 with open(os.path.join(settings.results_dir, "metrics.csv"), "w") as file:
     #file.write("run,m_accuracy,m_precision,m_recall,m_AUC,sd_accuracy,sd_precision,sd_recall,sd_AUC" + "\n")
     file.write("run,m_accuracy,m_precision,m_recall,m_AUC,auc" + "\n")
