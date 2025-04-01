@@ -14,14 +14,12 @@ def make_boxplot(data, classes):
 
     df = pd.DataFrame({
     "Fold": classes,
+    "Dots": [x - 0.5 for x in classes],
     "AP": data
     })
-    df2 = pd.DataFrame({
-    "Fold": [x - 0.5 for x in classes],
-    "AP": data
-    })
+
     sns.boxplot(x="Fold", y="AP", hue="Fold", data=df, palette=palette, width=0.6, legend=False, fill=False)
-    sns.stripplot(x="Fold", y="AP", hue="Fold", palette=palette,  data=df2, color="black", jitter=True, alpha=0.6, legend=False)
+    sns.stripplot(x="Dots", y="AP", hue="Dots", palette=palette,  data=df, color="black", jitter=True, alpha=0.6, legend=False)
 
     plt.title("AP per fold over 10 train runs")
     plt.savefig(os.path.join(settings.results_dir, "boxplot.jpg"), format='jpg', dpi=500)  
