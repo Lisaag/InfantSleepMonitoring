@@ -25,10 +25,6 @@ def track_vid_aabb(frag_idx:int):
         ret, frame = cap.read()
         if not ret:
             break 
-        
-        frame_idx+=1
-        if(frame_idx >= settings.fragment_length):
-            break
 
         results = model.track(frame, verbose=False, persist=True)
 
@@ -42,6 +38,11 @@ def track_vid_aabb(frag_idx:int):
             for box, track_id in zip(boxes, track_ids):
                 x1, y1, x2, y2 = map(int, box.xyxy[0])
                 box_history[track_id][frag_idx * settings.fragment_length + frame_idx] = [[x1,y1,x2,y2], box.cls.numpy().item(), box.conf.numpy().item()]
+
+
+        frame_idx+=1
+        if(frame_idx >= settings.fragment_length):
+            break
 
     #Delete track instances with only few detections    
     to_del = list()
