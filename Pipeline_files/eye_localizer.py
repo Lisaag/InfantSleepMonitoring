@@ -41,7 +41,7 @@ def track_vid_aabb(frag_idx:int):
 
             for box, track_id in zip(boxes, track_ids):
                 x1, y1, x2, y2 = map(int, box.xyxy[0])
-                box_history[track_id][frag_idx * settings.fragment_length + frame_idx] = [[x1,y1,x2,y2], box.cls[0], box.conf[0]]
+                box_history[track_id][frag_idx * settings.fragment_length + frame_idx] = [[x1,y1,x2,y2], map(int, box.cls[0]), map(int, box.conf[0])]
 
     #Delete track instances with only few detections    
     to_del = list()
@@ -63,12 +63,12 @@ def save_boxes_csv(boxes:defaultdict):
         for frame in boxes[detection].keys():
             box,cls,conf = boxes[detection][frame]
             with open(os.path.join(settings.eye_loc_path, settings.cur_vid+".csv"), "a") as file:
-                file.write(str(frame) + "," + str(box[0]) + "," + str(box[1]) + "," + str(box[2]) + "," + str(box[3]) + "," + str(cls) + "," + str(conf) + "\n")
+                file.write(str(frame) + "," + str(detection) + "," + str(box[0]) + "," + str(box[1]) + "," + str(box[2]) + "," + str(box[3]) + "," + str(cls) + "," + str(conf) + "\n")
 
 
 def detect_vid():
     with open(os.path.join(settings.eye_loc_path, settings.cur_vid+".csv"), "w") as file:
-        file.write("frame,x1,y1,x2,y2,class,conf" + "\n")
+        file.write("frame,eye_idx,x1,y1,x2,y2,class,conf" + "\n")
 
     frame_count = get_frame_count() 
     fragment_count = int((frame_count - (frame_count % settings.fragment_length)) / settings.fragment_length)
