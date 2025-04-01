@@ -4,7 +4,7 @@ import os
 from collections import defaultdict
 import settings
 
-def get_frame_count(frag_frame_count:int, frag_idx:int):
+def get_frame_count():
     cap = cv2.VideoCapture(settings.video_path)
     return int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     
