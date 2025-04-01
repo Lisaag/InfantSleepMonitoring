@@ -64,8 +64,9 @@ def save_boxes_csv(boxes:defaultdict, fragment_idx:int):
         frame_boxes = []; frame_classes = []; frame_confs = []   
 
         for detection in boxes.keys():
-            box,cls,conf = boxes[detection][i]
-            frame_boxes.append(box); frame_classes.append(cls); frame_confs.append(conf)
+            if i in boxes[detection]:
+                box,cls,conf = boxes[detection][i]
+                frame_boxes.append(box); frame_classes.append(cls); frame_confs.append(conf)
     
         with open(os.path.join(settings.eye_loc_path, settings.cur_vid+".csv"), "a") as file:
             file.write(str(i) + "," + str(frame_boxes) + str(frame_classes) + "," + str(frame_confs) + "\n")
