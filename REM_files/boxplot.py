@@ -32,9 +32,10 @@ for run in os.listdir(settings.results_dir):
     metrics = pd.read_csv(path)
 
     for fold in range(5):
-        result = metrics[metrics['fold'] == fold]
+        result = metrics.loc[metrics["fold"] == fold, "AP"]
+        AP = result.iloc[0] if not result.empty else None
         print(fold)
-        print(result["AP"])
+        print(AP)
 
 
 
