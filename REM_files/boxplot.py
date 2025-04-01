@@ -21,7 +21,7 @@ def make_boxplot(data, classes):
     #sns.stripplot(x="Folds", y="AP", hue="Folds", palette=palette,  data=df, color="black", jitter=True, alpha=0.6, legend=False)
     for i, category in enumerate(df["Fold"].unique()):
         values = df[df["Fold"] == category]["AP"]
-        x_jitter = np.random.normal(loc=i, scale=0.1, size=len(values))  # Small jitter
+        x_jitter = np.random.normal(loc=i, scale=0.05, size=len(values)) - 0.5 # Small jitter
         plt.scatter(x_jitter, values, alpha=0.6, color='black', s=30)
 
     plt.title("AP per fold over 10 train runs")
