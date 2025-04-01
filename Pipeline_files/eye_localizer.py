@@ -58,18 +58,22 @@ def track_vid_aabb(frag_idx:int):
     
     return box_history
 
+def save_boxes_csv(boxes:defaultdict, fragment_idx:int):
+    starting_frame_idx = settings.fragment_length * fragment_idx
+    for i in range(starting_frame_idx, starting_frame_idx + settings.fragment_length):
+        frame_boxes = []; frame_classes = []; frame_confs = []   
 
-def save_boxes_csv(boxes:defaultdict):
-    for detection in boxes.keys():
-        for frame in boxes[detection].keys():
-            box,cls,conf = boxes[detection][frame]
-            with open(os.path.join(settings.eye_loc_path, settings.cur_vid+".csv"), "a") as file:
-                file.write(str(frame) + "," + str(detection) + "," + str(box[0]) + "," + str(box[1]) + "," + str(box[2]) + "," + str(box[3]) + "," + str(cls) + "," + str(conf) + "\n")
+        for detection in boxes.keys():
+            box,cls,conf = boxes[detection][i]
+            frame_boxes.append(box); frame_classes.append(cls); frame_confs.append(conf)
+    
+        with open(os.path.join(settings.eye_loc_path, settings.cur_vid+".csv"), "a") as file:
+            file.write(str(i) + "," + str(frame_boxes) + str(frame_classes) + "," + str(frame_confs) + "\n")
 
 
 def detect_vid():
     with open(os.path.join(settings.eye_loc_path, settings.cur_vid+".csv"), "w") as file:
-        file.write("frame,eye_idx,x1,y1,x2,y2,class,conf" + "\n")
+        file.write("frame,boxes,classes,confs" + "\n")
 
     frame_count = get_frame_count() 
     fragment_count = int((frame_count - (frame_count % settings.fragment_length)) / settings.fragment_length)
