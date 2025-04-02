@@ -60,6 +60,7 @@ def plot_tsne_both(model, path, samples, val_labels, train_labels):
     model2 = tf.keras.Model(inputs=model.input, outputs=model.layers[-2].output)
     features = model2(samples)
 
+    sns.set_style("whitegrid", {'axes.grid' : False})
     tsne = TSNE(n_components=2, perplexity=25.0).fit_transform(features)
 
     tx = tsne[:, 0]
@@ -95,6 +96,7 @@ def plot_tsne(model, path, val_samples_stacked, true_labels):
     model2 = tf.keras.Model(inputs=model.input, outputs=model.layers[-2].output)
     features = model2(val_samples_stacked)
 
+    sns.set_style("whitegrid", {'axes.grid' : False})
     tsne = TSNE(n_components=2, perplexity=25.0).fit_transform(features)
 
     tx = tsne[:, 0]
