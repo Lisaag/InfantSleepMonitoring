@@ -82,7 +82,8 @@ def plot_tsne_both(model, path, samples, val_labels, train_labels):
         print(f'{classes[idx]} - {indices}')
         current_tx = np.take(tx, indices)
         current_ty = np.take(ty, indices)
-        plt.scatter(current_tx, current_ty, s=40.0, c=c, label=classes[idx])
+        alpha = 0.5 if idx < 2 else 1
+        plt.scatter(current_tx, current_ty, alpha=alpha, s=40.0, c=c, label=classes[idx])
 
     plt.legend(loc='best')
     plt.savefig(os.path.join(path,"tsne_both.jpg"), format='jpg', dpi=500)  
@@ -113,7 +114,8 @@ def plot_tsne(model, path, val_samples_stacked, true_labels):
         print(f'{classes[idx]} - {indices}')
         current_tx = np.take(tx, indices)
         current_ty = np.take(ty, indices)
-        plt.scatter(current_tx, current_ty, c=c, label=classes[idx])
+        alpha = 0.5 if idx < 2 else 1
+        plt.scatter(current_tx, current_ty, alpha=alpha, c=c, label=classes[idx])
 
     plt.legend(loc='best')
     plt.savefig(os.path.join(path,"tsne.jpg"), format='jpg', dpi=500)  
