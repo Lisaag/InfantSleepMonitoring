@@ -46,7 +46,7 @@ for run in os.listdir(settings.results_dir):
         result = metrics.loc[metrics["fold"] == fold, "AP"]
         AP = result.iloc[0] if not result.empty else None
         APs.append(AP)
-        classes.append(fold)
+        classes.append(fold+1)
         print(fold)
         print(AP)
 
