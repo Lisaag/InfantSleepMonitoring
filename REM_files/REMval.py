@@ -68,7 +68,7 @@ def plot_tsne_both(model, path, samples, val_labels, train_labels):
     tx = scale_to_01_range(tx)
     ty = scale_to_01_range(ty)
 
-    colors = ['#FF6666', '#66B2FF', '#FF0000', '#0000FF']
+    colors = ['#FF9999', '#99CCFF', '#FF0000', '#0000FF']
     classes = ['-_t', 'R_t', '-', 'R']
     if(not settings.is_combined):
         classes = ['O_t', 'OR_t', 'O', 'OR'] if settings.is_OREM else ['C_t', 'CR_t', 'C', 'CR']
@@ -82,7 +82,7 @@ def plot_tsne_both(model, path, samples, val_labels, train_labels):
         print(f'{classes[idx]} - {indices}')
         current_tx = np.take(tx, indices)
         current_ty = np.take(ty, indices)
-        alpha = 0.5 if idx < 2 else 1
+        alpha = 0.4 if idx < 2 else 1
         plt.scatter(current_tx, current_ty, alpha=alpha, s=40.0, c=c, label=classes[idx])
 
     plt.legend(loc='best')
@@ -114,8 +114,7 @@ def plot_tsne(model, path, val_samples_stacked, true_labels):
         print(f'{classes[idx]} - {indices}')
         current_tx = np.take(tx, indices)
         current_ty = np.take(ty, indices)
-        alpha = 0.5 if idx < 2 else 1
-        plt.scatter(current_tx, current_ty, alpha=alpha, c=c, label=classes[idx])
+        plt.scatter(current_tx, current_ty, c=c, label=classes[idx])
 
     plt.legend(loc='best')
     plt.savefig(os.path.join(path,"tsne.jpg"), format='jpg', dpi=500)  
