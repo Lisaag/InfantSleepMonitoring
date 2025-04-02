@@ -33,17 +33,6 @@ def lr_schedule(epoch):
     print(f"INITIAL LR {initial_lr}")
     return initial_lr * (0.8 ** (epoch // 5))  # Reduce LR every 5 epochs
 
-
-
-decay_steps = (7000 / settings.train_batch_size[0]) * 50  # Total training steps
-
-# Create Cosine Decay scheduler
-cosine_decay = tf.keras.optimizers.schedules.CosineDecay(
-    initial_learning_rate=settings.train_initial_lr,
-    decay_steps=decay_steps,
-    alpha=0.000001  # Minimum learning rate (0 means it reaches 0 at end)
-)
-
 def create_next_numbered_dir(directory):
     existing_folders = []
     for dir in os.listdir(directory):
