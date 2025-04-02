@@ -40,14 +40,14 @@ def load_model_json(path):
 
     return models.model_from_json(loaded_model_json)
 
-def plot_pr_curve(precision, recall, best_idx, path):
+def plot_pr_curve(precision, recall, best_threshold, best_idx, path):
     best_f1 = (2 * precision[best_idx] * recall[best_idx]) / (precision[best_idx] + recall[best_idx] + 1e-9)
 
     sns.set_style("whitegrid")
 
     plt.figure(figsize=(8, 6))
     plt.plot(recall, precision, marker='.')
-    plt.scatter(recall[best_idx], precision[best_idx], s=50.0, color='red', label=f'Best F1: {best_f1:.2f}')
+    plt.scatter(recall[best_idx], precision[best_idx], s=50.0, color='red', label=f'Best threshold: {best_threshold:.2f}')
 
     # Labels and title
     plt.xlabel("Recall", fontsize=12)
@@ -198,7 +198,7 @@ def validate_model(run, fold, path):
     best_threshold = thresholds[max(0, best_idx -1)]
     predicted_labels = [1 if x > best_threshold else 0 for x in predictions]
 
-    plot_pr_curve(precision, recall, best_idx, path)
+    plot_pr_curve(precision, recall, best_threshold, best_idx, path)
 
     ap = average_precision_score(true_labels, predictions)
     auc = roc_auc_score(true_labels, predictions)
