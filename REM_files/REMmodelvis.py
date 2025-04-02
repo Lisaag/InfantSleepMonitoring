@@ -21,9 +21,8 @@ def plot_confusion_matrix(path, true_labels = list(), predicted_labels = list())
     for i in range(len(true_labels)):
         cm[true_labels[i]][predicted_labels[i]] += 1        # Increment the corresponding cell
 
-    sns.set(font_scale=1.5)
     plt.figure(figsize=(10, 7))
-    h = sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=np.arange(2), yticklabels=np.arange(2))
+    h = sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=np.arange(2), yticklabels=np.arange(2), annot_kws={"size": 12})
     ticklabels = ['C', 'CR']
     if settings.is_OREM: ticklabels=['O', 'OR']
     h.set_xticklabels(ticklabels)
