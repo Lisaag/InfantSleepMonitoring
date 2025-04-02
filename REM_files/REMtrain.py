@@ -35,7 +35,7 @@ def lr_schedule(epoch):
 
 
 
-decay_steps = (7000 / settings.train_batch_size) * 50  # Total training steps
+decay_steps = (7000 / settings.train_batch_size[0]) * 50  # Total training steps
 
 # Create Cosine Decay scheduler
 cosine_decay = tf.keras.optimizers.schedules.CosineDecay(
