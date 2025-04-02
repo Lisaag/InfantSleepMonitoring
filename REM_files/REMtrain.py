@@ -151,9 +151,9 @@ def REMtrain(val_ids, idx, dir, batch_size, lr, l2, dropout, seed):
             if(not settings.is_OREM and (eye_state == "O" or eye_state == "OR")): continue
             eye_state_dir = os.path.join(patient_dir, eye_state)
             for sample in os.listdir(eye_state_dir):
-                # if(patient_id in val_ids and sample[-3:] == "AUG"):
-                #     continue
-                if(sample[-3:] == "AUG"): continue
+                if(patient_id in val_ids and sample[-3:] == "AUG"):
+                    continue
+                #if(sample[-3:] == "AUG"): continue
                 sample_dir = os.path.join(eye_state_dir, sample)
                 images = list()
                 frames = glob.glob(os.path.join(sample_dir, "*.jpg"))
@@ -210,15 +210,20 @@ def REMtrain(val_ids, idx, dir, batch_size, lr, l2, dropout, seed):
     
     REMmodelvis.plot_loss_curve(history.history['loss'], history.history['val_loss'], save_directory)
 
-for batch_size in settings.train_batch_size:
-    for lr in settings.train_initial_lr:
-        initial_lr=lr
-        for l2 in settings.train_l2:
-            for dropout in settings.train_dropout:   
-                for seed in settings.seeds:
-                    save_dir = create_next_numbered_dir(os.path.join(os.path.abspath(os.getcwd()),"REM-results"))    
-                    with open(os.path.join(save_dir, "train_config.csv"), "w") as file:
-                        file.write("batch_size,lr,l2,dropout" + "\n")   
-                        file.write(f'{batch_size},{lr},{l2},{dropout}' + "\n")   
-                    for idx, val_ids in enumerate(settings.val_ids):
-                        REMtrain(val_ids, idx, save_dir, batch_size, lr, l2, dropout, seed)
+locs = [os.path.join(os.path.abspath(os.getcwd()),"REM", "raw", "cropped", "center"), os.path.join(os.path.abspath(os.getcwd()),"REM", "raw", "cropped", "interpolate"), os.path.join(os.path.abspath(os.getcwd()),"REM", "raw", "cropped", "every")]
+
+for i in range(3):
+    settings.data_dir = locs[i]
+    for batch_size in settings.train_batch_size:
+        for lr in settings.train_initial_lr:
+            initial_lr=lr
+            for l2 in settings.train_l2:
+                for dropout in settings.train_dropout:   
+                    for seed in settings.seeds:
+                        save_dir = create_next_numbered_dir(os.path.join(os.path.abspath(os.getcwd()),"REM-results"))    
+                        with open(os.path.join(save_dir, "train_config.csv"), "w") as file:
+                            file.write("batch_size,lr,l2,dropout" + "\n")   
+                            file.write(f'{batch_size},{lr},{l2},{dropout}' + "\n")
+                            file.write(settings.data_dir)   
+                        for idx, val_ids in enumerate(settings.val_ids):
+                            REMtrain(val_ids, idx, save_dir, batch_size, lr, l2, dropout, seed)
