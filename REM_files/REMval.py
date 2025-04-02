@@ -133,8 +133,7 @@ def get_validation_data(fold):
     for patient in os.listdir(settings.data_dir):
         patient_dir:str = os.path.join(settings.data_dir, patient)
         patient_id:str = patient[0:3]
-        #if(patient_id == '440'): continue
-        #if(settings.is_OREM and patient_id == '440'): continue
+        if(patient_id == '440'): continue
         print(patient_id)
         for eye_state in os.listdir(patient_dir):
             if(settings.is_OREM and (eye_state == "C" or eye_state == "CR")): continue
