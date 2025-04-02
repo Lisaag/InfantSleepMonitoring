@@ -29,7 +29,7 @@ for frame_centering in os.listdir(data_dir):
                 #     image = cv2.imread(os.path.join(sample_dir, frame))
                 #     image_rotated1 = ndimage.rotate(image, 5)
                 #     image_rotated2 = ndimage.rotate(image, -5)
-                #     image_flipped = cv2.flip(image, 0) 
+                #     image_flipped = cv2.flip(image, 1) 
 
                 #     rot1_path = os.path.join(cropped_dir, frame_centering, patient, eye_state, sample+'ROT1AUG')
                 #     if not os.path.exists(rot1_path): os.makedirs(rot1_path)
