@@ -2,12 +2,12 @@ import os
 
 is_OREM = True
 
-val_ids = [['416', '778'],
-           ['004', '704', '773'],
-           ['399', '875', '440'],
-           ['554', '866'],
-           ['614', '657']] 
-#val_ids = [['416', '778']]
+# val_ids = [['416', '778'],
+#            ['004', '704', '773'],
+#            ['399', '875', '440'],
+#            ['554', '866'],
+#            ['614', '657']] 
+val_ids = [['399', '875', '440']]
 
 frame_stack_count = 6
 img_size = 64
@@ -26,8 +26,8 @@ checkpoint_filename = "checkpoint.model.keras"
 # train_l2 = [0.01, 0.1, 1.0]
 # train_dropout = [0.3, 0.5, 0.7]
 
-train_batch_size = [8]
-train_initial_lr = [0.0001]
+train_batch_size = [16]
+train_initial_lr = [0.00018]
 train_l2 = [0.04]
 train_dropout = [0.5]
 
