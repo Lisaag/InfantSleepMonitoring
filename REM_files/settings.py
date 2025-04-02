@@ -1,6 +1,6 @@
 import os
 
-is_OREM = False
+is_OREM = True
 
 val_ids = [['416', '778'],
            ['004', '704', '773'],
