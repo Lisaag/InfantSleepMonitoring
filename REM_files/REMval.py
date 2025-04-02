@@ -69,7 +69,9 @@ def plot_tsne_both(model, path, samples, val_labels, train_labels):
     ty = scale_to_01_range(ty)
 
     colors = ['#FF6666', '#66B2FF', '#FF0000', '#0000FF']
-    classes = ['O_t', 'OR_t', 'O', 'OR'] if settings.is_OREM else ['C_t', 'CR_t', 'C', 'CR']
+    classes = ['-_t', 'R_t', '-', 'R']
+    if(not settings.is_combined):
+        classes = ['O_t', 'OR_t', 'O', 'OR'] if settings.is_OREM else ['C_t', 'CR_t', 'C', 'CR']
 
     val_labels = [2 if x == 0 else 3 for x in val_labels]
     all_labels = val_labels+train_labels
@@ -101,7 +103,9 @@ def plot_tsne(model, path, val_samples_stacked, true_labels):
     ty = scale_to_01_range(ty)
 
     colors = ['red', 'blue']
-    classes = ['O', 'OR'] if settings.is_OREM else ['C', 'CR']
+    classes = ['-', 'R']
+    if(not settings.is_combined):
+        classes = ['O', 'OR'] if settings.is_OREM else ['C', 'CR']
     
     plt.figure()
     for idx, c in enumerate(colors):
@@ -136,8 +140,9 @@ def get_validation_data(fold):
         if(patient_id == '440'): continue
         print(patient_id)
         for eye_state in os.listdir(patient_dir):
-            if(settings.is_OREM and (eye_state == "C" or eye_state == "CR")): continue
-            if(not settings.is_OREM and (eye_state == "O" or eye_state == "OR")): continue
+            if(not settings.is_combined):
+                if(settings.is_OREM and (eye_state == "C" or eye_state == "CR")): continue
+                if(not settings.is_OREM and (eye_state == "O" or eye_state == "OR")): continue
             eye_state_dir = os.path.join(patient_dir, eye_state)
             for sample in os.listdir(eye_state_dir):
                 #if(patient_id not in settings.val_ids[fold]): continue

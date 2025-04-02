@@ -146,8 +146,9 @@ def REMtrain(val_ids, idx, dir, batch_size, lr, l2, dropout, seed):
         if(patient_id == '440'): continue
         print(patient_id)
         for eye_state in os.listdir(patient_dir):
-            if(settings.is_OREM and (eye_state == "C" or eye_state == "CR")): continue
-            if(not settings.is_OREM and (eye_state == "O" or eye_state == "OR")): continue
+            if(not settings.is_combined):
+                if(settings.is_OREM and (eye_state == "C" or eye_state == "CR")): continue
+                if(not settings.is_OREM and (eye_state == "O" or eye_state == "OR")): continue
             eye_state_dir = os.path.join(patient_dir, eye_state)
             for sample in os.listdir(eye_state_dir):
                 if(patient_id in val_ids and sample[-3:] == "AUG"):
