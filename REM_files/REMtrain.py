@@ -212,8 +212,8 @@ def REMtrain(val_ids, idx, dir, batch_size, lr, l2, dropout, seed):
 
 locs = [os.path.join(os.path.abspath(os.getcwd()),"REM", "raw", "cropped", "center"), os.path.join(os.path.abspath(os.getcwd()),"REM", "raw", "cropped", "interpolate"), os.path.join(os.path.abspath(os.getcwd()),"REM", "raw", "cropped", "every")]
 
-for i in range(3):
-    settings.data_dir = locs[i]
+for i in range(1):
+    #settings.data_dir = locs[i]
     for batch_size in settings.train_batch_size:
         for lr in settings.train_initial_lr:
             initial_lr=lr
