@@ -143,7 +143,7 @@ def plot_tsne_all(model, path, val_samples_stacked, all_labels):
     tx = scale_to_01_range(tx)
     ty = scale_to_01_range(ty)
 
-    colors = ['#007BFF', '#FF5733', '#00BFFF', '#FF8C00']
+    colors = ['#6666ff', '#ff4d4d', 'blue', 'red']
     
     classes = ['O', 'OR', 'C', 'CR']
     
@@ -271,6 +271,8 @@ with open(os.path.join(settings.results_dir, "metrics.csv"), "w") as file:
 
 
 all_APs = []
+all_means = []
+all_stds = []
 
 for run in os.listdir(settings.results_dir):
     if(not run.isdigit()): continue
@@ -287,6 +289,21 @@ for run in os.listdir(settings.results_dir):
 
     with open(os.path.join(settings.results_dir, "metrics.csv"), "a") as file:
         file.write(f'{run},{metrics[0]},{metrics[1]},{metrics[2]},{metrics[3]},{metrics[4]}' + "\n")
+
+
+    all_means.append([statistics.mean(metrics[0]), statistics.mean(metrics[1]), statistics.mean(metrics[2]), statistics.mean(metrics[3]), statistics.mean(metrics[4])])
+    all_stds.append([statistics.stdev(metrics[0]), statistics.stdev(metrics[1]), statistics.stdev(metrics[2]), statistics.stdev(metrics[3]), statistics.stdev(metrics[4])])
+
+all_means = np.array(all_means).T
+all_stds = np.array(all_means).T
+
+with open(os.path.join(settings.results_dir, "metrics.csv"), "a") as file:
+    file.write(f'{"std/fold"},{statistics.mean(all_stds[0])},{statistics.mean(all_stds[1])},{statistics.mean(all_stds[2])},{statistics.mean(all_stds[3])},{statistics.mean(all_stds[4])}' + "\n")
+    file.write(f'{"std/run"},{statistics.stdev(all_means[0])},{statistics.stdev(all_means[1])},{statistics.stdev(all_means[2])},{statistics.stdev(all_means[3])},{statistics.stdev(all_means[4])}' + "\n")
+    file.write(f'{"mean/total"},{statistics.mean(all_means[0])},{statistics.mean(all_means[1])},{statistics.mean(all_means[2])},{statistics.mean(all_means[3])},{statistics.mean(all_means[4])}' + "\n")
+
+
+
 
 
 
