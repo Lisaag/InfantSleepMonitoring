@@ -1,7 +1,7 @@
 import os
 
 is_OREM = True
-is_combined = False
+is_combined = True
 
 val_ids = [['416', '778'],
            ['004', '704', '773'],
@@ -14,7 +14,7 @@ val_ids = [['416', '778'],
 frame_stack_count = 6
 img_size = 64
 
-data_dir = os.path.join(os.path.abspath(os.getcwd()),"REM", "raw", "cropped", "interpolate")
+data_dir = os.path.join(os.path.abspath(os.getcwd()),"REM", "raw", "cropped", "center")
 results_dir = os.path.join(os.path.abspath(os.getcwd()),"REM-results")
 
 model_filename = "model_architecture.json"
