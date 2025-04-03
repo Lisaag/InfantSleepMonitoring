@@ -252,21 +252,22 @@ def validate_model(run, fold, path):
     accuracy = accuracy_score(true_labels, predicted_labels)
     precision = precision_score(true_labels, predicted_labels)
     recall = recall_score(true_labels, predicted_labels)
+    f1 = f1_scores[best_idx]
 
     with open(os.path.join(settings.results_dir, run, "metrics.csv"), "a") as file:
-        file.write(f"{run},{fold},{accuracy},{precision},{recall},{ap},{auc}" + "\n")
+        file.write(f"{run},{fold},{accuracy},{precision},{recall},{ap},{auc},{f1}" + "\n")
 
     visualize_results(model, predicted_labels, true_labels, val_samples, path)
     plot_tsne_both(model, path, np.concatenate((val_samples, train_samples), axis=0), true_labels, train_labels)
     if(settings.is_combined): plot_tsne_all(model, path, val_samples, all_labels)
     plt.close('all')
 
-    return accuracy, precision, recall, ap, auc
+    return accuracy, precision, recall, ap, auc, f1
 
 
 with open(os.path.join(settings.results_dir, "metrics.csv"), "w") as file:
     #file.write("run,m_accuracy,m_precision,m_recall,m_AUC,sd_accuracy,sd_precision,sd_recall,sd_AUC" + "\n")
-    file.write("run,m_accuracy,m_precision,m_recall,m_AUC,auc" + "\n")
+    file.write("run,m_accuracy,m_precision,m_recall,m_AUC,auc,mF1" + "\n")
 
 
 
@@ -277,7 +278,7 @@ all_stds = []
 for run in os.listdir(settings.results_dir):
     if(not run.isdigit()): continue
     with open(os.path.join(settings.results_dir, run, "metrics.csv"), "w") as file:
-        file.write("run,fold,accuracy,precision,recall,AP,auc" + "\n")
+        file.write("run,fold,accuracy,precision,recall,AP,auc,F1" + "\n")
     metrics = []
    
     for fold in range(len(settings.val_ids)):
@@ -288,19 +289,19 @@ for run in os.listdir(settings.results_dir):
     all_APs.append([metrics[3]])
 
     with open(os.path.join(settings.results_dir, "metrics.csv"), "a") as file:
-        file.write(f'{run},{metrics[0]},{metrics[1]},{metrics[2]},{metrics[3]},{metrics[4]}' + "\n")
+        file.write(f'{run},{metrics[0]},{metrics[1]},{metrics[2]},{metrics[3]},{metrics[4]},{metrics[5]}' + "\n")
 
 
-    all_means.append([statistics.mean(metrics[0]), statistics.mean(metrics[1]), statistics.mean(metrics[2]), statistics.mean(metrics[3]), statistics.mean(metrics[4])])
-    all_stds.append([statistics.stdev(metrics[0]), statistics.stdev(metrics[1]), statistics.stdev(metrics[2]), statistics.stdev(metrics[3]), statistics.stdev(metrics[4])])
+    all_means.append([statistics.mean(metrics[0]), statistics.mean(metrics[1]), statistics.mean(metrics[2]), statistics.mean(metrics[3]), statistics.mean(metrics[4]), statistics.mean(metrics[5])])
+    all_stds.append([statistics.stdev(metrics[0]), statistics.stdev(metrics[1]), statistics.stdev(metrics[2]), statistics.stdev(metrics[3]), statistics.stdev(metrics[4]), statistics.stdev(metrics[5])])
 
 all_means = np.array(all_means).T
 all_stds = np.array(all_stds).T
 
 with open(os.path.join(settings.results_dir, "metrics.csv"), "a") as file:
-    file.write(f'{"std/fold"},{statistics.mean(all_stds[0])},{statistics.mean(all_stds[1])},{statistics.mean(all_stds[2])},{statistics.mean(all_stds[3])},{statistics.mean(all_stds[4])}' + "\n")
-    file.write(f'{"std/run"},{statistics.stdev(all_means[0])},{statistics.stdev(all_means[1])},{statistics.stdev(all_means[2])},{statistics.stdev(all_means[3])},{statistics.stdev(all_means[4])}' + "\n")
-    file.write(f'{"mean/total"},{statistics.mean(all_means[0])},{statistics.mean(all_means[1])},{statistics.mean(all_means[2])},{statistics.mean(all_means[3])},{statistics.mean(all_means[4])}' + "\n")
+    file.write(f'{"std/fold"},{statistics.mean(all_stds[0])},{statistics.mean(all_stds[1])},{statistics.mean(all_stds[2])},{statistics.mean(all_stds[3])},{statistics.mean(all_stds[4])},{statistics.mean(all_stds[5])}' + "\n")
+    file.write(f'{"std/run"},{statistics.stdev(all_means[0])},{statistics.stdev(all_means[1])},{statistics.stdev(all_means[2])},{statistics.stdev(all_means[3])},{statistics.stdev(all_means[4])},{statistics.stdev(all_means[5])}' + "\n")
+    file.write(f'{"mean/total"},{statistics.mean(all_means[0])},{statistics.mean(all_means[1])},{statistics.mean(all_means[2])},{statistics.mean(all_means[3])},{statistics.mean(all_means[4])},{statistics.mean(all_means[5])}' + "\n")
 
 
 
