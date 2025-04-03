@@ -10,7 +10,7 @@ import numpy as np
 def make_boxplot(data, classes):
     plt.figure()
     sns.set_style("whitegrid")
-    plt.ylim(0.45, 1.0)
+    plt.ylim(0.4, 1.0)
 
     palette = sns.color_palette("husl", 5)
 

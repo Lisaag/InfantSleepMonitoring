@@ -70,7 +70,7 @@ def plot_tsne_both(model, path, samples, val_labels, train_labels):
     ty = scale_to_01_range(ty)
 
     colors = ['#D9ECFF', '#FFD9D9', '#0000FF', '#FF0000']
-    classes = ['-_t', 'R_t', '-', 'R']
+    classes = ['-_t', 'REM_t', '-', 'REM']
     if(not settings.is_combined):
         classes = ['O_t', 'OR_t', 'O', 'OR'] if settings.is_OREM else ['C_t', 'CR_t', 'C', 'CR']
 
@@ -106,7 +106,7 @@ def plot_tsne(model, path, val_samples_stacked, true_labels):
     ty = scale_to_01_range(ty)
 
     colors = ['blue', 'red']
-    classes = ['-', 'R']
+    classes = ['-', 'REM']
     if(not settings.is_combined):
         classes = ['O', 'OR'] if settings.is_OREM else ['C', 'CR']
     
