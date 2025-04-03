@@ -243,26 +243,26 @@ def validate_model(run, fold, path):
     best_idx = np.argmax(f1_scores[:-1])
 
     best_threshold = thresholds[max(0, best_idx -1)]
-    predicted_labels = [1 if x > best_threshold else 0 for x in predictions]
+    predicted_labels = [1 if x >= best_threshold else 0 for x in predictions]
 
     plot_pr_curve(precision, recall, best_threshold, best_idx, path)
 
     ap = average_precision_score(true_labels, predictions)
     auc = roc_auc_score(true_labels, predictions)
-    accuracy = accuracy_score(true_labels, predicted_labels)
-    precision = precision_score(true_labels, predicted_labels)
-    recall = recall_score(true_labels, predicted_labels)
-    f1 = f1_scores[best_idx]
+    accuracy = accuracy_score(true_labels, predicted_labels) 
+    pr = precision_score(true_labels, predicted_labels)
+    rec = recall_score(true_labels, predicted_labels)
+    f1 = (2 * pr * rec) / (pr + rec + 1e-9)
 
     with open(os.path.join(settings.results_dir, run, "metrics.csv"), "a") as file:
-        file.write(f"{run},{fold},{accuracy},{precision},{recall},{ap},{auc},{f1}" + "\n")
+        file.write(f"{run},{fold},{accuracy},{pr},{rec},{ap},{auc},{f1}" + "\n")
 
     visualize_results(model, predicted_labels, true_labels, val_samples, path)
     plot_tsne_both(model, path, np.concatenate((val_samples, train_samples), axis=0), true_labels, train_labels)
     if(settings.is_combined): plot_tsne_all(model, path, val_samples, all_labels)
     plt.close('all')
 
-    return accuracy, precision, recall, ap, auc, f1
+    return accuracy, pr, rec, ap, auc, f1
 
 
 with open(os.path.join(settings.results_dir, "metrics.csv"), "w") as file:
