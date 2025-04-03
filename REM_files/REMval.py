@@ -257,7 +257,7 @@ def validate_model(run, fold, path):
 
     visualize_results(model, predicted_labels, true_labels, val_samples, path)
     plot_tsne_both(model, path, np.concatenate((val_samples, train_samples), axis=0), true_labels, train_labels)
-    if(settings.is_combined): plot_tsne_all(model, path, val_samples, true_labels, all_labels)
+    if(settings.is_combined): plot_tsne_all(model, path, val_samples, all_labels)
     plt.close('all')
 
     return accuracy, precision, recall, ap, auc
