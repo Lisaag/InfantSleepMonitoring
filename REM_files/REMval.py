@@ -212,12 +212,13 @@ def get_validation_data(fold):
                     print(f'from {patient_id} add to val')
                     val_samples.append(stacked_images)
                     val_labels.append(label)
+                    all_labels.append(eye_state)
+
                 else:
                     train_samples.append(stacked_images)
                     train_labels.append(label)
                 
 
-                all_labels.append(eye_state)
 
                 
 
