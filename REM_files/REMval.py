@@ -295,9 +295,7 @@ for run in os.listdir(settings.results_dir):
     all_stds.append([statistics.stdev(metrics[0]), statistics.stdev(metrics[1]), statistics.stdev(metrics[2]), statistics.stdev(metrics[3]), statistics.stdev(metrics[4])])
 
 all_means = np.array(all_means).T
-all_stds = np.array(all_means).T
-
-print(all_stds)
+all_stds = np.array(all_stds).T
 
 with open(os.path.join(settings.results_dir, "metrics.csv"), "a") as file:
     file.write(f'{"std/fold"},{statistics.mean(all_stds[0])},{statistics.mean(all_stds[1])},{statistics.mean(all_stds[2])},{statistics.mean(all_stds[3])},{statistics.mean(all_stds[4])}' + "\n")
