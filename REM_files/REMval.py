@@ -156,7 +156,7 @@ def plot_tsne_all(model, path, val_samples_stacked, all_labels):
         plt.scatter(current_tx, current_ty, c=c, s=35.0, label=classes[idx])
 
     plt.legend(loc='best')
-    plt.savefig(os.path.join(path,"tsne.jpg"), format='jpg', dpi=500) 
+    plt.savefig(os.path.join(path,"tsne_all.jpg"), format='jpg', dpi=500) 
 
 
 def visualize_results(model, predicted_labels, true_labels, val_samples, path):
