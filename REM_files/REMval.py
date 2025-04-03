@@ -143,7 +143,7 @@ def plot_tsne_all(model, path, val_samples_stacked, all_labels):
     tx = scale_to_01_range(tx)
     ty = scale_to_01_range(ty)
 
-    colors = ['#007BFF', '#FF5733', '#00BFFF', 'FF8C00']
+    colors = ['#007BFF', '#FF5733', '#00BFFF', '#FF8C00']
     
     classes = ['O', 'OR', 'C', 'CR']
     
