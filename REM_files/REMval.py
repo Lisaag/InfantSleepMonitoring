@@ -84,7 +84,7 @@ def plot_tsne_both(model, path, samples, val_labels, train_labels):
         current_tx = np.take(tx, indices)
         current_ty = np.take(ty, indices)
         alpha = 0.4 if idx < 2 else 1
-        plt.scatter(current_tx, current_ty, alpha=alpha, s=40.0, c=c, label=classes[idx])
+        plt.scatter(current_tx, current_ty, alpha=alpha, s=35.0, c=c, label=classes[idx])
 
     plt.legend(loc='best')
     plt.savefig(os.path.join(path,"tsne_both.jpg"), format='jpg', dpi=500)  
@@ -116,7 +116,7 @@ def plot_tsne(model, path, val_samples_stacked, true_labels):
         print(f'{classes[idx]} - {indices}')
         current_tx = np.take(tx, indices)
         current_ty = np.take(ty, indices)
-        plt.scatter(current_tx, current_ty, c=c, label=classes[idx])
+        plt.scatter(current_tx, current_ty, c=c, s=35.0, label=classes[idx])
 
     plt.legend(loc='best')
     plt.savefig(os.path.join(path,"tsne.jpg"), format='jpg', dpi=500)  
@@ -153,7 +153,7 @@ def plot_tsne_all(model, path, val_samples_stacked, all_labels):
         print(f'{classes[idx]} - {indices}')
         current_tx = np.take(tx, indices)
         current_ty = np.take(ty, indices)
-        plt.scatter(current_tx, current_ty, c=c, label=classes[idx])
+        plt.scatter(current_tx, current_ty, c=c, s=35.0, label=classes[idx])
 
     plt.legend(loc='best')
     plt.savefig(os.path.join(path,"tsne.jpg"), format='jpg', dpi=500) 
@@ -257,7 +257,7 @@ def validate_model(run, fold, path):
 
     visualize_results(model, predicted_labels, true_labels, val_samples, path)
     plot_tsne_both(model, path, np.concatenate((val_samples, train_samples), axis=0), true_labels, train_labels)
-    if(not settings.is_combined): plot_tsne_all(model, path, val_samples, true_labels, all_labels)
+    if(settings.is_combined): plot_tsne_all(model, path, val_samples, true_labels, all_labels)
     plt.close('all')
 
     return accuracy, precision, recall, ap, auc
