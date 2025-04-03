@@ -121,6 +121,44 @@ def plot_tsne(model, path, val_samples_stacked, true_labels):
     plt.legend(loc='best')
     plt.savefig(os.path.join(path,"tsne.jpg"), format='jpg', dpi=500)  
 
+def plot_tsne_all(model, path, val_samples_stacked, all_labels):
+    # Mapping dictionary
+    mapping = {'O': 0, 'OR': 1, 'C': 2, 'CR': 3}
+
+    # Replace using the mapping
+    all_labels = [mapping[element] for element in all_labels]
+
+    print('OUTPUT -2')
+    print(model.layers[-2])
+    #print(model.layers[-4].output)
+    model2 = tf.keras.Model(inputs=model.input, outputs=model.layers[-2].output)
+    features = model2(val_samples_stacked)
+
+    sns.set_style("whitegrid", {'axes.grid' : False})
+    tsne = TSNE(n_components=2, perplexity=25.0).fit_transform(features)
+
+    tx = tsne[:, 0]
+    ty = tsne[:, 1]
+
+    tx = scale_to_01_range(tx)
+    ty = scale_to_01_range(ty)
+
+    colors = ['red', 'blue', 'orange', 'green']
+    
+    classes = ['O', 'OR', 'C', 'CR']
+    
+    plt.figure()
+    for idx, c in enumerate(colors):
+        indices = [i for i, l in enumerate(all_labels) if idx == l]
+        print(f'{classes[idx]} - {indices}')
+        current_tx = np.take(tx, indices)
+        current_ty = np.take(ty, indices)
+        plt.scatter(current_tx, current_ty, c=c, label=classes[idx])
+
+    plt.legend(loc='best')
+    plt.savefig(os.path.join(path,"tsne.jpg"), format='jpg', dpi=500) 
+
+
 def visualize_results(model, predicted_labels, true_labels, val_samples, path):
     with open(os.path.join(path, "predictions.txt"), 'w') as file:
         for label in predicted_labels:
@@ -136,6 +174,7 @@ def visualize_results(model, predicted_labels, true_labels, val_samples, path):
 def get_validation_data(fold):
     val_samples = list(); val_labels = list()
     train_samples = list(); train_labels = list()
+    all_labels = list()
 
     for patient in os.listdir(settings.data_dir):
         patient_dir:str = os.path.join(settings.data_dir, patient)
@@ -176,6 +215,11 @@ def get_validation_data(fold):
                 else:
                     train_samples.append(stacked_images)
                     train_labels.append(label)
+                
+
+                all_labels.append(eye_state)
+
+                
 
 
     val_samples_stacked = np.stack(val_samples, axis=0)
@@ -188,7 +232,7 @@ def validate_model(run, fold, path):
     model = load_model_json(os.path.join(path, settings.model_filename))
     model.load_weights(os.path.join(path, settings.checkpoint_filename))
 
-    val_samples, true_labels, train_samples, train_labels = get_validation_data(fold)
+    val_samples, true_labels, train_samples, train_labels, all_labels = get_validation_data(fold)
 
     predictions = model(val_samples, training=False)
 
@@ -213,6 +257,7 @@ def validate_model(run, fold, path):
 
     visualize_results(model, predicted_labels, true_labels, val_samples, path)
     plot_tsne_both(model, path, np.concatenate((val_samples, train_samples), axis=0), true_labels, train_labels)
+    if(not settings.is_combined): plot_tsne_all(model, path, val_samples, true_labels, all_labels)
     plt.close('all')
 
     return accuracy, precision, recall, ap, auc
