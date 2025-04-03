@@ -225,7 +225,7 @@ def get_validation_data(fold):
     val_samples_stacked = np.stack(val_samples, axis=0)
     train_samples_stacked = np.stack(train_samples, axis=0)
 
-    return val_samples_stacked, val_labels, train_samples_stacked, train_labels
+    return val_samples_stacked, val_labels, train_samples_stacked, train_labels, all_labels
 
 def validate_model(run, fold, path):
     print(path)
