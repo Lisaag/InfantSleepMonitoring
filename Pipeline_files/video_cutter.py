@@ -62,7 +62,7 @@ def get_crop_size(bboxes):
 
     size = max(size, height)
 
-    bbox = xyxy_to_square(x1, y1, x2, y2 , size, [size, height])
+    bbox = xyxy_to_square(x1, y1, x2, y2 , size)
 
     #cutouts = [bbox for _ in range(frame_count)]
 
