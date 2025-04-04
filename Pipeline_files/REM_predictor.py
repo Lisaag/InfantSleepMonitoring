@@ -32,7 +32,7 @@ def get_all_samples(current_batch):
     for fragment in range(current_batch*processing_batch_size, current_batch*processing_batch_size+processing_batch_size):
         images = []
         if os.path.exists(os.path.join(save_path, str(fragment))):
-            print(f"NO FRAGMENT AT INDEX {fragment}")
+            print(f"NO FRAGMENT AT INDEX {fragment}, {os.path.join(save_path, str(fragment))}")
             continue
         for i in range(settings.frame_stack_count):
             image = cv2.imread(os.path.join(save_path, str(fragment), str(i)+".jpg"), cv2.IMREAD_GRAYSCALE) 
@@ -49,7 +49,7 @@ def get_all_samples(current_batch):
 
 def run_inference():
     fragment_count = get_last_index(save_path)
-    print(f'{fragment_count} fragments detected from {save_path}')
+    print(f'{fragment_count+1} fragments detected from {save_path}')
     current_batch = 0
 
     if not os.path.exists(settings.predictions_path): os.makedirs(settings.predictions_path)
@@ -57,7 +57,6 @@ def run_inference():
         file.write("idx;predictions" + "\n")
 
     while current_batch*processing_batch_size < fragment_count:
-        current_batch+=1
         all_samples = get_all_samples(current_batch)
 
         model = load_model_json(os.path.join(settings.model_path, settings.model_filename))
