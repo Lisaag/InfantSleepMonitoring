@@ -31,7 +31,7 @@ def get_all_samples(current_batch):
     all_samples = []
     for fragment in range(current_batch*processing_batch_size, current_batch*processing_batch_size+processing_batch_size):
         images = []
-        if os.path.exists(os.path.join(save_path, str(fragment))):
+        if not os.path.exists(os.path.join(save_path, str(fragment))):
             print(f"NO FRAGMENT AT INDEX {fragment}, {os.path.join(save_path, str(fragment))}")
             continue
         for i in range(settings.frame_stack_count):
