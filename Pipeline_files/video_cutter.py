@@ -19,8 +19,8 @@ def get_last_index(directory):
                 existing_folders.append(int(dir))
     
     next_folder = max(existing_folders, default=0) + 1  # Default to 0 if no numeric folders exist
-    
-    return next_folder
+    print(f'NEXT FOLOER {next_folder}')
+    return int(next_folder)
 
 def get_frame_count():
     cap = cv2.VideoCapture(settings.video_path)
