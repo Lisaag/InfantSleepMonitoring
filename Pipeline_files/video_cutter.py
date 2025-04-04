@@ -106,9 +106,9 @@ def get_boxes(df_bboxes, fragment_idx):
         print(row['confs'].iloc[0])
         print(row['classes'].iloc[0])
         print(row['boxes'].iloc[0])
-        confs:dict = row["confs"].iloc[0]
-        classes:dict = row["classes"].iloc[0]
-        boxes:dict = row["boxes"].iloc[0]
+        confs:dict = ast.literal_eval(row["confs"].iloc[0])
+        classes:dict = ast.literal_eval(row["classes"].iloc[0])
+        boxes:dict = ast.literal_eval(row["boxes"].iloc[0])
 
         for key in boxes.keys():
             all_boxes[key][i] = boxes[key]
