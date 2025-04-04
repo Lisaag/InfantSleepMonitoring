@@ -69,12 +69,12 @@ def save_boxes_csv(boxes:defaultdict, fragment_idx:int):
                 frame_boxes[detection] = box; frame_classes[detection] = cls; frame_confs[detection] = conf
     
         with open(os.path.join(settings.eye_loc_path, settings.cur_vid+".csv"), "a") as file:
-            file.write(str(i) + "," + str(frame_boxes) + str(frame_classes) + "," + str(frame_confs) + "\n")
+            file.write(str(i) + ";" + str(frame_boxes) + ";" + str(frame_classes) + ";" + str(frame_confs) + "\n")
 
 
 def detect_vid():
     with open(os.path.join(settings.eye_loc_path, settings.cur_vid+".csv"), "w") as file:
-        file.write("frame,boxes,classes,confs" + "\n")
+        file.write("frame;boxes;classes;confs" + "\n")
 
     frame_count = get_frame_count() 
     fragment_count = int((frame_count - (frame_count % settings.fragment_length)) / settings.fragment_length)
