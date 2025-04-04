@@ -45,7 +45,7 @@ def get_all_samples(current_batch):
 
         all_samples.append(stacked_images)
     
-    return all_samples
+    return np.stack(all_samples, axis=0)
 
 def run_inference():
     fragment_count = get_last_index(save_path)
