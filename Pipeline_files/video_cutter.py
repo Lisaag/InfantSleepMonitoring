@@ -52,7 +52,7 @@ def get_crop_size(bboxes):
     #Get center frame
     center_index = get_valid_center_index(bboxes)
 
-    x1, y1, x2, y2 = bboxes[center_index]
+    print(bboxes)
 
     bboxes = np.array(bboxes).T
 
@@ -64,6 +64,7 @@ def get_crop_size(bboxes):
 
     size = max(size, height)
 
+    x1, y1, x2, y2 = bboxes[center_index]
     bbox = xyxy_to_square(x1, y1, x2, y2 , size)
 
     #cutouts = [bbox for _ in range(frame_count)]
