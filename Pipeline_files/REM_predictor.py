@@ -49,6 +49,7 @@ def get_all_samples(current_batch):
 
 def run_inference():
     fragment_count = get_last_index(save_path)
+    print(f'{fragment_count} fragments detected from {save_path}')
     current_batch = 0
 
     if not os.path.exists(settings.predictions_path): os.makedirs(settings.predictions_path)
@@ -63,7 +64,7 @@ def run_inference():
         model.load_weights(os.path.join(settings.model_path, settings.checkpoint_filename))
         predictions = model(all_samples, training=False)
 
-
+        print(f'Processed minute {current_batch}')
         with open(os.path.join(settings.predictions_path, "predictions.csv"), "w") as file:
             file.write(str(current_batch)+";"+str(predictions) + "\n")
 
