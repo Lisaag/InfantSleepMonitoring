@@ -31,11 +31,11 @@ def get_all_samples(current_batch):
     all_samples = []
     for fragment in range(current_batch*processing_batch_size, current_batch*processing_batch_size+processing_batch_size):
         images = []
-        if os.path.exists(os.path.join(save_path, fragment)):
+        if os.path.exists(os.path.join(save_path, str(fragment))):
             print(f"NO FRAGMENT AT INDEX {fragment}")
             continue
         for i in range(settings.frame_stack_count):
-            image = cv2.imread(os.path.join(save_path, fragment, str(i)+".jpg"), cv2.IMREAD_GRAYSCALE) 
+            image = cv2.imread(os.path.join(save_path, str(fragment), str(i)+".jpg"), cv2.IMREAD_GRAYSCALE) 
             image = cv2.resize(image, (settings.img_size, settings.img_size))
             image = image / 255
             images.append(image)
