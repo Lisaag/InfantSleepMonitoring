@@ -52,11 +52,7 @@ def get_crop_size(bboxes):
     #Get center frame
     center_index = get_valid_center_index(bboxes)
 
-    print(bboxes)
-
     bboxes = np.array(bboxes).T
-
-    print(bboxes)
 
     #size of bounding box as max width
     size = max(int(abs(x1 - x2)) for x1, x2 in zip(bboxes[0], bboxes[2]))
@@ -111,13 +107,11 @@ def get_boxes(df_bboxes, fragment_idx):
         classes:dict = ast.literal_eval(row["classes"].iloc[0])
         boxes:dict = ast.literal_eval(row["boxes"].iloc[0])
 
-        print(f"BOXES {boxes}")
-
         for key in boxes.keys():
             all_boxes[key][idx] = boxes[key]
             all_classes[key][idx] = classes[key]
             all_confs[key][idx] = confs[key]
-        idx=1
+        idx+=1
         
     highest_conf = -1
     highest_conf_idx = -1
