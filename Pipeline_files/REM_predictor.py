@@ -71,7 +71,7 @@ def run_inference():
         current_batch += 1
 
 
-def run_inference()
+run_inference()
 
 
 
