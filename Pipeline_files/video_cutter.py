@@ -50,7 +50,10 @@ def xyxy_to_square(x1, y1, x2, y2, size):
 
 def get_crop_size(bboxes):
     #Get center frame
+    print(f'BBOXES {bboxes}')
     center_index = get_valid_center_index(bboxes)
+    print(f'center index {center_index}')
+
     x1, y1, x2, y2 = bboxes[center_index]
 
     bboxes = bboxes.T
@@ -102,10 +105,6 @@ def get_boxes(df_bboxes, fragment_idx):
         if(row.empty):
             print(f'Row at frame {i} not found in csv file!')
         
-        print(type(row['confs'].iloc[0]))
-        print(row['confs'].iloc[0])
-        print(row['classes'].iloc[0])
-        print(row['boxes'].iloc[0])
         confs:dict = ast.literal_eval(row["confs"].iloc[0])
         classes:dict = ast.literal_eval(row["classes"].iloc[0])
         boxes:dict = ast.literal_eval(row["boxes"].iloc[0])
