@@ -1,7 +1,7 @@
 import os
 
 cur_vid = "223-processed.mov"
-fragment_length = 60 if cur_vid[-4:] == ".mov" else 45
+fragment_length = 90 if cur_vid[-4:] == ".mov" else 45
 
 frame_stack_count = 6
 

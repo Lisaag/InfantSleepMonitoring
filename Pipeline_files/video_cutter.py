@@ -19,7 +19,7 @@ def get_last_index(directory):
                 existing_folders.append(int(dir))
     
     next_folder = max(existing_folders, default=0) + 1  # Default to 0 if no numeric folders exist
-    print(f'NEXT FOLOER {next_folder}')
+    print(f'NEXT FOLDER {next_folder}')
     return int(next_folder)
 
 def get_frame_count():
@@ -125,8 +125,6 @@ def get_boxes(df_bboxes, fragment_idx):
             all_classes[key][idx] = classes[key]
             all_confs[key][idx] = confs[key]
         idx+=1
-
-    print(f'all boxes {all_boxes}')
         
     highest_conf = -1
     highest_conf_idx = -1
@@ -136,7 +134,6 @@ def get_boxes(df_bboxes, fragment_idx):
             highest_conf = mean_conf
             highest_conf_idx = key
 
-    print(f'BOXXX2 IDX {highest_conf_idx}\n {all_boxes.get(highest_conf_idx)}')
     if highest_conf == -1: return None, None
     return all_boxes.get(highest_conf_idx), all_classes.get(highest_conf_idx)
 
