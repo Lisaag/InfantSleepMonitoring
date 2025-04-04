@@ -119,7 +119,6 @@ def get_boxes(df_bboxes, fragment_idx):
         classes:dict = ast.literal_eval(row["classes"].iloc[0])
         boxes:dict = ast.literal_eval(row["boxes"].iloc[0])
 
-        print(f"BOXxxx {boxes}")
         for key in boxes.keys():
             all_boxes[key][idx] = boxes[key]
             all_classes[key][idx] = classes[key]
@@ -134,6 +133,7 @@ def get_boxes(df_bboxes, fragment_idx):
             highest_conf = mean_conf
             highest_conf_idx = key
 
+    print(f'BOXXX {all_boxes.get(highest_conf_idx)}')
     return all_boxes.get(highest_conf_idx), all_classes.get(highest_conf_idx)
 
 fragment_path = os.path.join(settings.eye_frag_path, settings.cur_vid[:-4])
