@@ -98,6 +98,7 @@ def get_boxes(df_bboxes, fragment_idx):
     all_boxes = defaultdict(lambda:[None] * settings.fragment_length); all_classes = defaultdict(lambda:[None] * settings.fragment_length); all_confs = defaultdict(lambda:[None] * settings.fragment_length)
 
     curr_starting_frame = fragment_idx * settings.fragment_length
+    idx = 0
     for i in range(curr_starting_frame, curr_starting_frame + settings.fragment_length):
         row = df_bboxes.loc[df_bboxes['frame'] == i]
         if(row.empty):
@@ -107,11 +108,11 @@ def get_boxes(df_bboxes, fragment_idx):
         classes:dict = ast.literal_eval(row["classes"].iloc[0])
         boxes:dict = ast.literal_eval(row["boxes"].iloc[0])
 
-        print(i)
         for key in boxes.keys():
-            all_boxes[key][i] = boxes[key]
-            all_classes[key][i] = classes[key]
-            all_confs[key][i] = confs[key]
+            all_boxes[key][idx] = boxes[key]
+            all_classes[key][idx] = classes[key]
+            all_confs[key][idx] = confs[key]
+        idx=1
         
     highest_conf = -1
     highest_conf_idx = -1
