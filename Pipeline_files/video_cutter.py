@@ -85,10 +85,10 @@ def crop_eye(frag_idx, box):
 
         x1, y1, x2, y2 = box
 
-        save_path = os.path.join(settings.eye_frag_path, settings.cur_vid[:-4], frag_idx)
+        save_path = os.path.join(settings.eye_frag_path, settings.cur_vid[:-4], str(frag_idx))
         if not os.path.exists(save_path): os.makedirs(save_path)
 
-        cv2.imwrite(os.path.join(save_path, i+".jpg"), frame[y1:y2, x1:x2])
+        cv2.imwrite(os.path.join(save_path, str(i)+".jpg"), frame[y1:y2, x1:x2])
 
     cap.release()
 
