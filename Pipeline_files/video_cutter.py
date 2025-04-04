@@ -17,7 +17,7 @@ def get_frame_count():
 def get_valid_center_index(bboxes):
     center_index = len(bboxes) // 2
     if bboxes[center_index] is not None:
-        return bboxes[center_index]
+        return center_index
     
     left:int = center_index - 1
     right:int = center_index + 1
@@ -50,9 +50,7 @@ def xyxy_to_square(x1, y1, x2, y2, size):
 
 def get_crop_size(bboxes):
     #Get center frame
-    print(f'BBOXES {bboxes}')
     center_index = get_valid_center_index(bboxes)
-    print(f'center index {center_index}')
 
     x1, y1, x2, y2 = bboxes[center_index]
 
