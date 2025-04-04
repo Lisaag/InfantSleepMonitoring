@@ -125,7 +125,7 @@ def get_boxes(df_bboxes, fragment_idx):
 fragment_path = os.path.join(settings.eye_frag_path, settings.cur_vid[:-4])
 if not os.path.exists(fragment_path): os.makedirs(fragment_path)
 with open(os.path.join(fragment_path, "info.csv"), "w") as file:
-    file.write("idx,positions,open_count" + "\n")
+    file.write("idx;positions;open_count" + "\n")
 
 
 
@@ -139,6 +139,6 @@ for i in range(fragment_count):
     crop_box = get_crop_size(boxes)
 
     with open(os.path.join(fragment_path, "info.csv"), "a") as file:
-        file.write(str(i) + "," + [[(x1+x2)//2, (y1+y2)//2] for x1, y1, x2, y2 in boxes]+ "," + classes.count(1.0) + "\n")
+        file.write(str(i) + ";" + str([[(x1+x2)//2, (y1+y2)//2] for x1, y1, x2, y2 in boxes])+ ";" + str(classes.count(1.0)) + "\n")
 
     crop_eye(i, crop_box)
