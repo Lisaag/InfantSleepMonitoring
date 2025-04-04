@@ -80,6 +80,7 @@ def detect_vid():
     fragment_count = int((frame_count - (frame_count % settings.fragment_length)) / settings.fragment_length)
 
     for i in range(fragment_count):
+        print(f'processing fragment {i}')
         boxes = track_vid_aabb(i)
         save_boxes_csv(boxes, i)
     
