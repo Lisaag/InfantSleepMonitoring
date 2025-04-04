@@ -80,7 +80,7 @@ def get_crop_size(bboxes):
     return bbox
 
 def crop_eye(frag_idx, box):
-    print(f'Processing {settings.video_path}, fragment index {frag_idx}, frame {frag_idx*settings.fragment_length}')
+    #print(f'Processing {settings.video_path}, fragment index {frag_idx}, frame {frag_idx*settings.fragment_length}')
     cap = cv2.VideoCapture(settings.video_path)
 
     current_frame_idx = settings.fragment_length * frag_idx
@@ -124,6 +124,8 @@ def get_boxes(df_bboxes, fragment_idx):
             all_classes[key][idx] = classes[key]
             all_confs[key][idx] = confs[key]
         idx+=1
+
+    print(f'all boxes {all_boxes}')
         
     highest_conf = -1
     highest_conf_idx = -1
@@ -133,7 +135,7 @@ def get_boxes(df_bboxes, fragment_idx):
             highest_conf = mean_conf
             highest_conf_idx = key
 
-    print(f'BOXXX {all_boxes.get(highest_conf_idx)}')
+    print(f'BOXXX2 IDX {highest_conf_idx}\n {all_boxes.get(highest_conf_idx)}')
     return all_boxes.get(highest_conf_idx), all_classes.get(highest_conf_idx)
 
 fragment_path = os.path.join(settings.eye_frag_path, settings.cur_vid[:-4])
@@ -150,7 +152,6 @@ fragment_count = int((frame_count - (frame_count % settings.fragment_length)) / 
 for i in range(last_index, fragment_count):
     print(f'Processing fragment {i} out of {fragment_count}')
     boxes, classes = get_boxes(df_bboxes, i)
-    print(len(f'BOXES {boxes}'))
     crop_box = get_crop_size(boxes)
 
     with open(os.path.join(fragment_path, "info.csv"), "a") as file:
