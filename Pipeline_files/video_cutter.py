@@ -107,7 +107,7 @@ def crop_eye(frag_idx, box):
 
 #gets boxes with highest mean confidence
 def get_boxes(df_bboxes, fragment_idx):
-    all_boxes = defaultdict(lambda:[None] * settings.fragment_length); all_classes = defaultdict(lambda:[None] * settings.fragment_length); all_confs = defaultdict(lambda:[])
+    all_boxes = defaultdict(lambda:[None] * settings.fragment_length); all_classes = defaultdict(lambda:[None] * settings.fragment_length); all_confs = defaultdict(lambda:[None] * settings.fragment_length)
 
     curr_starting_frame = fragment_idx * settings.fragment_length
     idx = 0
