@@ -65,7 +65,7 @@ def get_crop_size(bboxes):
     center_index = get_valid_center_index(bboxes)
     x1, y1, x2, y2 = bboxes[center_index]
 
-    bboxes  = [x for x in bbox if x is not None]
+    bboxes  = [x for x in bboxes if x is not None]
     bboxes = np.array(bboxes).T
 
     #size of bounding box as max width
