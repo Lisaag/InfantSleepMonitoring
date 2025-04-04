@@ -160,6 +160,6 @@ for i in range(last_index, fragment_count):
     crop_box = get_crop_size(boxes)
 
     with open(os.path.join(fragment_path, "info.csv"), "a") as file:
-        file.write(str(i) + ";" + str([[(x1+x2)//2, (y1+y2)//2] for x1, y1, x2, y2 in boxes])+ ";" + str(classes.count(1.0)) + "\n")
+        file.write(str(i) + ";" + str([[(x1+x2)//2, (y1+y2)//2] for box in boxes if box is not None for x1, y1, x2, y2 in [box]])+ ";" + str(classes.count(1.0)) + "\n")
 
     crop_eye(i, crop_box)
