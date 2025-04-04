@@ -65,6 +65,7 @@ def get_crop_size(bboxes):
     center_index = get_valid_center_index(bboxes)
     x1, y1, x2, y2 = bboxes[center_index]
 
+    bboxes  = [x for x in bbox if x is not None]
     bboxes = np.array(bboxes).T
 
     #size of bounding box as max width
@@ -106,7 +107,7 @@ def crop_eye(frag_idx, box):
 
 #gets boxes with highest mean confidence
 def get_boxes(df_bboxes, fragment_idx):
-    all_boxes = defaultdict(lambda:[None] * settings.fragment_length); all_classes = defaultdict(lambda:[None] * settings.fragment_length); all_confs = defaultdict(lambda:[None] * settings.fragment_length)
+    all_boxes = defaultdict(lambda:[None] * settings.fragment_length); all_classes = defaultdict(lambda:[None] * settings.fragment_length); all_confs = defaultdict(lambda:[])
 
     curr_starting_frame = fragment_idx * settings.fragment_length
     idx = 0
@@ -136,6 +137,7 @@ def get_boxes(df_bboxes, fragment_idx):
             highest_conf_idx = key
 
     print(f'BOXXX2 IDX {highest_conf_idx}\n {all_boxes.get(highest_conf_idx)}')
+    if highest_conf == -1: return None, None
     return all_boxes.get(highest_conf_idx), all_classes.get(highest_conf_idx)
 
 fragment_path = os.path.join(settings.eye_frag_path, settings.cur_vid[:-4])
@@ -152,6 +154,9 @@ fragment_count = int((frame_count - (frame_count % settings.fragment_length)) / 
 for i in range(last_index, fragment_count):
     print(f'Processing fragment {i} out of {fragment_count}')
     boxes, classes = get_boxes(df_bboxes, i)
+    if boxes is None: 
+        print(f"NO DETECTIONS FOR FRAGMENT {i}")
+        continue
     crop_box = get_crop_size(boxes)
 
     with open(os.path.join(fragment_path, "info.csv"), "a") as file:
