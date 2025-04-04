@@ -103,6 +103,9 @@ def get_boxes(df_bboxes, fragment_idx):
             print(f'Row at frame {i} not found in csv file!')
         
         print(type(row['confs'].iloc[0]))
+        print(row['confs'].iloc[0])
+        print(row['classes'].iloc[0])
+        print(row['boxes'].iloc[0])
         confs:dict = row["confs"].iloc[0]
         classes:dict = row["classes"].iloc[0]
         boxes:dict = row["boxes"].iloc[0]
