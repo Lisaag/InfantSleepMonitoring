@@ -56,6 +56,8 @@ def get_crop_size(bboxes):
 
     bboxes = np.array(bboxes).T
 
+    print(bboxes)
+
     #size of bounding box as max width
     size = max(int(abs(x1 - x2)) for x1, x2 in zip(bboxes[0], bboxes[2]))
     height = max(int(abs(y1 - y2)) for y1, y2 in zip(bboxes[1], bboxes[3]))
