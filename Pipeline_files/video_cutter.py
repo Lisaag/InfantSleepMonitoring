@@ -149,7 +149,7 @@ fragment_count = int((frame_count - (frame_count % settings.fragment_length)) / 
 for i in range(last_index, fragment_count):
     print(f'Processing fragment {i} out of {fragment_count}')
     boxes, classes = get_boxes(df_bboxes, i)
-    print(len(boxes))
+    print(len(f'BOXES {boxes}'))
     crop_box = get_crop_size(boxes)
 
     with open(os.path.join(fragment_path, "info.csv"), "a") as file:
