@@ -65,7 +65,7 @@ def run_inference():
 
         print(f'Processed minute {current_batch}')
         with open(os.path.join(settings.predictions_path, "predictions.csv"), "a") as file:
-            file.write(str(current_batch)+";"+str(tf.reshape(predictions, [-1])) + "\n")
+            file.write(str(current_batch)+";"+str(predictions.numpy().flatten().tolist()) + "\n")
 
         current_batch += 1
 
