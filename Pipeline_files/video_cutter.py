@@ -10,6 +10,18 @@ from collections import defaultdict
 
 import numpy as np
 
+#index where cutting was cut off
+def get_last_index(directory):
+    existing_folders = []
+    for dir in os.listdir(directory):
+        if os.path.isdir(os.path.join(directory, dir)):
+            if(dir.isdigit()):
+                existing_folders.append(int(dir))
+    
+    next_folder = max(existing_folders, default=0) + 1  # Default to 0 if no numeric folders exist
+    
+    return next_folder
+
 def get_frame_count():
     cap = cv2.VideoCapture(settings.video_path)
     return int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
@@ -129,14 +141,15 @@ with open(os.path.join(fragment_path, "info.csv"), "w") as file:
     file.write("idx;positions;open_count" + "\n")
 
 
-
 df_bboxes = pd.read_csv(os.path.join(settings.eye_loc_path, settings.cur_vid +".csv"), delimiter=';')
+last_index = max(0, get_last_index(settings.eye_frag_path) - 1) #in case last one failed, we go back to previous
 
 frame_count = get_frame_count() 
 fragment_count = int((frame_count - (frame_count % settings.fragment_length)) / settings.fragment_length)
-for i in range(fragment_count):
-    print(f'Processing {fragment_count}')
+for i in range(last_index, fragment_count):
+    print(f'Processing fragment {i} out of {fragment_count}')
     boxes, classes = get_boxes(df_bboxes, i)
+    print(len(boxes))
     crop_box = get_crop_size(boxes)
 
     with open(os.path.join(fragment_path, "info.csv"), "a") as file:
