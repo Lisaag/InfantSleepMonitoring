@@ -1,7 +1,7 @@
 import os
 
 is_OREM = True
-is_combined = True
+is_combined = False
 
 val_ids = [['416', '778'],
            ['004', '704', '773'],
@@ -12,7 +12,7 @@ val_ids = [['416', '778'],
 #            ['004', '704', '773']]
 
 frame_stack_count = 6
-img_size = 64
+img_size = 66
 
 data_dir = os.path.join(os.path.abspath(os.getcwd()),"REM", "raw", "cropped", "center")
 results_dir = os.path.join(os.path.abspath(os.getcwd()),"REM-results")
