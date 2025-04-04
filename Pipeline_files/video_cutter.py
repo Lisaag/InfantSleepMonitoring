@@ -111,6 +111,8 @@ def get_boxes(df_bboxes, fragment_idx):
         classes:dict = ast.literal_eval(row["classes"].iloc[0])
         boxes:dict = ast.literal_eval(row["boxes"].iloc[0])
 
+        print(f"BOXES {boxes}")
+
         for key in boxes.keys():
             all_boxes[key][idx] = boxes[key]
             all_classes[key][idx] = classes[key]
