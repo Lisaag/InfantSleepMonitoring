@@ -64,7 +64,7 @@ def run_inference():
         predictions = model(all_samples, training=False)
 
         print(f'Processed minute {current_batch}')
-        with open(os.path.join(settings.predictions_path, "predictions.csv"), "w") as file:
+        with open(os.path.join(settings.predictions_path, "predictions.csv"), "a") as file:
             file.write(str(current_batch)+";"+str(predictions) + "\n")
 
         current_batch += 1
