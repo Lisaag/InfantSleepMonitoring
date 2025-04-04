@@ -101,9 +101,9 @@ def get_boxes(df_bboxes, fragment_idx):
         row = df_bboxes.loc[df_bboxes['frame'] == i]
         if(row.empty):
             print(f'Row at frame {i} not found in csv file!')
-        confs:dict = row["confs"]
-        classes:dict = row["classes"]
-        boxes:dict = row["boxes"]
+        confs:dict = row["confs"].apply(ast.literal_eval)
+        classes:dict = row["classes"].apply(ast.literal_eval)
+        boxes:dict = row["boxes"].apply(ast.literal_eval)
 
         for key in boxes.keys():
             all_boxes[key][i] = boxes[key]
