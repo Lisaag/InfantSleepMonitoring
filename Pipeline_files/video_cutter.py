@@ -142,7 +142,7 @@ with open(os.path.join(fragment_path, "info.csv"), "w") as file:
 
 
 df_bboxes = pd.read_csv(os.path.join(settings.eye_loc_path, settings.cur_vid +".csv"), delimiter=';')
-last_index = max(0, get_last_index(settings.eye_frag_path) - 1) #in case last one failed, we go back to previous
+last_index = max(0, get_last_index(fragment_path) - 1) #in case last one failed, we go back to previous
 
 frame_count = get_frame_count() 
 fragment_count = int((frame_count - (frame_count % settings.fragment_length)) / settings.fragment_length)
