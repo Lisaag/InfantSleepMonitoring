@@ -23,7 +23,7 @@ W_O_count = 20 #number os O in am inute to be classified as W
 frag_per_min = 40
 
 def is_valid_movement(frag_idx, positions):
-    img_path = os.path.join(settings.eye_frag_path, settings.cur_vid[:-4], frag_idx, "0.jpg")
+    img_path = os.path.join(settings.eye_frag_path, settings.cur_vid[:-4], str(frag_idx), "0.jpg")
     image = cv2.imread(img_path)
     height, width, channels = image.shape
 
