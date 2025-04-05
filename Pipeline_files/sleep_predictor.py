@@ -56,7 +56,7 @@ def compute_sleep_states():
         print(f"processing minute {minute}")
 
         O = 0; C = 0; O_R = 0; C_R = 0
-        for fragment in range(minute*frag_per_min, minute*frag_per_min):
+        for fragment in range(minute*frag_per_min, minute*frag_per_min + frag_per_min):
             row =  frags_df[frags_df['idx'] == fragment]
             if row.empty:
                 print(f'no fragment idx {fragment} found')
