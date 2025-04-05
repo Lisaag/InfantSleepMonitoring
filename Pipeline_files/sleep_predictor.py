@@ -29,7 +29,11 @@ def is_valid_movement(frag_idx, positions):
 
     max_movement = max_movement_fraction * width
 
+    print("POS1")
+    print(positions)
     positions = np.array(positions).T
+    print("POS2")
+    print(positions)
     min_x = min(positions[0]); max_x = max(positions[0])
     min_y = min(positions[1]); max_y = max(positions[1])
     if (max_x - min_x > max_movement):
