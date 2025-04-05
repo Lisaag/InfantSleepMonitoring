@@ -18,5 +18,5 @@ W_O_count = 30 #number os O in am inute to be classified as W
 pred_df = pd.read_csv(os.path.join(settings.predictions_path, "predictions.csv"), delimiter=';')
 
 for i in range(pred_df.shape[0]):
-    predictions = pred_df.loc[pred_df['idx'] == str(i), 'predictions'].values[0]
+    predictions =  pred_df[pred_df['idx'] == i]
     print(predictions)
