@@ -51,8 +51,10 @@ def compute_sleep_states():
     with open(os.path.join(settings.predictions_path, "sleep_predictions.csv"), "w") as file:
         file.write("min;state;C;O;CR;OR" + "\n")
 
-
+    print(f"{minute_count} minutes detected")
     for minute in range(minute_count):
+        print(f"processing minute {minute}")
+
         O = 0; C = 0; O_R = 0; C_R = 0
         for fragment in range(minute*frag_per_min, minute*frag_per_min):
             row =  frags_df[frags_df['idx'] == fragment]
@@ -77,6 +79,8 @@ def compute_sleep_states():
             else:
                 if is_REM: C_R += 1
                 else: C += 1
+            
+            print(f'O - {O}, OR - {O_R}, C - {C}, CR - {C_R} ')
         
         sleep_state = 'QS'
         if O_R+C_R >= AS_REM_count:
@@ -84,11 +88,13 @@ def compute_sleep_states():
         elif O >= W_O_count:
             sleep_state='W'
 
+        print(f'minute {minute} classified as {sleep_state}')
+
         with open(os.path.join(settings.predictions_path, "sleep_predictions.csv"), "a") as file:
             file.write(str(minute) + ";" + str(sleep_state) + ";" + str(C) + ";" + str(O)+ ";" + str(C_R)+ ";" + str(O_R) + "\n")
 
             
-
+compute_sleep_states()
 
 
 
