@@ -65,7 +65,8 @@ def run_inference():
         model = load_model_json(os.path.join(settings.model_path, settings.model_filename))
         model.load_weights(os.path.join(settings.model_path, settings.checkpoint_filename))
         predictions = model(all_samples, training=False)
-        predictions = str(predictions.numpy().flatten().tolist()) 
+        predictions = predictions.numpy().flatten().tolist()
+        
         print(f'Processed minute {current_batch}')
         for i, idx in enumerate(indices):
             with open(os.path.join(settings.predictions_path, "predictions.csv"), "a") as file:
