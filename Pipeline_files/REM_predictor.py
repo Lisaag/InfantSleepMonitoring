@@ -29,6 +29,7 @@ def load_model_json(path):
 
 def get_all_samples(current_batch):
     all_samples = []
+    indices = []
     for fragment in range(current_batch*processing_batch_size, current_batch*processing_batch_size+processing_batch_size):
         images = []
         if not os.path.exists(os.path.join(save_path, str(fragment))):
@@ -44,8 +45,10 @@ def get_all_samples(current_batch):
         stacked_images = np.stack(expanded_stack, axis=0)
 
         all_samples.append(stacked_images)
+
+        indices.append(fragment)
     
-    return np.stack(all_samples, axis=0)
+    return np.stack(all_samples, axis=0), indices
 
 def run_inference():
     fragment_count = get_last_index(save_path)
@@ -57,15 +60,16 @@ def run_inference():
         file.write("idx;predictions" + "\n")
 
     while current_batch*processing_batch_size < fragment_count:
-        all_samples = get_all_samples(current_batch)
+        all_samples, indices = get_all_samples(current_batch)
 
         model = load_model_json(os.path.join(settings.model_path, settings.model_filename))
         model.load_weights(os.path.join(settings.model_path, settings.checkpoint_filename))
         predictions = model(all_samples, training=False)
-
+        predictions = str(predictions.numpy().flatten().tolist()) 
         print(f'Processed minute {current_batch}')
-        with open(os.path.join(settings.predictions_path, "predictions.csv"), "a") as file:
-            file.write(str(current_batch)+";"+str(predictions.numpy().flatten().tolist()) + "\n")
+        for i, idx in enumerate(indices):
+            with open(os.path.join(settings.predictions_path, "predictions.csv"), "a") as file:
+                file.write(str(idx)+";"+str(predictions[i]) + "\n")
 
         current_batch += 1
 
