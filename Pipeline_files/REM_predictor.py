@@ -48,6 +48,8 @@ def get_all_samples(current_batch):
 
         indices.append(fragment)
     
+    if(len(all_samples) == 0):
+        return None, None
     return np.stack(all_samples, axis=0), indices
 
 def run_inference():
@@ -61,6 +63,10 @@ def run_inference():
 
     while current_batch*processing_batch_size < fragment_count:
         all_samples, indices = get_all_samples(current_batch)
+
+        if all_samples == None:
+            current_batch += 1
+            continue
 
         model = load_model_json(os.path.join(settings.model_path, settings.model_filename))
         model.load_weights(os.path.join(settings.model_path, settings.checkpoint_filename))
