@@ -69,9 +69,10 @@ def show_prediction_bar(true_classes, prediction_classes):
 
     # Legend
     legend_elements = [
-        Patch(facecolor=colors[0], edgecolor='black', label='Class 0'),
-        Patch(facecolor=colors[1], edgecolor='black', label='Class 1'),
-        Patch(facecolor=colors[2], edgecolor='black', label='Class 2')
+        Patch(facecolor=colors[0], edgecolor='black', label='AS'),
+        Patch(facecolor=colors[1], edgecolor='black', label='QS'),
+        Patch(facecolor=colors[2], edgecolor='black', label='W'),
+        Patch(facecolor=colors[3], edgecolor='black', label='reject')
     ]
     ax.legend(handles=legend_elements, loc='upper center', bbox_to_anchor=(0.5, 1.15), ncol=3)
 
