@@ -28,10 +28,10 @@ frag_per_min = 40
 
 def show_prediction_bar(true_classes, prediction_classes):
     mapping = {
-        'AS': 1,
-        'QS': 2,
-        'W': 3,
-        'reject': 4
+        'AS': 0,
+        'QS': 1,
+        'W': 2,
+        'reject': 3
     }
     true_classes = [mapping[item] for item in true_classes]
     prediction_classes = [mapping[item] for item in prediction_classes]
@@ -146,12 +146,16 @@ def compute_sleep_states():
             
             print(f'O - {O}, OR - {O_R}, C - {C}, CR - {C_R} ')
         
-        sleep_state = 'QS'
-        if O_R+C_R >= AS_REM_count:
-            sleep_state='AS'
-        elif O >= W_O_count:
-            sleep_state='W'
+        if(O+C+O_R+C_R < frag_per_min//2):
+            sleep_state = "reject"
+        else:
+            sleep_state = 'QS'
+            if O_R+C_R >= AS_REM_count:
+                sleep_state='AS'
+            elif O >= W_O_count:
+                sleep_state='W'
 
+    
         print(f'minute {minute} classified as {sleep_state}')
 
         prediction_classes.append(sleep_state)
