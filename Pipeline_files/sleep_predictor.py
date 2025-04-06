@@ -68,11 +68,11 @@ def compute_sleep_states():
             if(not is_valid_movement(fragment, positions.iloc[0])):
                 continue
 
-            open_count = row['open_count']
+            open_count = row['open_count'].iloc[0]
 
             row =  pred_df[pred_df['idx'] == fragment]
 
-            prediction = row['predictions']
+            prediction = row['predictions'].iloc[0]
 
             #TODO misschien andere threshold voor O_R vs C_R?
             is_REM = True if prediction >= REM_threshold else False
