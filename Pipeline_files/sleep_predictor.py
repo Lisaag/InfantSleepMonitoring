@@ -42,7 +42,7 @@ def show_prediction_bar():
     for i, cls in enumerate(classes):
         ax.barh(1, 1, left=i, color=colors[cls], height=0.2, edgecolor='black')
     for i, cls in enumerate(classes):
-        ax.barh(0, 1, left=i, cslor=colors[cls], height=0.2, edgecolor='black')
+        ax.barh(0, 1, left=i, color=colors[cls], height=0.2, edgecolor='black')
 
     # Step 4: Aesthetics
     ax.set_xlim(0, n_segments)
