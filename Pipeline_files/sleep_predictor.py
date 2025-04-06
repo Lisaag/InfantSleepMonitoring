@@ -49,7 +49,7 @@ def plot_confusion_matrix(true_labels = list(), predicted_labels = list()):
     plt.ylabel('True Labels')
     plt.title('Confusion Matrix')
 
-    plt.savefig(os.path.join(settings.predictions_path, "confusion_matrix.csv"), format='jpg', dpi=500)  
+    plt.savefig(os.path.join(settings.predictions_path, "confusion_matrix.jpg"), format='jpg', dpi=500)  
 
 def show_prediction_bar(true_classes, prediction_classes):
     mapping = {
