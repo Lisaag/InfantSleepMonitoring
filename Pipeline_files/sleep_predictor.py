@@ -136,6 +136,11 @@ def compute_sleep_states():
     true_classes = []
     prediction_classes = []
 
+
+    with open(os.path.join(settings.predictions_path, "configurations.csv"), "a") as file:
+        file.write("max_movement_fraction;REM_threshold;AS_REM_count;O_threshold;W_O_count\n")
+        file.write(str(max_movement_fraction) + ";" + str(REM_threshold) + ";" + str(AS_REM_count) + ";" + str(O_threshold) + ";" + str(W_O_count) + "\n")
+
     with open(os.path.join(settings.predictions_path, "sleep_predictions.csv"), "w") as file:
         file.write("min;state;C;O;CR;OR" + "\n")
 
