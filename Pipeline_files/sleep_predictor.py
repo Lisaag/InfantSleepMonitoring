@@ -74,7 +74,7 @@ def show_prediction_bar(true_classes, prediction_classes):
         Patch(facecolor=colors[2], edgecolor='black', label='W'),
         Patch(facecolor=colors[3], edgecolor='black', label='reject')
     ]
-    ax.legend(handles=legend_elements, loc='upper center', bbox_to_anchor=(0.5, 1.15), ncol=3)
+    ax.legend(handles=legend_elements, loc='upper center', bbox_to_anchor=(0.5, 1.15), ncol=4)
 
     plt.tight_layout()
     plt.savefig(os.path.join(settings.predictions_path,"plot.jpg"), dpi=500, format='jpg')  
