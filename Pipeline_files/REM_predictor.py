@@ -79,7 +79,7 @@ def run_inference():
         prediction = prediction.numpy().flatten().tolist()
         
         with open(os.path.join(settings.predictions_path, "predictions.csv"), "a") as file:
-            file.write(str(i)+";"+str(prediction),str("O"if open_count >= 3 else "C") + "\n")
+            file.write(str(i)+";"+str(prediction)+";"+str("O"if open_count >= 3 else "C") + "\n")
 
 
 run_inference()
