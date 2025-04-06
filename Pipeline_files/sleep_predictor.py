@@ -13,6 +13,8 @@ import ast
 
 import cv2
 
+import matplotlib.pyplot as plt
+
 max_movement_fraction = 0.2
 
 REM_threshold = 0.7 #threshold of when fragment is classified as REM
@@ -21,6 +23,32 @@ AS_REM_count = 5 #number of REMs in a minute to be classified as AS
 W_O_count = 20 #number os O in am inute to be classified as W
 
 frag_per_min = 40
+
+def show_prediction_bar():
+    # Step 1: Define the data
+    n_segments = 61
+    classes = np.random.choice([0, 1, 2], size=n_segments)  # Random classes for demo
+
+    # Step 2: Define class colors
+    colors = {
+        0: 'red',
+        1: 'green',
+        2: 'blue'
+    }
+
+    # Step 3: Create the plot
+    fig, ax = plt.subplots(figsize=(12, 2))
+
+    for i, cls in enumerate(classes):
+        ax.barh(0, 1, left=i, color=colors[cls], edgecolor='black')
+
+    # Step 4: Aesthetics
+    ax.set_xlim(0, n_segments)
+    ax.set_ylim(-0.5, 0.5)
+    ax.axis('off')  # Turn off axes for cleaner look
+
+    plt.tight_layout()
+    plt.savefig(os.path.join(settings.predictions_path,"plot.jpg"), dpi=500, format='jpg')  
 
 def is_valid_movement(frag_idx, positions):
     img_path = os.path.join(settings.eye_frag_path, settings.cur_vid[:-4], str(frag_idx), "0.jpg")
@@ -96,6 +124,8 @@ def compute_sleep_states():
 
         with open(os.path.join(settings.predictions_path, "sleep_predictions.csv"), "a") as file:
             file.write(str(minute) + ";" + str(sleep_state) + ";" + str(C) + ";" + str(O)+ ";" + str(C_R)+ ";" + str(O_R) + "\n")
+
+        show_prediction_bar()
 
             
 compute_sleep_states()
