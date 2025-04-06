@@ -32,7 +32,7 @@ def get_sample(fragment, frags_df):
 
     if not os.path.exists(os.path.join(save_path, str(fragment))):
         print(f"NO FRAGMENT AT INDEX {fragment}, {os.path.join(save_path, str(fragment))}")
-        return None
+        return []
     for i in range(settings.frame_stack_count):
         image = cv2.imread(os.path.join(save_path, str(fragment), str(i)+".jpg"), cv2.IMREAD_GRAYSCALE) 
         image = cv2.resize(image, (settings.img_size, settings.img_size))
@@ -63,7 +63,7 @@ def run_inference():
     for i in range(fragment_count + 1):
         sample, open_count = get_sample(i, frags_df)
 
-        if sample == None:
+        if len(sample) == 0:
             continue
 
         if(open_count >= 3):
