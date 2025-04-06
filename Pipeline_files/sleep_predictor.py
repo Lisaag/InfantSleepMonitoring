@@ -22,6 +22,11 @@ from sklearn.metrics import confusion_matrix
 
 max_movement_fraction = 1.0
 
+CREM_threshold = 0.25 #threshold of when fragment is classified as REM
+OREM_threshold = 0.25 #threshold of when fragment is classified as REM
+
+
+
 REM_threshold = 0.25 #threshold of when fragment is classified as REM
 O_threshold = 0 * (settings.fragment_length//45) #threshold of O count when fragment is classified as O
 AS_REM_count = 1#number of REMs in a minute to be classified as AS
@@ -126,7 +131,11 @@ def is_valid_movement(frag_idx, positions):
 
 
 def compute_sleep_states():
-    pred_df = pd.read_csv(os.path.join(settings.predictions_path, "predictions.csv"), delimiter=';')
+    if settings.is_combined:
+        pred_df = pd.read_csv(os.path.join(settings.predictions_path, "predictions.csv"), delimiter=';')
+    else:
+        pred_df = pd.read_csv(os.path.join(settings.predictions_path, "predictions_2.csv"), delimiter=';')
+
     frags_df = pd.read_csv(os.path.join(settings.eye_frag_path, settings.cur_vid[:-4], "info.csv"), delimiter=';')
     true_pred_df = pd.read_csv(os.path.join(settings.predictions_path, "true_predictions.csv"), delimiter=';')
 
@@ -161,19 +170,37 @@ def compute_sleep_states():
 
             open_count = row['open_count'].iloc[0]
 
-            row =  pred_df[pred_df['idx'] == fragment]
 
-            prediction = row['predictions'].iloc[0]
+            if(settings.is_combined):
+                row =  pred_df[pred_df['idx'] == fragment]
 
-            #TODO misschien andere threshold voor O_R vs C_R?
-            is_REM = True if prediction >= REM_threshold else False
+                prediction = row['predictions'].iloc[0]
 
-            if open_count > O_threshold:
-                if is_REM: O_R += 1
-                else: O += 1
+                #TODO misschien andere threshold voor O_R vs C_R?
+                is_REM = True if prediction >= REM_threshold else False
+
+                if open_count > O_threshold:
+                    if is_REM: O_R += 1
+                    else: O += 1
+                else:
+                    if is_REM: C_R += 1
+                    else: C += 1
             else:
-                if is_REM: C_R += 1
-                else: C += 1
+                row =  pred_df[pred_df['idx'] == fragment]
+
+                prediction = row['predictions'].iloc[0]
+                eye_class = row['class'].iloc[0]
+                if(eye_class == "O"):
+                    if prediction >= OREM_threshold:
+                        O_R += 1
+                    else:
+                        O += 1
+                else:
+                    if prediction >= CREM_threshold:
+                        C_R += 1
+                    else:
+                        C += 1
+
             
             print(f'O - {O}, OR - {O_R}, C - {C}, CR - {C_R} ')
         
