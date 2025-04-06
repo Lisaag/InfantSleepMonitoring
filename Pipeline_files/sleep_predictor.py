@@ -26,29 +26,34 @@ W_O_count = 20 #number os O in am inute to be classified as W
 
 frag_per_min = 40
 
-def show_prediction_bar():
-    # Step 1: Define the data
-    n_segments = 61
-    classes = np.random.choice([0, 1, 2], size=n_segments)  # Random classes for demo
+def show_prediction_bar(true_classes, prediction_classes):
+    mapping = {
+        'AS': 1,
+        'QS': 2,
+        'W': 3,
+        'reject': 4
+    }
+    true_classes = [mapping[item] for item in true_classes]
+    prediction_classes = [mapping[item] for item in prediction_classes]
 
     # Step 2: Define class colors
     colors = {
         0: 'red',
         1: 'green',
-        2: 'blue'
+        2: 'blue',
+        3: 'black'
     }
 
     # Step 3: Create the plot
     fig, ax = plt.subplots(figsize=(12, 4))
 
-
-    for i, cls in enumerate(classes):
+    for i, cls in enumerate(prediction_classes):
         ax.barh(0.4, 1, left=i, color=colors[cls], height=0.2, edgecolor='black')
-    for i, cls in enumerate(classes):
+    for i, cls in enumerate(true_classes):
         ax.barh(0, 1, left=i, color=colors[cls], height=0.2, edgecolor='black')
 
     # Step 4: Aesthetics
-    ax.set_xlim(0, n_segments)
+    ax.set_xlim(0, len(true_classes))
     #ax.set_ylim(-0.5, 0.5)
     #ax.axis('off')  # Turn off axes for cleaner look
         # Your y-ticks
@@ -95,21 +100,21 @@ def is_valid_movement(frag_idx, positions):
 
 
 def compute_sleep_states():
-    show_prediction_bar()
-    return
-
-
     pred_df = pd.read_csv(os.path.join(settings.predictions_path, "predictions.csv"), delimiter=';')
     frags_df = pd.read_csv(os.path.join(settings.eye_frag_path, settings.cur_vid[:-4], "info.csv"), delimiter=';')
+    true_pred_df = pd.read_csv(os.path.join(settings.predictions_path, "true_predictions.csv"), delimiter=';')
 
     last_frag_idx = frags_df.iloc[-1]["idx"]
     minute_count = last_frag_idx // frag_per_min  
 
+    true_classes = []
+    prediction_classes = []
 
     with open(os.path.join(settings.predictions_path, "sleep_predictions.csv"), "w") as file:
         file.write("min;state;C;O;CR;OR" + "\n")
 
     print(f"{minute_count} minutes detected")
+
     for minute in range(minute_count):
         print(f"processing minute {minute}")
 
@@ -149,10 +154,16 @@ def compute_sleep_states():
 
         print(f'minute {minute} classified as {sleep_state}')
 
+        prediction_classes.append(sleep_state)
+        row =  true_pred_df[true_pred_df['idx'] == minute]
+        true_classes.append(row['state'].iloc[0])
+
+
         with open(os.path.join(settings.predictions_path, "sleep_predictions.csv"), "a") as file:
             file.write(str(minute) + ";" + str(sleep_state) + ";" + str(C) + ";" + str(O)+ ";" + str(C_R)+ ";" + str(O_R) + "\n")
 
-        show_prediction_bar()
+
+    show_prediction_bar(true_classes, prediction_classes)
 
             
 compute_sleep_states()
