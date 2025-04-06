@@ -40,7 +40,7 @@ def show_prediction_bar():
     fig, ax = plt.subplots(figsize=(12, 4))
 
     for i, cls in enumerate(classes):
-        ax.barh(1, 1, left=i, color=colors[cls], height=0.2, edgecolor='black')
+        ax.barh(0.4, 1, left=i, color=colors[cls], height=0.2, edgecolor='black')
     for i, cls in enumerate(classes):
         ax.barh(0, 1, left=i, color=colors[cls], height=0.2, edgecolor='black')
 
