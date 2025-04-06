@@ -37,15 +37,17 @@ def show_prediction_bar():
     }
 
     # Step 3: Create the plot
-    fig, ax = plt.subplots(figsize=(12, 2))
+    fig, ax = plt.subplots(figsize=(12, 4))
 
     for i, cls in enumerate(classes):
-        ax.barh(0, 1, left=i, color=colors[cls], edgecolor='black')
+        ax.barh(1, 1, left=i, color=colors[cls], height=0.2, edgecolor='black')
+    for i, cls in enumerate(classes):
+        ax.barh(0, 1, left=i, cslor=colors[cls], height=0.2, edgecolor='black')
 
     # Step 4: Aesthetics
     ax.set_xlim(0, n_segments)
-    ax.set_ylim(-0.5, 0.5)
-    ax.axis('off')  # Turn off axes for cleaner look
+    #ax.set_ylim(-0.5, 0.5)
+    #ax.axis('off')  # Turn off axes for cleaner look
 
     plt.tight_layout()
     plt.savefig(os.path.join(settings.predictions_path,"plot.jpg"), dpi=500, format='jpg')  
