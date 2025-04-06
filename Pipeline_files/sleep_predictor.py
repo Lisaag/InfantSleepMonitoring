@@ -20,7 +20,7 @@ from matplotlib.patches import Patch
 import seaborn as sns
 from sklearn.metrics import confusion_matrix
 
-max_movement_fraction = 0.5
+max_movement_fraction = 0.3
 
 REM_threshold = 0.4 #threshold of when fragment is classified as REM
 O_threshold = 0 * (settings.fragment_length//45) #threshold of O count when fragment is classified as O
