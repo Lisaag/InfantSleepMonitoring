@@ -29,11 +29,10 @@ def is_valid_movement(frag_idx, positions):
 
     max_movement = max_movement_fraction * width
 
-    print("POS1")
     print(positions)
     positions = np.array(positions).T
-    print("POS2")
-    print(positions)
+    print (positions)
+
     min_x = min(positions[0]); max_x = max(positions[0])
     min_y = min(positions[1]); max_y = max(positions[1])
     if (max_x - min_x > max_movement):
@@ -65,14 +64,15 @@ def compute_sleep_states():
             if row.empty:
                 print(f'no fragment idx {fragment} found')
                 continue
-            if(not is_valid_movement(fragment, row['positions'].apply(ast.literal_eval))):
+            positions = row['positions'].apply(ast.literal_eval)
+            if(not is_valid_movement(fragment, positions.iloc[0])):
                 continue
 
             open_count = row['open_count']
 
             row =  pred_df[pred_df['idx'] == fragment]
 
-            prediction = (row['predictions'].apply(ast.literal_eval))
+            prediction = row['predictions']
 
             #TODO misschien andere threshold voor O_R vs C_R?
             is_REM = True if prediction >= REM_threshold else False
