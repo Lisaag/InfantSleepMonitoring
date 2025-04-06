@@ -47,7 +47,7 @@ def get_sample(fragment, frags_df):
         print(f'no fragment idx {fragment} found')
     open_count = row['open_count'].iloc[0]
 
-    return stacked_images, open_count
+    return [stacked_images], open_count
     
 
 def run_inference():
@@ -71,6 +71,7 @@ def run_inference():
             model = load_model_json(os.path.join(settings.model_path, 'open', settings.model_filename))
             model.load_weights(os.path.join(settings.model_path, 'open', settings.checkpoint_filename))
         else:
+            print("CLOSED")
             model = load_model_json(os.path.join(settings.model_path, 'closed', settings.model_filename))
             model.load_weights(os.path.join(settings.model_path, 'closed', settings.checkpoint_filename))
             
