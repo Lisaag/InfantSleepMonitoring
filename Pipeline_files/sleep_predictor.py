@@ -23,9 +23,9 @@ from sklearn.metrics import confusion_matrix
 max_movement_fraction = 0.9
 
 REM_threshold = 0.5 #threshold of when fragment is classified as REM
-O_threshold = 5 * (settings.fragment_length//45) #threshold of O count when fragment is classified as O
+O_threshold = 0 * (settings.fragment_length//45) #threshold of O count when fragment is classified as O
 AS_REM_count = 5 #number of REMs in a minute to be classified as AS
-W_O_count = 20 #number os O in am inute to be classified as W
+W_O_count = 5 #number os O in am inute to be classified as W
 
 frag_per_min = 40
 
@@ -181,10 +181,11 @@ def compute_sleep_states():
             sleep_state = "reject"
         else:
             sleep_state = 'QS'
-            if O_R+C_R >= AS_REM_count:
-                sleep_state='AS'
-            elif O >= W_O_count:
+            if O >= W_O_count:
                 sleep_state='W'
+            elif O_R+C_R >= AS_REM_count:
+                sleep_state='AS'
+
 
     
         print(f'minute {minute} classified as {sleep_state}')
