@@ -39,6 +39,7 @@ def show_prediction_bar():
     # Step 3: Create the plot
     fig, ax = plt.subplots(figsize=(12, 4))
 
+
     for i, cls in enumerate(classes):
         ax.barh(0.4, 1, left=i, color=colors[cls], height=0.2, edgecolor='black')
     for i, cls in enumerate(classes):
@@ -48,6 +49,13 @@ def show_prediction_bar():
     ax.set_xlim(0, n_segments)
     #ax.set_ylim(-0.5, 0.5)
     #ax.axis('off')  # Turn off axes for cleaner look
+        # Your y-ticks
+    yticks = [-0.1, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5]
+
+    # Custom labels (empty strings for ticks you don't want labeled)
+    ytick_labels = ['' for _ in yticks]
+    ytick_labels[yticks.index(0.0)] = 'True'
+    ytick_labels[yticks.index(0.4)] = 'Predictions'
 
     plt.tight_layout()
     plt.savefig(os.path.join(settings.predictions_path,"plot.jpg"), dpi=500, format='jpg')  
