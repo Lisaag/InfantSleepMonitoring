@@ -15,6 +15,8 @@ import cv2
 
 import matplotlib.pyplot as plt
 
+from matplotlib.patches import Patch
+
 max_movement_fraction = 0.2
 
 REM_threshold = 0.7 #threshold of when fragment is classified as REM
@@ -59,6 +61,14 @@ def show_prediction_bar():
 
     plt.yticks(yticks, ytick_labels)
     ax.tick_params(axis='y', which='both', length=0)
+
+    # Legend
+    legend_elements = [
+        Patch(facecolor=colors[0], edgecolor='black', label='Class 0'),
+        Patch(facecolor=colors[1], edgecolor='black', label='Class 1'),
+        Patch(facecolor=colors[2], edgecolor='black', label='Class 2')
+    ]
+    ax.legend(handles=legend_elements, loc='upper center', bbox_to_anchor=(0.5, 1.15), ncol=3)
 
     plt.tight_layout()
     plt.savefig(os.path.join(settings.predictions_path,"plot.jpg"), dpi=500, format='jpg')  
