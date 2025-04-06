@@ -188,7 +188,7 @@ def compute_sleep_states():
             else:
                 row =  pred_df[pred_df['idx'] == fragment]
 
-                prediction = row['predictions'].iloc[0]
+                prediction = float(row['predictions'].iloc[0])
                 eye_class = row['class'].iloc[0]
                 if(eye_class == "O"):
                     if prediction >= OREM_threshold:
