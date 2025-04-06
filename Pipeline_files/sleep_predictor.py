@@ -20,14 +20,14 @@ from matplotlib.patches import Patch
 import seaborn as sns
 from sklearn.metrics import confusion_matrix
 
-max_movement_fraction = 1.0
+max_movement_fraction = 0.9
 
-CREM_threshold = 0.25 #threshold of when fragment is classified as REM
-OREM_threshold = 0.25 #threshold of when fragment is classified as REM
+CREM_threshold = 0.3 #threshold of when fragment is classified as REM
+OREM_threshold = 0.3 #threshold of when fragment is classified as REM
 
 
 
-REM_threshold = 0.25 #threshold of when fragment is classified as REM
+REM_threshold = 0.3 #threshold of when fragment is classified as REM
 O_threshold = 0 * (settings.fragment_length//45) #threshold of O count when fragment is classified as O
 AS_REM_count = 1#number of REMs in a minute to be classified as AS
 W_O_count = 5 #number os O in am inute to be classified as W
@@ -146,7 +146,7 @@ def compute_sleep_states():
     prediction_classes = []
 
 
-    with open(os.path.join(settings.predictions_path, "configurations.csv"), "a") as file:
+    with open(os.path.join(settings.predictions_path, "configurations.csv"), "w") as file:
         file.write("max_movement_fraction;REM_threshold;AS_REM_count;O_threshold;W_O_count\n")
         file.write(str(max_movement_fraction) + ";" + str(REM_threshold) + ";" + str(AS_REM_count) + ";" + str(O_threshold) + ";" + str(W_O_count) + "\n")
 
