@@ -17,6 +17,9 @@ import matplotlib.pyplot as plt
 
 from matplotlib.patches import Patch
 
+import seaborn as sns
+from sklearn.metrics import confusion_matrix
+
 max_movement_fraction = 0.2
 
 REM_threshold = 0.7 #threshold of when fragment is classified as REM
@@ -25,6 +28,28 @@ AS_REM_count = 5 #number of REMs in a minute to be classified as AS
 W_O_count = 20 #number os O in am inute to be classified as W
 
 frag_per_min = 40
+
+def plot_confusion_matrix(true_labels = list(), predicted_labels = list()):
+    filtered_true_labels = []
+    filtered_predicted_labels = []
+    for i in (range(predicted_labels)):
+        if predicted_labels[i] != 'reject':
+            filtered_predicted_labels.append(predicted_labels[i])
+            filtered_true_labels.append(true_labels[i])
+
+    cm = confusion_matrix(filtered_true_labels, filtered_predicted_labels, labels=['AS', 'QS', 'W'])
+
+    plt.figure(figsize=(10, 7))
+    h = sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=np.arange(2), yticklabels=np.arange(2), annot_kws={"size": 16})
+    ticklabels = ['AS', 'QS', 'W']
+    h.set_xticklabels(ticklabels)
+    h.set_yticklabels(ticklabels)
+    
+    plt.xlabel('Predicted Labels')
+    plt.ylabel('True Labels')
+    plt.title('Confusion Matrix')
+
+    plt.savefig(os.path.join(settings.predictions_path, "confusion_matrix.csv"), format='jpg', dpi=500)  
 
 def show_prediction_bar(true_classes, prediction_classes):
     mapping = {
@@ -169,6 +194,7 @@ def compute_sleep_states():
 
 
     show_prediction_bar(true_classes, prediction_classes)
+    plot_confusion_matrix(true_classes, prediction_classes)
 
             
 compute_sleep_states()
