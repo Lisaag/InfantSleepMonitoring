@@ -47,7 +47,7 @@ def get_sample(fragment, frags_df):
         print(f'no fragment idx {fragment} found')
     open_count = row['open_count'].iloc[0]
 
-    return [stacked_images], open_count
+    return np.stack([stacked_images], axis=0), open_count
     
 
 def run_inference():
