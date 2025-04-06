@@ -58,6 +58,7 @@ def show_prediction_bar():
     ytick_labels[yticks.index(0.4)] = 'Predictions'
 
     plt.yticks(yticks, ytick_labels)
+    ax.tick_params(axis='y', which='both', length=0)
 
     plt.tight_layout()
     plt.savefig(os.path.join(settings.predictions_path,"plot.jpg"), dpi=500, format='jpg')  
