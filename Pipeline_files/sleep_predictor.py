@@ -74,6 +74,10 @@ def is_valid_movement(frag_idx, positions):
 
 
 def compute_sleep_states():
+    show_prediction_bar()
+    return
+
+
     pred_df = pd.read_csv(os.path.join(settings.predictions_path, "predictions.csv"), delimiter=';')
     frags_df = pd.read_csv(os.path.join(settings.eye_frag_path, settings.cur_vid[:-4], "info.csv"), delimiter=';')
 
