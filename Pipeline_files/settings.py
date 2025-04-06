@@ -1,6 +1,6 @@
 import os
 
-cur_vid = "228-processed.mp4"
+cur_vid = "929-processed.mp4"
 fragment_length = 90 if cur_vid[-4:] == ".mov" else 45
 
 frame_stack_count = 6

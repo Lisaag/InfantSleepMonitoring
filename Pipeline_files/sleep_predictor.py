@@ -13,7 +13,7 @@ import ast
 
 import cv2
 
-max_movement_fraction = 0.6
+max_movement_fraction = 0.2
 
 REM_threshold = 0.7 #threshold of when fragment is classified as REM
 O_threshold = 5 * (settings.fragment_length//45) #threshold of O count when fragment is classified as O
