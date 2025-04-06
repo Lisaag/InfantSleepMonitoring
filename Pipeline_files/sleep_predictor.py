@@ -32,7 +32,7 @@ frag_per_min = 40
 def plot_confusion_matrix(true_labels = list(), predicted_labels = list()):
     filtered_true_labels = []
     filtered_predicted_labels = []
-    for i in (range(predicted_labels)):
+    for i in (range(len(predicted_labels))):
         if predicted_labels[i] != 'reject':
             filtered_predicted_labels.append(predicted_labels[i])
             filtered_true_labels.append(true_labels[i])
