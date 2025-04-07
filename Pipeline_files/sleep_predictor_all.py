@@ -167,7 +167,7 @@ def compute_sleep_states(cur_vid):
                 print(f'no fragment idx {fragment} found')
                 continue
             positions = row['positions'].apply(ast.literal_eval)
-            if(not is_valid_movement(fragment, positions.iloc[0]), cur_vid):
+            if(not is_valid_movement(fragment, positions.iloc[0], cur_vid)):
                 continue
 
             open_count = row['open_count'].iloc[0]
