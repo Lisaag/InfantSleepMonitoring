@@ -237,7 +237,7 @@ def compute_sleep_states(cur_vid):
 all_true_classes = []
 all_predicted_classes = []
 for vid in settings.all_vids:          
-    true_classes, prediction_classes = compute_sleep_states(vid)
+    true_classes, prediction_classes = compute_sleep_states(vid[0:-4])
     all_true_classes += true_classes
     all_predicted_classes += prediction_classes
 plot_confusion_matrix(all_true_classes, all_predicted_classes)
