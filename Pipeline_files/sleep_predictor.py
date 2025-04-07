@@ -44,7 +44,7 @@ def plot_confusion_matrix(true_labels = list(), predicted_labels = list()):
 
     cm = confusion_matrix(filtered_true_labels, filtered_predicted_labels, labels=['AS', 'QS', 'W'])
 
-    plt.figure(figsize=(10, 7))
+    plt.figure(figsize=(10, 3))
     h = sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=np.arange(3), yticklabels=np.arange(3), annot_kws={"size": 16})
     ticklabels = ['AS', 'QS', 'W']
     h.set_xticklabels(ticklabels)
