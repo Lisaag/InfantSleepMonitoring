@@ -78,21 +78,21 @@ def show_prediction_bar(true_classes, prediction_classes):
     fig, ax = plt.subplots(figsize=(12, 4))
 
     for i, cls in enumerate(prediction_classes):
-        ax.barh(0.3, 1, left=i, color=colors[cls], height=0.2, edgecolor='black')
+        ax.barh(0.15, 1, left=i, color=colors[cls], height=0.1, edgecolor='black')
     for i, cls in enumerate(true_classes):
-        ax.barh(0, 1, left=i, color=colors[cls], height=0.2, edgecolor='black')
+        ax.barh(0, 1, left=i, color=colors[cls], height=0.1, edgecolor='black')
 
     # Step 4: Aesthetics
     ax.set_xlim(0, len(true_classes))
     #ax.set_ylim(-0.5, 0.5)
     #ax.axis('off')  # Turn off axes for cleaner look
         # Your y-ticks
-    yticks = [-0.1, 0.0, 0.1, 0.2, 0.3, 0.4]
+    yticks = [-0.05, 0.0, 0.05, 0.1, 0.15, 0.2]
 
     # Custom labels (empty strings for ticks you don't want labeled)
     ytick_labels = ['' for _ in yticks]
     ytick_labels[yticks.index(0.0)] = 'True'
-    ytick_labels[yticks.index(0.3)] = 'Predictions'
+    ytick_labels[yticks.index(0.15)] = 'Predictions'
 
     plt.yticks(yticks, ytick_labels)
     ax.tick_params(axis='y', which='both', length=0)
