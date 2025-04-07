@@ -67,9 +67,9 @@ def show_prediction_bar(true_classes, prediction_classes):
 
     # Step 2: Define class colors
     colors = {
-        0: 'red',
-        1: 'green',
-        2: 'blue',
+        0: '#ff3333',
+        1: '#73ff73',
+        2: '#7373ff',
         3: 'black'
     }
 
@@ -77,9 +77,9 @@ def show_prediction_bar(true_classes, prediction_classes):
     fig, ax = plt.subplots(figsize=(12, 2))
 
     for i, cls in enumerate(prediction_classes):
-        ax.barh(0.15, 1, left=i, color=colors[cls], height=0.1, edgecolor='black')
+        ax.barh(0.15, 1, left=i, color=colors[cls], height=0.1, edgecolor='#cfcfcf')
     for i, cls in enumerate(true_classes):
-        ax.barh(0, 1, left=i, color=colors[cls], height=0.1, edgecolor='black')
+        ax.barh(0, 1, left=i, color=colors[cls], height=0.1, edgecolor='#cfcfcf')
 
     # Step 4: Aesthetics
     ax.set_xlim(0, len(true_classes))
