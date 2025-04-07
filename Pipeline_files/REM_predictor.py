@@ -66,7 +66,7 @@ def run_inference():
         if len(sample) == 0:
             continue
 
-        if(open_count >= 1):
+        if(open_count >= 3):
             print("OPEN")
             model = load_model_json(os.path.join(settings.model_path, 'open', settings.model_filename))
             model.load_weights(os.path.join(settings.model_path, 'open', settings.checkpoint_filename))
@@ -79,7 +79,7 @@ def run_inference():
         prediction = prediction.numpy().flatten().tolist()
         
         with open(os.path.join(settings.predictions_path, "predictions_2.csv"), "a") as file:
-            file.write(str(i)+";"+str(prediction[0])+";"+str("O"if open_count >= 1 else "C") + "\n")
+            file.write(str(i)+";"+str(prediction[0])+";"+str("O"if open_count >= 3 else "C") + "\n")
 
 
 run_inference()

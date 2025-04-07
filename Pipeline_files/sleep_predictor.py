@@ -22,8 +22,8 @@ from sklearn.metrics import confusion_matrix
 
 max_movement_fraction = 0.9
 
-CREM_threshold = 0.3 #threshold of when fragment is classified as REM
-OREM_threshold = 0.3 #threshold of when fragment is classified as REM
+CREM_threshold = 0.4 #threshold of when fragment is classified as REM
+OREM_threshold = 0.4 #threshold of when fragment is classified as REM
 
 
 REM_threshold = 0.3 #threshold of when fragment is classified as REM
@@ -147,8 +147,8 @@ def compute_sleep_states():
 
 
     with open(os.path.join(settings.predictions_path, "configurations.csv"), "w") as file:
-        file.write("max_movement_fraction;REM_threshold;AS_REM_count;O_threshold;W_O_count\n")
-        file.write(str(max_movement_fraction) + ";" + str(REM_threshold) + ";" + str(AS_REM_count) + ";" + str(O_threshold) + ";" + str(W_O_count) + "\n")
+        file.write("max_movement_fraction;REM_threshold;CREM_threshold;OREM_threshold;AS_REM_count;O_threshold;W_O_count\n")
+        file.write(str(max_movement_fraction) + ";" + str(REM_threshold) + ";" + str(CREM_threshold) + ";" + str(OREM_threshold) + ";" + str(AS_REM_count) + ";" + str(O_threshold) + ";" + str(W_O_count) + "\n")
 
     with open(os.path.join(settings.predictions_path, "sleep_predictions.csv"), "w") as file:
         file.write("min;state;C;O;CR;OR" + "\n")
