@@ -9,7 +9,7 @@ img_size = 64
 model_filename = "model_architecture.json"
 checkpoint_filename = "checkpoint.model.keras"
 
-is_combined = True
+is_combined = False
 
 eye_loc_path = os.path.join(os.path.abspath(os.getcwd()), "PIPELINE", "loc")
 model_path = os.path.join(os.path.abspath(os.getcwd()), "PIPELINE", "model")
