@@ -26,9 +26,9 @@ CREM_threshold = 0.3 #threshold of when fragment is classified as REM
 OREM_threshold = 0.3#threshold of when fragment is classified as REM
 
 
-REM_threshold = 0.3 #threshold of when fragment is classified as REM
+REM_threshold = 0.8 #threshold of when fragment is classified as REM
 O_threshold = 0 * (settings.fragment_length//45) #threshold of O count when fragment is classified as O
-AS_REM_count = 4#number of REMs in a minute to be classified as AS
+AS_REM_count = 5#number of REMs in a minute to be classified as AS
 W_O_count = 5 #number os O in am inute to be classified as W
 
 frag_per_min = 40
