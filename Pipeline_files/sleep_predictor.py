@@ -68,7 +68,7 @@ def show_prediction_bar(true_classes, prediction_classes):
     # Step 2: Define class colors
     colors = {
         0: '#ff3333',
-        1: '#73ff73',
+        1: '#87e087',
         2: '#7373ff',
         3: 'black'
     }
@@ -77,9 +77,9 @@ def show_prediction_bar(true_classes, prediction_classes):
     fig, ax = plt.subplots(figsize=(12, 2))
 
     for i, cls in enumerate(prediction_classes):
-        ax.barh(0.15, 1, left=i, color=colors[cls], height=0.1, edgecolor='#cfcfcf')
+        ax.barh(0.15, 1, left=i, color=colors[cls], height=0.1)
     for i, cls in enumerate(true_classes):
-        ax.barh(0, 1, left=i, color=colors[cls], height=0.1, edgecolor='#cfcfcf')
+        ax.barh(0, 1, left=i, color=colors[cls], height=0.1)
 
     # Step 4: Aesthetics
     ax.set_xlim(0, len(true_classes))
@@ -103,7 +103,7 @@ def show_prediction_bar(true_classes, prediction_classes):
         Patch(facecolor=colors[2], edgecolor='black', label='W'),
         Patch(facecolor=colors[3], edgecolor='black', label='reject')
     ]
-    ax.legend(handles=legend_elements, loc='upper center', bbox_to_anchor=(0.5, 1.3), ncol=4)
+    ax.legend(handles=legend_elements, loc='upper center', bbox_to_anchor=(0.5, 1.4), ncol=4)
 
     plt.tight_layout()
     plt.savefig(os.path.join(settings.predictions_path,"plot.jpg"), dpi=500, format='jpg')  
