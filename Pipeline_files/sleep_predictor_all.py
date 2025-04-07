@@ -22,8 +22,8 @@ from sklearn.metrics import confusion_matrix
 
 max_movement_fraction = 0.9
 
-CREM_threshold = 0.7 #threshold of when fragment is classified as REM
-OREM_threshold = 0.7#threshold of when fragment is classified as REM
+CREM_threshold = 0.6 #threshold of when fragment is classified as REM
+OREM_threshold = 0.6#threshold of when fragment is classified as REM
 
 
 REM_threshold = 0.5 #threshold of when fragment is classified as REM
