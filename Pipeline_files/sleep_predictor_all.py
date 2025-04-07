@@ -112,7 +112,7 @@ def show_prediction_bar(true_classes, prediction_classes, cur_vid):
     plt.savefig(os.path.join(settings.predictions_path,cur_vid,"plot.jpg"), dpi=500, format='jpg')  
 
 def is_valid_movement(frag_idx, positions, cur_vid):
-    img_path = os.path.join(settings.eye_frag_path, cur_vid[:-4], str(frag_idx), "0.jpg")
+    img_path = os.path.join(settings.eye_frag_path, cur_vid, str(frag_idx), "0.jpg")
     image = cv2.imread(img_path)
     height, width, channels = image.shape
 
@@ -138,7 +138,7 @@ def compute_sleep_states(cur_vid):
     else:
         pred_df = pd.read_csv(os.path.join(settings.predictions_path,cur_vid, "predictions_2.csv"), delimiter=';')
 
-    frags_df = pd.read_csv(os.path.join(settings.eye_frag_path, cur_vid[:-4], "info.csv"), delimiter=';')
+    frags_df = pd.read_csv(os.path.join(settings.eye_frag_path, cur_vid, "info.csv"), delimiter=';')
     true_pred_df = pd.read_csv(os.path.join(settings.predictions_path,cur_vid, "true_predictions.csv"), delimiter=';')
 
     last_frag_idx = frags_df.iloc[-1]["idx"]
