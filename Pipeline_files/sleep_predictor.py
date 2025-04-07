@@ -95,6 +95,7 @@ def show_prediction_bar(true_classes, prediction_classes):
 
     plt.yticks(yticks, ytick_labels)
     ax.tick_params(axis='y', which='both', length=0)
+    ax.tick_params(axis='x', which='both', length=0)
 
     # Legend
     legend_elements = [
@@ -216,9 +217,10 @@ def compute_sleep_states():
     
         print(f'minute {minute} classified as {sleep_state}')
 
-        prediction_classes.append(sleep_state)
         row =  true_pred_df[true_pred_df['idx'] == minute]
         true_classes.append(row['state'].iloc[0])
+        if row['state'].iloc[0] == "reject": sleep_state = "reject"
+        prediction_classes.append(sleep_state)  
 
 
         with open(os.path.join(settings.predictions_path, "sleep_predictions.csv"), "a") as file:
