@@ -44,7 +44,7 @@ def plot_confusion_matrix(true_labels = list(), predicted_labels = list()):
 
     cm = confusion_matrix(filtered_true_labels, filtered_predicted_labels, labels=['AS', 'QS', 'W'])
 
-    plt.figure(figsize=(10, 3))
+    plt.figure(figsize=(10, 7))
     h = sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=np.arange(3), yticklabels=np.arange(3), annot_kws={"size": 16})
     ticklabels = ['AS', 'QS', 'W']
     h.set_xticklabels(ticklabels)
@@ -75,7 +75,7 @@ def show_prediction_bar(true_classes, prediction_classes):
     }
 
     # Step 3: Create the plot
-    fig, ax = plt.subplots(figsize=(12, 4))
+    fig, ax = plt.subplots(figsize=(12, 2))
 
     for i, cls in enumerate(prediction_classes):
         ax.barh(0.15, 1, left=i, color=colors[cls], height=0.1, edgecolor='black')
