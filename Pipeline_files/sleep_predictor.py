@@ -55,7 +55,7 @@ def plot_confusion_matrix(true_labels = list(), predicted_labels = list()):
     plt.ylabel('True Labels')
     plt.title('Confusion Matrix')
 
-    plt.savefig(os.path.join(settings.predictions_path, "confusion_matrix.jpg"), format='jpg', dpi=500)  
+    plt.savefig(os.path.join(settings.predictions_path, settings.cur_vid[:-4], "confusion_matrix.jpg"), format='jpg', dpi=500)  
 
 def show_prediction_bar(true_classes, prediction_classes):
     mapping = {
@@ -109,7 +109,7 @@ def show_prediction_bar(true_classes, prediction_classes):
     ax.legend(handles=legend_elements, loc='upper center', bbox_to_anchor=(0.5, 1.4), ncol=4)
 
     plt.tight_layout()
-    plt.savefig(os.path.join(settings.predictions_path,"plot.jpg"), dpi=500, format='jpg')  
+    plt.savefig(os.path.join(settings.predictions_path,settings.cur_vid[:-4],"plot.jpg"), dpi=500, format='jpg')  
 
 def is_valid_movement(frag_idx, positions):
     img_path = os.path.join(settings.eye_frag_path, settings.cur_vid[:-4], str(frag_idx), "0.jpg")
@@ -134,12 +134,12 @@ def is_valid_movement(frag_idx, positions):
 
 def compute_sleep_states():
     if settings.is_combined:
-        pred_df = pd.read_csv(os.path.join(settings.predictions_path, "predictions.csv"), delimiter=';')
+        pred_df = pd.read_csv(os.path.join(settings.predictions_path,settings.cur_vid[:-4], "predictions.csv"), delimiter=';')
     else:
-        pred_df = pd.read_csv(os.path.join(settings.predictions_path, "predictions_2.csv"), delimiter=';')
+        pred_df = pd.read_csv(os.path.join(settings.predictions_path,settings.cur_vid[:-4], "predictions_2.csv"), delimiter=';')
 
     frags_df = pd.read_csv(os.path.join(settings.eye_frag_path, settings.cur_vid[:-4], "info.csv"), delimiter=';')
-    true_pred_df = pd.read_csv(os.path.join(settings.predictions_path, "true_predictions.csv"), delimiter=';')
+    true_pred_df = pd.read_csv(os.path.join(settings.predictions_path,settings.cur_vid[:-4], "true_predictions.csv"), delimiter=';')
 
     last_frag_idx = frags_df.iloc[-1]["idx"]
     minute_count = last_frag_idx // frag_per_min  
@@ -148,11 +148,11 @@ def compute_sleep_states():
     prediction_classes = []
 
 
-    with open(os.path.join(settings.predictions_path, "configurations.csv"), "w") as file:
+    with open(os.path.join(settings.predictions_path,settings.cur_vid[:-4], "configurations.csv"), "w") as file:
         file.write("max_movement_fraction;REM_threshold;CREM_threshold;OREM_threshold;AS_REM_count;O_threshold;W_O_count\n")
         file.write(str(max_movement_fraction) + ";" + str(REM_threshold) + ";" + str(CREM_threshold) + ";" + str(OREM_threshold) + ";" + str(AS_REM_count) + ";" + str(O_threshold) + ";" + str(W_O_count) + "\n")
 
-    with open(os.path.join(settings.predictions_path, "sleep_predictions.csv"), "w") as file:
+    with open(os.path.join(settings.predictions_path,settings.cur_vid[:-4], "sleep_predictions.csv"), "w") as file:
         file.write("min;state;C;O;CR;OR" + "\n")
 
     print(f"{minute_count} minutes detected")
@@ -225,7 +225,7 @@ def compute_sleep_states():
         prediction_classes.append(sleep_state)  
 
 
-        with open(os.path.join(settings.predictions_path, "sleep_predictions.csv"), "a") as file:
+        with open(os.path.join(settings.predictions_path,settings.cur_vid[:-4], "sleep_predictions.csv"), "a") as file:
             file.write(str(minute) + ";" + str(sleep_state) + ";" + str(C) + ";" + str(O)+ ";" + str(C_R)+ ";" + str(O_R) + "\n")
 
 

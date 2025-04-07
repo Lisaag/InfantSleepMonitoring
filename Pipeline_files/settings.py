@@ -15,6 +15,6 @@ is_combined = True
 eye_loc_path = os.path.join(os.path.abspath(os.getcwd()), "PIPELINE", "loc")
 model_path = os.path.join(os.path.abspath(os.getcwd()), "PIPELINE", "model")
 eye_frag_path = os.path.join(os.path.abspath(os.getcwd()), "PIPELINE", "frags")
-predictions_path = os.path.join(os.path.abspath(os.getcwd()), "PIPELINE", "predictions", cur_vid[:-4])
+predictions_path = os.path.join(os.path.abspath(os.getcwd()), "PIPELINE", "predictions")
 yolo_weights_path = os.path.join(os.path.abspath(os.getcwd()), "runs", "OC", "open-closed", "weights", "best.pt")
 video_path = os.path.join(os.path.abspath(os.getcwd()), cur_vid)
