@@ -22,13 +22,13 @@ from sklearn.metrics import confusion_matrix
 
 max_movement_fraction = 0.9
 
-CREM_threshold = 0.62 #threshold of when fragment is classified as REM
+CREM_threshold = 0.55 #threshold of when fragment is classified as REM
 OREM_threshold = 0.75#threshold of when fragment is classified as REM
 
 
 REM_threshold = 0.5 #threshold of when fragment is classified as REM
 O_threshold = 3 * (settings.fragment_length//45) #threshold of O count when fragment is classified as O
-AS_REM_count = 3#number of REMs in a minute to be classified as AS
+AS_REM_count = 4#number of REMs in a minute to be classified as AS
 W_O_count = 5 #number os O in am inute to be classified as W
 
 frag_per_min = 40
