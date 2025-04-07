@@ -20,10 +20,10 @@ from matplotlib.patches import Patch
 import seaborn as sns
 from sklearn.metrics import confusion_matrix
 
-max_movement_fraction = 0.4
+max_movement_fraction = 0.9
 
-CREM_threshold = 0.3 #threshold of when fragment is classified as REM
-OREM_threshold = 0.3#threshold of when fragment is classified as REM
+CREM_threshold = 0.75 #threshold of when fragment is classified as REM
+OREM_threshold = 0.75#threshold of when fragment is classified as REM
 
 
 REM_threshold = 0.75 #threshold of when fragment is classified as REM
