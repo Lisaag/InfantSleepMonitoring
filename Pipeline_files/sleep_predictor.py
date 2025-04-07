@@ -26,7 +26,6 @@ CREM_threshold = 0.3 #threshold of when fragment is classified as REM
 OREM_threshold = 0.3 #threshold of when fragment is classified as REM
 
 
-
 REM_threshold = 0.3 #threshold of when fragment is classified as REM
 O_threshold = 0 * (settings.fragment_length//45) #threshold of O count when fragment is classified as O
 AS_REM_count = 5#number of REMs in a minute to be classified as AS
@@ -104,7 +103,7 @@ def show_prediction_bar(true_classes, prediction_classes):
         Patch(facecolor=colors[2], edgecolor='black', label='W'),
         Patch(facecolor=colors[3], edgecolor='black', label='reject')
     ]
-    ax.legend(handles=legend_elements, loc='upper center', bbox_to_anchor=(0.5, 1.15), ncol=4)
+    ax.legend(handles=legend_elements, loc='upper center', bbox_to_anchor=(0.5, 1.3), ncol=4)
 
     plt.tight_layout()
     plt.savefig(os.path.join(settings.predictions_path,"plot.jpg"), dpi=500, format='jpg')  
