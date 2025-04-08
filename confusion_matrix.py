@@ -13,7 +13,7 @@ def plot_confusion_matrix(true_labels = list(), predicted_labels = list()):
             filtered_predicted_labels.append(predicted_labels[i])
             filtered_true_labels.append(true_labels[i])
 
-    cm = [[137, 21, 2],[14, 37, 0],[6, 0, 14]]
+    cm = [[131, 28, 2],[13, 38, 0],[5, 1, 14]]
     plt.figure(figsize=(10, 7))
     h = sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=np.arange(3), yticklabels=np.arange(3), annot_kws={"size": 16})
     ticklabels = ['AS', 'QS', 'W']
