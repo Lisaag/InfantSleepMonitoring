@@ -60,13 +60,14 @@ for vid in range(2, 19):
 
     frame_count = get_frame_count(vid_path) 
     fragment_count = int((frame_count - (frame_count % settings.fragment_length)) / settings.fragment_length)
-    
+
     for i in range(0, fragment_count):
-        print(f'Processing fragment {i} out of {fragment_count}')
-        boxes, classes = get_boxes(df_bboxes, i)
+        fragment = i + ((vid-2) * 120) #120 1.5 second fragments in all 3 mins
+        print(f'Processing fragment {fragment} out of {fragment_count}')
+        boxes, classes = get_boxes(df_bboxes, fragment)
         if boxes is None: 
-            print(f"NO DETECTIONS FOR FRAGMENT {i}")
+            print(f"NO DETECTIONS FOR FRAGMENT {fragment}")
             continue
 
         with open(os.path.join(fragment_path, "info.csv"), "a") as file:
-            file.write(str(i) + ";" + str([[(x1+x2)//2, (y1+y2)//2] for box in boxes if box is not None for x1, y1, x2, y2 in [box]])+ ";" + str(classes.count(1.0)) + "\n")
+            file.write(str(fragment) + ";" + str([[(x1+x2)//2, (y1+y2)//2] for box in boxes if box is not None for x1, y1, x2, y2 in [box]])+ ";" + str(classes.count(1.0)) + "\n")

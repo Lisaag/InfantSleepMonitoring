@@ -80,9 +80,9 @@ def get_crop_size(bboxes):
 
     return bbox
 
-def crop_eye(frag_idx, box):
+def crop_eye(frag_idx, box, vid_path, fragment):
     #print(f'Processing {settings.video_path}, fragment index {frag_idx}, frame {frag_idx*settings.fragment_length}')
-    cap = cv2.VideoCapture(settings.video_path)
+    cap = cv2.VideoCapture(vid_path)
 
     current_frame_idx = settings.fragment_length * frag_idx
 
@@ -97,7 +97,7 @@ def crop_eye(frag_idx, box):
 
         x1, y1, x2, y2 = box
 
-        save_path = os.path.join(settings.eye_frag_path, settings.cur_vid[:-4], str(frag_idx))
+        save_path = os.path.join(settings.eye_frag_path, settings.cur_vid[:-4], str(fragment))
         if not os.path.exists(save_path): os.makedirs(save_path)
 
         cv2.imwrite(os.path.join(save_path, str(i)+".jpg"), frame[y1:y2, x1:x2])
@@ -148,15 +148,20 @@ last_index = max(0, get_last_index(fragment_path) - 1) #in case last one failed,
 
 frame_count = get_frame_count() 
 fragment_count = int((frame_count - (frame_count % settings.fragment_length)) / settings.fragment_length)
-for i in range(last_index, fragment_count):
-    print(f'Processing fragment {i} out of {fragment_count}')
-    boxes, classes = get_boxes(df_bboxes, i)
-    if boxes is None: 
-        print(f"NO DETECTIONS FOR FRAGMENT {i}")
-        continue
-    crop_box = get_crop_size(boxes)
+for vid in range(2, 19):  
+    vid_path = os.path.join(os.path.abspath(os.getcwd()), str(vid)+"_out.mp4")
 
-    with open(os.path.join(fragment_path, "info.csv"), "a") as file:
-        file.write(str(i) + ";" + str([[(x1+x2)//2, (y1+y2)//2] for box in boxes if box is not None for x1, y1, x2, y2 in [box]])+ ";" + str(classes.count(1.0)) + "\n")
+    for i in range(0, fragment_count):
+        fragment = i + ((vid-2) * 120) #120 1.5 second fragments in all 3 mins
 
-    crop_eye(i, crop_box)
+        print(f'Processing fragment {fragment} out of {fragment_count}')
+        boxes, classes = get_boxes(df_bboxes, fragment)
+        if boxes is None: 
+            print(f"NOßß DETECTIONS FOR FRAGMENT {fragment}")
+            continue
+        crop_box = get_crop_size(boxes)
+
+        with open(os.path.join(fragment_path, "info.csv"), "a") as file:
+            file.write(str(fragment) + ";" + str([[(x1+x2)//2, (y1+y2)//2] for box in boxes if box is not None for x1, y1, x2, y2 in [box]])+ ";" + str(classes.count(1.0)) + "\n")
+
+        crop_eye(i, crop_box, vid_path, fragment)
