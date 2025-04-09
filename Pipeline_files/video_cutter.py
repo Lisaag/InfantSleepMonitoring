@@ -22,9 +22,10 @@ def get_last_index(directory):
     print(f'NEXT FOLDER {next_folder}')
     return int(next_folder)
 
-def get_frame_count():
-    cap = cv2.VideoCapture(settings.video_path)
+def get_frame_count(path):
+    cap = cv2.VideoCapture(path)
     return int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    
 
 def get_valid_center_index(bboxes):
     center_index = len(bboxes) // 2
@@ -144,12 +145,14 @@ with open(os.path.join(fragment_path, "info.csv"), "w") as file:
 
 
 df_bboxes = pd.read_csv(os.path.join(settings.eye_loc_path, settings.cur_vid +".csv"), delimiter=';')
-last_index = max(0, get_last_index(fragment_path) - 1) #in case last one failed, we go back to previous
+#last_index = max(0, get_last_index(fragment_path) - 1) #in case last one failed, we go back to previous
 
-frame_count = get_frame_count() 
-fragment_count = int((frame_count - (frame_count % settings.fragment_length)) / settings.fragment_length)
 for vid in range(2, 19):  
+    print(f'PROCESSING VIDEO {vid}_out.mp4')
+
     vid_path = os.path.join(os.path.abspath(os.getcwd()), str(vid)+"_out.mp4")
+    frame_count = get_frame_count(vid_path) 
+    fragment_count = int((frame_count - (frame_count % settings.fragment_length)) / settings.fragment_length)
 
     for i in range(0, fragment_count):
         fragment = i + ((vid-2) * 120) #120 1.5 second fragments in all 3 mins
@@ -157,7 +160,7 @@ for vid in range(2, 19):
         print(f'Processing fragment {fragment} out of {fragment_count}')
         boxes, classes = get_boxes(df_bboxes, fragment)
         if boxes is None: 
-            print(f"NOßß DETECTIONS FOR FRAGMENT {fragment}")
+            print(f"NO DETECTIONS FOR FRAGMENT {fragment}")
             continue
         crop_box = get_crop_size(boxes)
 
