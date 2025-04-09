@@ -28,10 +28,33 @@ OREM_threshold = 0.75#threshold of when fragment is classified as REM
 
 REM_threshold = 0.5 #threshold of when fragment is classified as REM
 O_threshold = 3 * (settings.fragment_length//45) #threshold of O count when fragment is classified as O
-AS_REM_count = 3#number of REMs in a minute to be classified as AS
+AS_REM_count = 0#number of REMs in a minute to be classified as AS
 W_O_count = 5 #number os O in am inute to be classified as W
 
 frag_per_min = 40
+
+def plot_pr_curve(precisions, recalls):
+    sns.set_style("whitegrid")
+
+    plt.figure(figsize=(8, 6))
+    plt.plot(recalls, precisions, marker='.')
+
+    # Labels and title
+    plt.xlabel("Recall", fontsize=12)
+    plt.ylabel("Precision", fontsize=12)
+    plt.title("Precision-Recall Curve", fontsize=14)
+    plt.legend()
+    plt.savefig(os.path.join(settings.predictions_path,"prcurve.jpg"), format='jpg', dpi=500) 
+
+def get_metrics(target_class, predictions, ground_truth):
+    TP = sum((p == target_class and g == target_class) for p, g in zip(predictions, ground_truth))
+    FP = sum((p == target_class and g != target_class) for p, g in zip(predictions, ground_truth))
+    FN = sum((p != target_class and g == target_class) for p, g in zip(predictions, ground_truth))
+
+    precision = TP/(TP+FP)
+    recall = TP/(TP+FN)
+
+    return precision, recall
 
 def plot_confusion_matrix(true_labels = list(), predicted_labels = list()):
     print(true_labels)
@@ -234,13 +257,28 @@ def compute_sleep_states(cur_vid):
 
     return true_classes, prediction_classes
 
-all_true_classes = []
-all_predicted_classes = []
-for vid in settings.all_vids:          
-    true_classes, prediction_classes = compute_sleep_states(vid[0:-4])
-    all_true_classes += true_classes
-    all_predicted_classes += prediction_classes
-plot_confusion_matrix(all_true_classes, all_predicted_classes)
+
+
+precisions = []; recalls = []
+for i in range(0, 15):
+    REM_threshold = i  
+
+    all_true_classes = []
+    all_predicted_classes = []
+    for vid in settings.all_vids:          
+        true_classes, prediction_classes = compute_sleep_states(vid[0:-4])
+        all_true_classes += true_classes
+        all_predicted_classes += prediction_classes
+
+    plot_confusion_matrix(all_true_classes, all_predicted_classes)
+
+
+    precisionAS, recallAS = get_metrics("AS", prediction_classes, true_classes)
+
+    precisions.append(precisionAS)
+    recalls.append(recallAS)
+
+plot_pr_curve(precisions, recalls)
 
 
 
