@@ -4,16 +4,16 @@ import os
 from collections import defaultdict
 import settings
 
-def get_frame_count():
-    cap = cv2.VideoCapture(settings.video_path)
+def get_frame_count(path):
+    cap = cv2.VideoCapture(path)
     return int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     
 
-def track_vid_aabb(frag_idx:int):
+def track_vid_aabb(frag_idx:int, vid_path):
     model = YOLO(settings.yolo_weights_path)
 
     print(f'Processing {settings.video_path}, fragment index {frag_idx}, frame {frag_idx*settings.fragment_length}')
-    cap = cv2.VideoCapture(settings.video_path)
+    cap = cv2.VideoCapture(vid_path)
 
     box_history = defaultdict(lambda: {})
 
@@ -58,7 +58,7 @@ def track_vid_aabb(frag_idx:int):
     
     return box_history
 
-def save_boxes_csv(boxes:defaultdict, fragment_idx:int):
+def save_boxes_csv(boxes:defaultdict, fragment_idx:int, vid_idx:int):
     starting_frame_idx = settings.fragment_length * fragment_idx
     for i in range(starting_frame_idx, starting_frame_idx + settings.fragment_length):
         frame_boxes = {}; frame_classes = {}; frame_confs = {}   
@@ -69,19 +69,21 @@ def save_boxes_csv(boxes:defaultdict, fragment_idx:int):
                 frame_boxes[detection] = box; frame_classes[detection] = cls; frame_confs[detection] = conf
     
         with open(os.path.join(settings.eye_loc_path, settings.cur_vid+".csv"), "a") as file:
-            file.write(str(i) + ";" + str(frame_boxes) + ";" + str(frame_classes) + ";" + str(frame_confs) + "\n")
+            file.write(str(i + vid_idx * (45*60*3)) + ";" + str(frame_boxes) + ";" + str(frame_classes) + ";" + str(frame_confs) + "\n")
 
 
 def detect_vid():
-    with open(os.path.join(settings.eye_loc_path, settings.cur_vid+".csv"), "w") as file:
-        file.write("frame;boxes;classes;confs" + "\n")
+    for vid in range(2, 19):  
+        vid_path = os.path.join(os.path.abspath(os.getcwd()), str(vid)+"_out.mp4")
+        with open(os.path.join(settings.eye_loc_path, settings.cur_vid+".csv"), "w") as file:
+            file.write("frame;boxes;classes;confs" + "\n")
 
-    frame_count = get_frame_count() 
-    fragment_count = int((frame_count - (frame_count % settings.fragment_length)) / settings.fragment_length)
+        frame_count = get_frame_count(vid_path) 
+        fragment_count = int((frame_count - (frame_count % settings.fragment_length)) / settings.fragment_length)
 
-    for i in range(fragment_count):
-        boxes = track_vid_aabb(i)
-        save_boxes_csv(boxes, i)
+        for i in range(fragment_count):
+            boxes = track_vid_aabb(i, vid_path)
+            save_boxes_csv(boxes, i, vid - 2)
     
 
 detect_vid()
