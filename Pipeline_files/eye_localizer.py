@@ -73,10 +73,11 @@ def save_boxes_csv(boxes:defaultdict, fragment_idx:int, vid_idx:int):
 
 
 def detect_vid():
+    with open(os.path.join(settings.eye_loc_path, settings.cur_vid+".csv"), "w") as file:
+        file.write("frame;boxes;classes;confs" + "\n")
+        
     for vid in range(2, 19):  
         vid_path = os.path.join(os.path.abspath(os.getcwd()), str(vid)+"_out.mp4")
-        with open(os.path.join(settings.eye_loc_path, settings.cur_vid+".csv"), "w") as file:
-            file.write("frame;boxes;classes;confs" + "\n")
 
         frame_count = get_frame_count(vid_path) 
         fragment_count = int((frame_count - (frame_count % settings.fragment_length)) / settings.fragment_length)
