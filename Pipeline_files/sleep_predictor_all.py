@@ -33,17 +33,21 @@ W_O_count = 5 #number os O in am inute to be classified as W
 
 frag_per_min = 40
 
-def plot_pr_curve(precisionsAS, recallsAS, precisionsQS, recallsQS):
+def plot_pr_curve(precisionsAS, recallsAS, precisionsQS, recallsQS, AS_baseline, QS_baseline):
     sns.set_style("whitegrid")
-
+    
     plt.figure(figsize=(8, 6))
-    plt.plot(recallsAS, precisionsAS, marker='.')
-    plt.plot(recallsQS, precisionsQS, marker='.')
+    plt.axhline(y=AS_baseline, color="#ff3333", linestyle=':', linewidth=2)
+    plt.axhline(y=QS_baseline, color="#87e087", linestyle=':', linewidth=2)
+
+    plt.plot(recallsAS, precisionsAS, color="#ff3333", marker='.', label="AS")
+    plt.plot(recallsQS, precisionsQS, color="#87e087", marker='.', label="QS")
 
     # Labels and title
     plt.xlabel("Recall", fontsize=12)
     plt.ylabel("Precision", fontsize=12)
     plt.title("Precision-Recall Curve", fontsize=14)
+
 
     #ax.set_ylim(-0.5, 0.5)
     #ax.axis('off')  # Turn off axes for cleaner look
@@ -52,8 +56,17 @@ def plot_pr_curve(precisionsAS, recallsAS, precisionsQS, recallsQS):
     plt.yticks(ticks, ticks)
     plt.xticks(ticks, ticks)
 
-    #plt.legend()
+    plt.legend()
     plt.savefig(os.path.join(settings.predictions_path,"prcurve.jpg"), format='jpg', dpi=500) 
+
+def get_baseline(target_class, all_true_labels, all_predicted_labels):
+    filtered_true_labels = []
+    for i in (range(len(all_predicted_labels))):
+        if all_predicted_labels[i] != 'reject' and all_true_labels[i] != 'reject':
+            filtered_true_labels.append(all_true_labels[i])
+            
+    return all_true_labels.count(target_class)/len(filtered_true_labels)
+
 
 def get_metrics(target_class, true_labels = list(), predicted_labels = list()):
     filtered_true_labels = []
@@ -289,8 +302,8 @@ for i in range(0, 30):
     plot_confusion_matrix(all_true_classes, all_predicted_classes)
 
 
-    precisionAS, recallAS = get_metrics("AS", true_classes, prediction_classes)
-    precisionQS, recallQS = get_metrics("QS", true_classes, prediction_classes)
+    precisionAS, recallAS = get_metrics("AS", all_true_classes, all_predicted_classes)
+    precisionQS, recallQS = get_metrics("QS", all_true_classes, all_predicted_classes)
 
     precisionsAS.append(precisionAS)
     recallsAS.append(recallAS)
@@ -303,7 +316,9 @@ with open(os.path.join(settings.predictions_path,"prs.txt"), "w") as file:
     file.write(f"precisions QS: {precisionsQS} \n")
     file.write(f"recalls QS: {recallsQS} \n")
 
-plot_pr_curve(precisionsAS, recallsAS, precisionsQS, recallsQS)
+AS_baseline = get_baseline("AS", all_true_classes, all_predicted_classes)
+QS_baseline = get_baseline("QS", all_true_classes, all_predicted_classes)
+plot_pr_curve(precisionsAS, recallsAS, precisionsQS, recallsQS, AS_baseline, QS_baseline)
 
 
 
