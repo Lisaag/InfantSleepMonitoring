@@ -26,7 +26,7 @@ CREM_threshold = 0.55 #threshold of when fragment is classified as REM
 OREM_threshold = 0.75#threshold of when fragment is classified as REM
 
 
-REM_threshold = 0.3 #threshold of when fragment is classified as REM
+REM_threshold = 0.6 #threshold of when fragment is classified as REM
 O_threshold = 3 * (settings.fragment_length//45) #threshold of O count when fragment is classified as O
 AS_REM_count = 0#number of REMs in a minute to be classified as AS
 W_O_count = 5 #number os O in am inute to be classified as W
@@ -260,7 +260,7 @@ def compute_sleep_states(cur_vid):
 
 
 precisions = []; recalls = []
-for i in range(0, 15):
+for i in range(0, 25):
     AS_REM_count = i  
 
     all_true_classes = []
