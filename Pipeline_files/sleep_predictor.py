@@ -90,8 +90,8 @@ def show_prediction_bar(true_classes, prediction_classes, REM_counts):
     for i, cls in enumerate(prediction_classes):
         ax.barh(0.2, 1, left=i, color=colors[cls], height=0.1)
     for i, cls in enumerate(prediction_classes):
-        if cls != "AS" or cls != "QS": continue
-        ax.barh(0.1, 1, left=i, color=cmap(norm(REM_counts[i])), edgecolor='black', height=0.05)
+        if cls != 0 or cls != 1: continue
+        ax.barh(0.125, 1, left=i, color=cmap(norm(REM_counts[i])), edgecolor='black', height=0.05)
     for i, cls in enumerate(true_classes):
         ax.barh(0, 1, left=i, color=colors[cls], height=0.1)
 
