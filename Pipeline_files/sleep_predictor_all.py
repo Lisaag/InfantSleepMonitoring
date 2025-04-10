@@ -65,8 +65,8 @@ def get_metrics(target_class, true_labels = list(), predicted_labels = list()):
     FP = sum((p == target_class and g != target_class) for p, g in zip(filtered_predicted_labels, filtered_true_labels))
     FN = sum((p != target_class and g == target_class) for p, g in zip(filtered_predicted_labels, filtered_true_labels))
 
-    precision = TP/(TP+FP)
-    recall = TP/(TP+FN)
+    precision = TP/(TP+FP+1e-10)
+    recall = TP/(TP+FN+1e-10)
 
     return precision, recall
 
