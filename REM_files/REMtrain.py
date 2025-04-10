@@ -138,7 +138,7 @@ def REMtrain(val_ids, idx, dir, batch_size, lr, l2, dropout, seed):
     #model = create_model_complex(lr, dropout, l2, input_shape=input_shape, seed=seed)
     #model = create_model_simple(lr, dropout, l2, input_shape=input_shape, seed=seed)
     print(model.summary())
-    return
+
     save_model_json(model, save_directory)
 
     val_samples = list(); val_labels = list(); train_samples = list(); train_labels = list()
