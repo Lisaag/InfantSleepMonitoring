@@ -62,7 +62,7 @@ def plot_confusion_matrix(true_labels = list(), predicted_labels = list()):
 
     plt.savefig(os.path.join(settings.predictions_path, settings.cur_vid[:-4], "confusion_matrix.jpg"), format='jpg', dpi=500)  
 
-def show_prediction_bar(true_classes, prediction_classes, REM_counts = 0):
+def show_prediction_bar(true_classes, prediction_classes, REM_counts):
     mapping = {
         'AS': 0,
         'QS': 1,
@@ -91,7 +91,7 @@ def show_prediction_bar(true_classes, prediction_classes, REM_counts = 0):
         ax.barh(0.2, 1, left=i, color=colors[cls], height=0.1)
     for i, cls in enumerate(prediction_classes):
         if cls != "AS" or cls != "QS": continue
-        ax.barh(0.125, 1, left=i, color=cmap(norm(REM_counts[i])), height=0.05)
+        ax.barh(0.1, 1, left=i, color=cmap(norm(REM_counts[i])), edgecolor='black', height=0.05)
     for i, cls in enumerate(true_classes):
         ax.barh(0, 1, left=i, color=colors[cls], height=0.1)
 
