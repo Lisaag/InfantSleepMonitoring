@@ -17,6 +17,8 @@ import matplotlib.pyplot as plt
 
 from matplotlib.patches import Patch
 
+from sklearn.metrics import auc
+
 import seaborn as sns
 from sklearn.metrics import confusion_matrix
 
@@ -25,33 +27,30 @@ max_movement_fraction = 0.9
 CREM_threshold = 0.55 #threshold of when fragment is classified as REM
 OREM_threshold = 0.75#threshold of when fragment is classified as REM
 
-
 REM_threshold = 0.5 #threshold of when fragment is classified as REM
 O_threshold = 3 * (settings.fragment_length//45) #threshold of O count when fragment is classified as O
 AS_REM_count = 0#number of REMs in a minute to be classified as AS
-W_O_count = 5 #number os O in am inute to be classified as W
+W_O_count = 5 #number os O in am inute to be classified as Ws
 
 frag_per_min = 40
 
 def plot_pr_curve(precisionsAS, recallsAS, precisionsQS, recallsQS, AS_baseline, QS_baseline):
     sns.set_style("whitegrid")
+
+    auc_pr_AS = auc(recallsAS, precisionsAS)
+    auc_pr_QS = auc(recallsQS, precisionsQS)
     
     plt.figure(figsize=(8, 6))
     plt.axhline(y=AS_baseline, color="#ff3333", linestyle=':', linewidth=2)
     plt.axhline(y=QS_baseline, color="#87e087", linestyle=':', linewidth=2)
 
-    plt.plot(recallsAS, precisionsAS, color="#ff3333", marker='.', label="AS")
-    plt.plot(recallsQS, precisionsQS, color="#87e087", marker='.', label="QS")
+    plt.plot(recallsAS, precisionsAS, color="#ff3333", marker='.', label=f"AS {auc_pr_AS}")
+    plt.plot(recallsQS, precisionsQS, color="#87e087", marker='.', label=f"QS {auc_pr_QS}")
 
-    # Labels and title
     plt.xlabel("Recall", fontsize=12)
     plt.ylabel("Precision", fontsize=12)
     plt.title("Precision-Recall Curve", fontsize=14)
 
-
-    #ax.set_ylim(-0.5, 0.5)
-    #ax.axis('off')  # Turn off axes for cleaner look
-        # Your y-ticks
     ticks = [0.0, 0.2, 0.4, 0.6, 0.8, 1.0]
     plt.yticks(ticks, ticks)
     plt.xticks(ticks, ticks)
@@ -289,7 +288,7 @@ def compute_sleep_states(cur_vid):
 
 precisionsAS = []; recallsAS = []
 precisionsQS = []; recallsQS = []
-for i in range(0, 30):
+for i in range(0, 40):
     AS_REM_count = i  
 
     all_true_classes = []
