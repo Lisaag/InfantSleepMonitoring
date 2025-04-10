@@ -261,7 +261,7 @@ def compute_sleep_states(cur_vid):
 
 precisions = []; recalls = []
 for i in range(0, 15):
-    REM_threshold = i  
+    AS_REM_count = i  
 
     all_true_classes = []
     all_predicted_classes = []
