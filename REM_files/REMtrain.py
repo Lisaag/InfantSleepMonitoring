@@ -105,7 +105,8 @@ def create_model_complex(lr = 0.0001, dropout=0.3, l2=0.1, input_shape=(1, 6, 64
         layers.Dropout(dropout, seed=seed),
         layers.MaxPooling3D(pool_size=(2, 2, 2)),
        
-        layers.Conv3D(64, kernel_size=(3, 3, 3), activation='relu', padding='valid'),
+        layers.Conv3D(64, kernel_size=(3, 3, 3), activation='relu', padding='valid', stride = (1, 2, 2)),
+        layers.Conv3D(64, kernel_size=(3, 3, 3), activation='relu', padding='valid', stride = (1, 2, 2)),
         layers.Dropout(dropout, seed=seed),
         layers.MaxPooling3D(pool_size=(2, 2, 2)),
 
