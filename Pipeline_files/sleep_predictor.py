@@ -84,15 +84,6 @@ def show_prediction_bar(true_classes, prediction_classes, REM_counts = 0):
     fig, ax = plt.subplots(figsize=(12, 2))
 
 
-    cmap = plt.get_cmap('viridis')
-    norm = Normalize(vmin=min(REM_counts), vmax=max(REM_counts))
-
-    # Add a gradient colorbar
-    sm = ScalarMappable(norm=norm, cmap=cmap)
-    sm.set_array([])  # Needed for older matplotlib versions
-    cbar = fig.colorbar(sm, ax=ax)
-    cbar.set_label('REM count')
-
     for i, cls in enumerate(prediction_classes):
         ax.barh(0.15, 1, left=i, color=colors[cls], height=0.1)
     for i, cls in enumerate(true_classes):
@@ -122,6 +113,15 @@ def show_prediction_bar(true_classes, prediction_classes, REM_counts = 0):
         Patch(facecolor=colors[3], edgecolor='black', label='reject')
     ]
     ax.legend(handles=legend_elements, loc='upper center', bbox_to_anchor=(0.5, 1.4), ncol=4)
+
+    cmap = plt.get_cmap('viridis')
+    norm = Normalize(vmin=min(REM_counts), vmax=max(REM_counts))
+
+    # Add a gradient colorbar
+    sm = ScalarMappable(norm=norm, cmap=cmap)
+    sm.set_array([])  # Needed for older matplotlib versions
+    cbar = fig.colorbar(sm, ax=ax)
+    cbar.set_label('REM count')
 
     plt.tight_layout()
     plt.savefig(os.path.join(settings.predictions_path,settings.cur_vid[:-4],"plot.jpg"), dpi=500, format='jpg')  
