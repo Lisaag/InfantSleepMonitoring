@@ -56,8 +56,8 @@ def run_inference():
 
     frags_df = pd.read_csv(os.path.join(settings.eye_frag_path, settings.cur_vid[:-4], "info.csv"), delimiter=';')
 
-    if not os.path.exists(settings.predictions_path): os.makedirs(settings.predictions_path)
-    with open(os.path.join(settings.predictions_path, "predictions_2.csv"), "w") as file:
+    if not os.path.exists(os.path.join(settings.predictions_path, settings.cur_vid)): os.makedirs(os.path.join(settings.predictions_path, settings.cur_vid))
+    with open(os.path.join(settings.predictions_path, settings.cur_vid, "predictions_2.csv"), "w") as file:
         file.write("idx;predictions;class" + "\n")
 
     for i in range(fragment_count + 1):
@@ -78,7 +78,7 @@ def run_inference():
         prediction = model(sample, training=False)
         prediction = prediction.numpy().flatten().tolist()
         
-        with open(os.path.join(settings.predictions_path, "predictions_2.csv"), "a") as file:
+        with open(os.path.join(settings.predictions_path, settings.cur_vid, "predictions_2.csv"), "a") as file:
             file.write(str(i)+";"+str(prediction[0])+";"+str("O"if open_count >= 3 else "C") + "\n")
 
 

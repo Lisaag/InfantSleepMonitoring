@@ -57,8 +57,9 @@ def run_inference():
     print(f'{fragment_count+1} fragments detected from {save_path}')
     current_batch = 0
 
-    if not os.path.exists(settings.predictions_path): os.makedirs(settings.predictions_path)
-    with open(os.path.join(settings.predictions_path, "predictions.csv"), "w") as file:
+
+    if not os.path.exists(os.path.join(settings.predictions_path, settings.cur_vid)): os.makedirs(os.path.join(settings.predictions_path, settings.cur_vid))
+    with open(os.path.join(settings.predictions_path, settings.cur_vid, "predictions.csv"), "w") as file:
         file.write("idx;predictions" + "\n")
 
     while current_batch*processing_batch_size < fragment_count:
@@ -75,7 +76,7 @@ def run_inference():
         
         print(f'Processed minute {current_batch}')
         for i, idx in enumerate(indices):
-            with open(os.path.join(settings.predictions_path, "predictions.csv"), "a") as file:
+            with open(os.path.join(settings.predictions_path, settings.cur_vid, "predictions.csv"), "a") as file:
                 file.write(str(idx)+";"+str(predictions[i]) + "\n")
 
         current_batch += 1
