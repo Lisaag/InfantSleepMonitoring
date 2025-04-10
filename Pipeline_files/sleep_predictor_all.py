@@ -22,12 +22,15 @@ from sklearn.metrics import auc
 import seaborn as sns
 from sklearn.metrics import confusion_matrix
 
+from matplotlib.cm import ScalarMappable
+from matplotlib.colors import Normalize
+
 max_movement_fraction = 0.9
 
 CREM_threshold = 0.55 #threshold of when fragment is classified as REM
 OREM_threshold = 0.75#threshold of when fragment is classified as REM
 
-REM_threshold = 0.5 #threshold of when fragment is classified as REM
+REM_threshold = 0.9 #threshold of when fragment is classified as REM
 O_threshold = 3 * (settings.fragment_length//45) #threshold of O count when fragment is classified as O
 AS_REM_count = 0#number of REMs in a minute to be classified as AS
 W_O_count = 5 #number os O in am inute to be classified as Ws
@@ -44,12 +47,12 @@ def plot_pr_curve(precisionsAS, recallsAS, precisionsQS, recallsQS, AS_baseline,
     plt.axhline(y=AS_baseline, color="#ff3333", linestyle=':', linewidth=2)
     plt.axhline(y=QS_baseline, color="#87e087", linestyle=':', linewidth=2)
 
-    plt.plot(recallsAS, precisionsAS, color="#ff3333", marker='.', label=f"AS {auc_pr_AS}")
-    plt.plot(recallsQS, precisionsQS, color="#87e087", marker='.', label=f"QS {auc_pr_QS}")
+    plt.plot(recallsAS, precisionsAS, color="#ff3333", marker='.', label=f"AS {round(auc_pr_AS, 2)}")
+    plt.plot(recallsQS, precisionsQS, color="#87e087", marker='.', label=f"QS {round(auc_pr_QS, 2)}")
 
     plt.xlabel("Recall", fontsize=12)
     plt.ylabel("Precision", fontsize=12)
-    plt.title("Precision-Recall Curve", fontsize=14)
+    plt.title(f"Precision-Recall Curve (threshold={REM_threshold})", fontsize=14)
 
     ticks = [0.0, 0.2, 0.4, 0.6, 0.8, 1.0]
     plt.yticks(ticks, ticks)
@@ -117,7 +120,6 @@ def show_prediction_bar(true_classes, prediction_classes, cur_vid):
     true_classes = [mapping[item] for item in true_classes]
     prediction_classes = [mapping[item] for item in prediction_classes]
 
-    # Step 2: Define class colors
     colors = {
         0: '#ff3333',
         1: '#87e087',
@@ -125,7 +127,6 @@ def show_prediction_bar(true_classes, prediction_classes, cur_vid):
         3: 'black'
     }
 
-    # Step 3: Create the plot
     fig, ax = plt.subplots(figsize=(12, 2))
 
     for i, cls in enumerate(prediction_classes):
@@ -133,14 +134,9 @@ def show_prediction_bar(true_classes, prediction_classes, cur_vid):
     for i, cls in enumerate(true_classes):
         ax.barh(0, 1, left=i, color=colors[cls], height=0.1)
 
-    # Step 4: Aesthetics
     ax.set_xlim(0, len(true_classes))
-    #ax.set_ylim(-0.5, 0.5)
-    #ax.axis('off')  # Turn off axes for cleaner look
-        # Your y-ticks
     yticks = [-0.05, 0.0, 0.05, 0.1, 0.15, 0.2]
 
-    # Custom labels (empty strings for ticks you don't want labeled)
     ytick_labels = ['' for _ in yticks]
     ytick_labels[yticks.index(0.0)] = 'True'
     ytick_labels[yticks.index(0.15)] = 'Predictions'
@@ -149,7 +145,6 @@ def show_prediction_bar(true_classes, prediction_classes, cur_vid):
     ax.tick_params(axis='y', which='both', length=0)
     ax.tick_params(axis='x', which='both', length=0)
 
-    # Legend
     legend_elements = [
         Patch(facecolor=colors[0], edgecolor='black', label='AS'),
         Patch(facecolor=colors[1], edgecolor='black', label='QS'),
@@ -288,7 +283,7 @@ def compute_sleep_states(cur_vid):
 
 precisionsAS = []; recallsAS = []
 precisionsQS = []; recallsQS = []
-for i in range(0, 40):
+for i in range(0, 41):
     AS_REM_count = i  
 
     all_true_classes = []

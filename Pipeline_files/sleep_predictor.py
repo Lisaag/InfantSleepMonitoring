@@ -20,6 +20,9 @@ from matplotlib.patches import Patch
 import seaborn as sns
 from sklearn.metrics import confusion_matrix
 
+from matplotlib.cm import ScalarMappable
+from matplotlib.colors import Normalize
+
 max_movement_fraction = 0.9
 
 CREM_threshold = 0.65 #threshold of when fragment is classified as REM
@@ -59,7 +62,7 @@ def plot_confusion_matrix(true_labels = list(), predicted_labels = list()):
 
     plt.savefig(os.path.join(settings.predictions_path, settings.cur_vid[:-4], "confusion_matrix.jpg"), format='jpg', dpi=500)  
 
-def show_prediction_bar(true_classes, prediction_classes):
+def show_prediction_bar(true_classes, prediction_classes, REM_counts = 0):
     mapping = {
         'AS': 0,
         'QS': 1,
@@ -79,6 +82,16 @@ def show_prediction_bar(true_classes, prediction_classes):
 
     # Step 3: Create the plot
     fig, ax = plt.subplots(figsize=(12, 2))
+
+
+    cmap = plt.get_cmap('viridis')
+    norm = Normalize(vmin=min(REM_counts), vmax=max(REM_counts))
+
+    # Add a gradient colorbar
+    sm = ScalarMappable(norm=norm, cmap=cmap)
+    sm.set_array([])  # Needed for older matplotlib versions
+    cbar = fig.colorbar(sm, ax=ax)
+    cbar.set_label('REM count')
 
     for i, cls in enumerate(prediction_classes):
         ax.barh(0.15, 1, left=i, color=colors[cls], height=0.1)
@@ -159,6 +172,8 @@ def compute_sleep_states():
 
     print(f"{minute_count} minutes detected")
 
+
+    REM_counts = []
     for minute in range(minute_count):
         print(f"processing minute {minute}")
 
@@ -217,7 +232,7 @@ def compute_sleep_states():
             elif O_R+C_R >= AS_REM_count:
                 sleep_state='AS'
 
-
+        REM_counts.append(O_R+C_R)
     
         print(f'minute {minute} classified as {sleep_state}')
 
@@ -231,7 +246,7 @@ def compute_sleep_states():
             file.write(str(minute) + ";" + str(sleep_state) + ";" + str(C) + ";" + str(O)+ ";" + str(C_R)+ ";" + str(O_R) + "\n")
 
 
-    show_prediction_bar(true_classes, prediction_classes)
+    show_prediction_bar(true_classes, prediction_classes, REM_counts)
     plot_confusion_matrix(true_classes, prediction_classes)
 
 
