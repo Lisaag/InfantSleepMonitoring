@@ -43,6 +43,14 @@ def plot_pr_curve(precisions, recalls):
     plt.xlabel("Recall", fontsize=12)
     plt.ylabel("Precision", fontsize=12)
     plt.title("Precision-Recall Curve", fontsize=14)
+
+    #ax.set_ylim(-0.5, 0.5)
+    #ax.axis('off')  # Turn off axes for cleaner look
+        # Your y-ticks
+    ticks = [0.0, 0.2, 0.4, 0.6, 0.8, 1.0]
+    plt.yticks(ticks, ticks)
+    plt.xticks(ticks, ticks)
+
     #plt.legend()
     plt.savefig(os.path.join(settings.predictions_path,"prcurve.jpg"), format='jpg', dpi=500) 
 
