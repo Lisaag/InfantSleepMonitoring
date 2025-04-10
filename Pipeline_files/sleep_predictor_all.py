@@ -287,7 +287,7 @@ for i in range(0, 30):
     plot_confusion_matrix(all_true_classes, all_predicted_classes)
 
 
-    precisionAS, recallAS = get_metrics("AS", prediction_classes, true_classes)
+    precisionAS, recallAS = get_metrics("AS", true_classes, prediction_classes)
 
     precisions.append(precisionAS)
     recalls.append(recallAS)
