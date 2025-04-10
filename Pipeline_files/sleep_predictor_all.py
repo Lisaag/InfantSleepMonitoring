@@ -43,7 +43,7 @@ def plot_pr_curve(precisions, recalls):
     plt.xlabel("Recall", fontsize=12)
     plt.ylabel("Precision", fontsize=12)
     plt.title("Precision-Recall Curve", fontsize=14)
-    plt.legend()
+    #plt.legend()
     plt.savefig(os.path.join(settings.predictions_path,"prcurve.jpg"), format='jpg', dpi=500) 
 
 def get_metrics(target_class, predictions, ground_truth):
@@ -277,6 +277,10 @@ for i in range(0, 15):
 
     precisions.append(precisionAS)
     recalls.append(recallAS)
+
+with open(os.path.join(settings.predictions_path,"prs.txt"), "w") as file:
+    file.write(f"precisions: {precisions} \n")
+    file.write(f"recalls: {recalls} \n")
 
 plot_pr_curve(precisions, recalls)
 
