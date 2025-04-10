@@ -54,10 +54,16 @@ def plot_pr_curve(precisions, recalls):
     #plt.legend()
     plt.savefig(os.path.join(settings.predictions_path,"prcurve.jpg"), format='jpg', dpi=500) 
 
-def get_metrics(target_class, predictions, ground_truth):
-    TP = sum((p == target_class and g == target_class) for p, g in zip(predictions, ground_truth))
-    FP = sum((p == target_class and g != target_class) for p, g in zip(predictions, ground_truth))
-    FN = sum((p != target_class and g == target_class) for p, g in zip(predictions, ground_truth))
+def get_metrics(target_class, true_labels = list(), predicted_labels = list()):
+    filtered_true_labels = []
+    filtered_predicted_labels = []
+    for i in (range(len(predicted_labels))):
+        if predicted_labels[i] != 'reject' and true_labels[i] != 'reject':
+            filtered_predicted_labels.append(predicted_labels[i])
+            filtered_true_labels.append(true_labels[i])
+    TP = sum((p == target_class and g == target_class) for p, g in zip(filtered_predicted_labels, filtered_true_labels))
+    FP = sum((p == target_class and g != target_class) for p, g in zip(filtered_predicted_labels, filtered_true_labels))
+    FN = sum((p != target_class and g == target_class) for p, g in zip(filtered_predicted_labels, filtered_true_labels))
 
     precision = TP/(TP+FP)
     recall = TP/(TP+FN)
@@ -70,7 +76,7 @@ def plot_confusion_matrix(true_labels = list(), predicted_labels = list()):
     filtered_true_labels = []
     filtered_predicted_labels = []
     for i in (range(len(predicted_labels))):
-        if predicted_labels[i] != 'reject':
+        if predicted_labels[i] != 'reject' and true_labels[i] != 'reject':
             filtered_predicted_labels.append(predicted_labels[i])
             filtered_true_labels.append(true_labels[i])
 
