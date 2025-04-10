@@ -83,9 +83,15 @@ def show_prediction_bar(true_classes, prediction_classes, REM_counts = 0):
     # Step 3: Create the plot
     fig, ax = plt.subplots(figsize=(12, 2))
 
+    cmap = plt.get_cmap('Reds')
+    norm = Normalize(vmin=min(REM_counts), vmax=max(REM_counts))
+
 
     for i, cls in enumerate(prediction_classes):
-        ax.barh(0.15, 1, left=i, color=colors[cls], height=0.1)
+        ax.barh(0.2, 1, left=i, color=colors[cls], height=0.1)
+    for i, cls in enumerate(prediction_classes):
+        if cls != "AS" or cls != "QS": continue
+        ax.barh(0.125, 1, left=i, color=cmap(norm(REM_counts[i])), height=0.05)
     for i, cls in enumerate(true_classes):
         ax.barh(0, 1, left=i, color=colors[cls], height=0.1)
 
@@ -114,12 +120,9 @@ def show_prediction_bar(true_classes, prediction_classes, REM_counts = 0):
     ]
     ax.legend(handles=legend_elements, loc='upper center', bbox_to_anchor=(0.5, 1.4), ncol=4)
 
-    cmap = plt.get_cmap('viridis')
-    norm = Normalize(vmin=min(REM_counts), vmax=max(REM_counts))
 
-    # Add a gradient colorbar
     sm = ScalarMappable(norm=norm, cmap=cmap)
-    sm.set_array([])  # Needed for older matplotlib versions
+    sm.set_array([]) 
     cbar = fig.colorbar(sm, ax=ax)
     cbar.set_label('REM count')
 
