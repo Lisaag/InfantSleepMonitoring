@@ -33,11 +33,12 @@ W_O_count = 5 #number os O in am inute to be classified as W
 
 frag_per_min = 40
 
-def plot_pr_curve(precisions, recalls):
+def plot_pr_curve(precisionsAS, recallsAS, precisionsQS, recallsQS):
     sns.set_style("whitegrid")
 
     plt.figure(figsize=(8, 6))
-    plt.plot(recalls, precisions, marker='.')
+    plt.plot(recallsAS, precisionsAS, marker='.')
+    plt.plot(recallsQS, precisionsQS, marker='.')
 
     # Labels and title
     plt.xlabel("Recall", fontsize=12)
@@ -273,7 +274,8 @@ def compute_sleep_states(cur_vid):
 
 
 
-precisions = []; recalls = []
+precisionsAS = []; recallsAS = []
+precisionsQS = []; recallsQS = []
 for i in range(0, 30):
     AS_REM_count = i  
 
@@ -288,15 +290,20 @@ for i in range(0, 30):
 
 
     precisionAS, recallAS = get_metrics("AS", true_classes, prediction_classes)
+    precisionQS, recallQS = get_metrics("QS", true_classes, prediction_classes)
 
-    precisions.append(precisionAS)
-    recalls.append(recallAS)
+    precisionsAS.append(precisionAS)
+    recallsAS.append(recallAS)
+    precisionsQS.append(precisionQS)
+    recallsQS.append(recallQS)
 
 with open(os.path.join(settings.predictions_path,"prs.txt"), "w") as file:
-    file.write(f"precisions: {precisions} \n")
-    file.write(f"recalls: {recalls} \n")
+    file.write(f"precisions AS: {precisionsAS} \n")
+    file.write(f"recalls AS: {recallsAS} \n")
+    file.write(f"precisions QS: {precisionsQS} \n")
+    file.write(f"recalls QS: {recallsQS} \n")
 
-plot_pr_curve(precisions, recalls)
+plot_pr_curve(precisionsAS, recallsAS, precisionsQS, recallsQS)
 
 
 
