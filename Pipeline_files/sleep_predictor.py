@@ -124,6 +124,8 @@ def show_prediction_bar(true_classes, prediction_classes, REM_counts):
     sm = ScalarMappable(norm=norm, cmap=cmap)
     sm.set_array([]) 
     cbar = fig.colorbar(sm, ax=ax)
+    cbar.set_ticks([norm.vmin, norm.vmax])
+    cbar.set_ticklabels(['0%', '100%'])
     cbar.set_label('REM count')
 
     plt.tight_layout()
