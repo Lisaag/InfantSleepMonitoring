@@ -1,6 +1,6 @@
 import os
 
-cur_vid = "288-processed.mp4"
+cur_vid = "228-processed.mp4"
 all_vids = ["223-processed.mov", "228-processed.mp4", "318-processed.mov", "417-processed.mp4", "929-processed.mp4", "360-processed.mp4"]
 fragment_length = 90 if cur_vid[-4:] == ".mov" else 45
 
