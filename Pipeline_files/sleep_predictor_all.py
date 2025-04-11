@@ -37,7 +37,7 @@ W_O_count = 5 #number os O in am inute to be classified as Ws
 
 frag_per_min = 40
 
-def plot_pr_curve(precisionsAS, recallsAS, precisionsQS, recallsQS, precisionW, recallW, AS_baseline, QS_baseline, W_baseline):
+def plot_pr_curve(precisionsAS, recallsAS, precisionsQS, recallsQS, precisionsW, recallsW, AS_baseline, QS_baseline, W_baseline):
     sns.set_style("whitegrid")
 
     auc_pr_AS = auc(recallsAS, precisionsAS)
