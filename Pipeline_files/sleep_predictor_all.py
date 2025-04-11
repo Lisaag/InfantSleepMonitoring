@@ -25,7 +25,7 @@ from sklearn.metrics import confusion_matrix
 from matplotlib.cm import ScalarMappable
 from matplotlib.colors import Normalize
 
-max_movement_fraction = 0.9
+max_movement_fraction = 0.5
 
 CREM_threshold = 0.55 #threshold of when fragment is classified as REM
 OREM_threshold = 0.75#threshold of when fragment is classified as REM
