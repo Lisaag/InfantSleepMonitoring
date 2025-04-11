@@ -37,18 +37,21 @@ W_O_count = 5 #number os O in am inute to be classified as Ws
 
 frag_per_min = 40
 
-def plot_pr_curve(precisionsAS, recallsAS, precisionsQS, recallsQS, AS_baseline, QS_baseline):
+def plot_pr_curve(precisionsAS, recallsAS, precisionsQS, recallsQS, precisionW, recallW, AS_baseline, QS_baseline, W_baseline):
     sns.set_style("whitegrid")
 
     auc_pr_AS = auc(recallsAS, precisionsAS)
     auc_pr_QS = auc(recallsQS, precisionsQS)
+    auc_pr_W = auc(recallsW, precisionsW)
     
     plt.figure(figsize=(8, 6))
-    plt.axhline(y=AS_baseline, color="#ff3333", linestyle=':', linewidth=2)
-    plt.axhline(y=QS_baseline, color="#87e087", linestyle=':', linewidth=2)
+    plt.axhline(y=AS_baseline, color="#ff3333", linestyle=':', linewidth=2, label=f"AS baseline {round(AS_baseline, 2)}")
+    plt.axhline(y=QS_baseline, color="#87e087", linestyle=':', linewidth=2, label=f"QS baseline {round(QS_baseline, 2)}")
+    plt.axhline(y=W_baseline, color="#7373ff", linestyle=':', linewidth=2, label=f"W baseline {round(W_baseline, 2)}")
 
     plt.plot(recallsAS, precisionsAS, color="#ff3333", marker='.', label=f"AS {round(auc_pr_AS, 2)}")
     plt.plot(recallsQS, precisionsQS, color="#87e087", marker='.', label=f"QS {round(auc_pr_QS, 2)}")
+    plt.plot(recallsW, precisionsW, color="#7373ff", marker='.', label=f"W {round(auc_pr_W, 2)}")
 
     plt.xlabel("Recall", fontsize=12)
     plt.ylabel("Precision", fontsize=12)
@@ -283,6 +286,7 @@ def compute_sleep_states(cur_vid):
 
 precisionsAS = []; recallsAS = []
 precisionsQS = []; recallsQS = []
+precisionsW = []; recallsW = []
 for i in range(0, 41):
     AS_REM_count = i  
 
@@ -298,21 +302,27 @@ for i in range(0, 41):
 
     precisionAS, recallAS = get_metrics("AS", all_true_classes, all_predicted_classes)
     precisionQS, recallQS = get_metrics("QS", all_true_classes, all_predicted_classes)
+    precisionW, recallW = get_metrics("W", all_true_classes, all_predicted_classes)
 
     precisionsAS.append(precisionAS)
     recallsAS.append(recallAS)
     precisionsQS.append(precisionQS)
     recallsQS.append(recallQS)
+    precisionsW.append(precisionW)
+    recallsW.append(recallW)
 
 with open(os.path.join(settings.predictions_path,"prs.txt"), "w") as file:
     file.write(f"precisions AS: {precisionsAS} \n")
     file.write(f"recalls AS: {recallsAS} \n")
     file.write(f"precisions QS: {precisionsQS} \n")
     file.write(f"recalls QS: {recallsQS} \n")
+    file.write(f"precisions W: {precisionsW} \n")
+    file.write(f"recalls W: {recallsW} \n")
 
 AS_baseline = get_baseline("AS", all_true_classes, all_predicted_classes)
 QS_baseline = get_baseline("QS", all_true_classes, all_predicted_classes)
-plot_pr_curve(precisionsAS, recallsAS, precisionsQS, recallsQS, AS_baseline, QS_baseline)
+W_baseline = get_baseline("W", all_true_classes, all_predicted_classes)
+plot_pr_curve(precisionsAS, recallsAS, precisionsQS, recallsQS, recallsW, precisionsW, AS_baseline, QS_baseline, W_baseline)
 
 
 
