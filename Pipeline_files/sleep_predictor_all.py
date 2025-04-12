@@ -42,16 +42,14 @@ def plot_pr_curve(precisionsAS, recallsAS, precisionsQS, recallsQS, precisionsW,
 
     auc_pr_AS = auc(recallsAS, precisionsAS)
     auc_pr_QS = auc(recallsQS, precisionsQS)
-    auc_pr_W = auc(recallsW, precisionsW)
     
     plt.figure(figsize=(8, 6))
-    plt.axhline(y=AS_baseline, color="#ff3333", linestyle=':', linewidth=2, label=f"AS baseline {round(AS_baseline, 2)}")
-    plt.axhline(y=QS_baseline, color="#87e087", linestyle=':', linewidth=2, label=f"QS baseline {round(QS_baseline, 2)}")
-    plt.axhline(y=W_baseline, color="#7373ff", linestyle=':', linewidth=2, label=f"W baseline {round(W_baseline, 2)}")
 
     plt.plot(recallsAS, precisionsAS, color="#ff3333", marker='.', label=f"AS {round(auc_pr_AS, 2)}")
     plt.plot(recallsQS, precisionsQS, color="#87e087", marker='.', label=f"QS {round(auc_pr_QS, 2)}")
-    plt.plot(recallsW, precisionsW, color="#7373ff", marker='.', label=f"W {round(auc_pr_W, 2)}")
+
+    plt.axhline(y=AS_baseline, color="#ff3333", linestyle=':', linewidth=2, label=f"AS baseline {round(AS_baseline, 2)}")
+    plt.axhline(y=QS_baseline, color="#87e087", linestyle=':', linewidth=2, label=f"QS baseline {round(QS_baseline, 2)}")
 
     plt.xlabel("Recall", fontsize=12)
     plt.ylabel("Precision", fontsize=12)
@@ -113,7 +111,7 @@ def plot_confusion_matrix(true_labels = list(), predicted_labels = list()):
 
     plt.savefig(os.path.join(settings.predictions_path, "confusion_matrix.jpg"), format='jpg', dpi=500)  
 
-def show_prediction_bar(true_classes, prediction_classes, cur_vid):
+def show_prediction_bar(true_classes, prediction_classes, cur_vid, REM_counts):
     mapping = {
         'AS': 0,
         'QS': 1,
@@ -132,8 +130,15 @@ def show_prediction_bar(true_classes, prediction_classes, cur_vid):
 
     fig, ax = plt.subplots(figsize=(12, 2))
 
+    cmap = plt.get_cmap('Reds')
+    norm = Normalize(vmin=min(REM_counts), vmax=max(REM_counts))
+
+
     for i, cls in enumerate(prediction_classes):
         ax.barh(0.15, 1, left=i, color=colors[cls], height=0.1)
+    for i, cls in enumerate(prediction_classes):
+        if cls > 1: continue
+        ax.barh(0.125, 1, left=i, color=cmap(norm(REM_counts[i])), height=0.05)
     for i, cls in enumerate(true_classes):
         ax.barh(0, 1, left=i, color=colors[cls], height=0.1)
 
@@ -155,6 +160,13 @@ def show_prediction_bar(true_classes, prediction_classes, cur_vid):
         Patch(facecolor=colors[3], edgecolor='black', label='reject')
     ]
     ax.legend(handles=legend_elements, loc='upper center', bbox_to_anchor=(0.5, 1.4), ncol=4)
+
+    sm = ScalarMappable(norm=norm, cmap=cmap)
+    sm.set_array([]) 
+    cbar = fig.colorbar(sm, ax=ax)
+    cbar.set_ticks([norm.vmin, norm.vmax])
+    cbar.set_ticklabels(['0%', '100%'])
+    cbar.set_label('REM count')
 
     plt.tight_layout()
     plt.savefig(os.path.join(settings.predictions_path,cur_vid,"plot.jpg"), dpi=500, format='jpg')  
@@ -205,6 +217,7 @@ def compute_sleep_states(cur_vid):
 
     print(f"{minute_count} minutes detected")
 
+    REM_counts = []
     for minute in range(minute_count):
         print(f"processing minute {minute}")
 
@@ -263,8 +276,8 @@ def compute_sleep_states(cur_vid):
             elif O_R+C_R >= AS_REM_count:
                 sleep_state='AS'
 
+        REM_counts.append(O_R+C_R)
 
-    
         print(f'minute {minute} classified as {sleep_state}')
 
         row =  true_pred_df[true_pred_df['idx'] == minute]
@@ -272,13 +285,10 @@ def compute_sleep_states(cur_vid):
         if row['state'].iloc[0] == "reject": sleep_state = "reject"
         prediction_classes.append(sleep_state)  
 
-
         with open(os.path.join(settings.predictions_path,cur_vid, "sleep_predictions.csv"), "a") as file:
             file.write(str(minute) + ";" + str(sleep_state) + ";" + str(C) + ";" + str(O)+ ";" + str(C_R)+ ";" + str(O_R) + "\n")
 
-
-    show_prediction_bar(true_classes, prediction_classes, cur_vid)
-    #plot_confusion_matrix(true_classes, prediction_classes)
+    show_prediction_bar(true_classes, prediction_classes, cur_vid, REM_counts)
 
     return true_classes, prediction_classes
 
