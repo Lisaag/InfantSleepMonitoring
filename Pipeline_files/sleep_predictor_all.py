@@ -32,7 +32,7 @@ OREM_threshold = 0.7#threshold of when fragment is classified as REM
  
 REM_threshold = 0.7 #threshold of when fragment is classified as REM
 O_threshold = 3 * (settings.fragment_length//45) #threshold of O count when fragment is classified as O
-AS_REM_count = 0#number of REMs in a minute to be classified as AS
+AS_REM_count = 5#number of REMs in a minute to be classified as AS
 W_O_count = 5 #number os O in am inute to be classified as Ws
 
 frag_per_min = 40
@@ -294,11 +294,11 @@ def compute_sleep_states(cur_vid):
 
 
 
-precisionsAS = []; recallsAS = []
-precisionsQS = []; recallsQS = []
-precisionsW = []; recallsW = []
-for i in range(0, 41):
-    AS_REM_count = i  
+# precisionsAS = []; recallsAS = []
+# precisionsQS = []; recallsQS = []
+# precisionsW = []; recallsW = []
+for i in range(0, 1):
+    #AS_REM_count = i  
 
     all_true_classes = []
     all_predicted_classes = []
@@ -310,29 +310,29 @@ for i in range(0, 41):
     plot_confusion_matrix(all_true_classes, all_predicted_classes)
 
 
-    precisionAS, recallAS = get_metrics("AS", all_true_classes, all_predicted_classes)
-    precisionQS, recallQS = get_metrics("QS", all_true_classes, all_predicted_classes)
-    precisionW, recallW = get_metrics("W", all_true_classes, all_predicted_classes)
+    # precisionAS, recallAS = get_metrics("AS", all_true_classes, all_predicted_classes)
+    # precisionQS, recallQS = get_metrics("QS", all_true_classes, all_predicted_classes)
+    # precisionW, recallW = get_metrics("W", all_true_classes, all_predicted_classes)
 
-    precisionsAS.append(precisionAS)
-    recallsAS.append(recallAS)
-    precisionsQS.append(precisionQS)
-    recallsQS.append(recallQS)
-    precisionsW.append(precisionW)
-    recallsW.append(recallW)
+    # precisionsAS.append(precisionAS)
+    # recallsAS.append(recallAS)
+    # precisionsQS.append(precisionQS)
+    # recallsQS.append(recallQS)
+    # precisionsW.append(precisionW)
+    # recallsW.append(recallW)
 
-with open(os.path.join(settings.predictions_path,"prs.txt"), "w") as file:
-    file.write(f"precisions AS: {precisionsAS} \n")
-    file.write(f"recalls AS: {recallsAS} \n")
-    file.write(f"precisions QS: {precisionsQS} \n")
-    file.write(f"recalls QS: {recallsQS} \n")
-    file.write(f"precisions W: {precisionsW} \n")
-    file.write(f"recalls W: {recallsW} \n")
+# with open(os.path.join(settings.predictions_path,"prs.txt"), "w") as file:
+#     file.write(f"precisions AS: {precisionsAS} \n")
+#     file.write(f"recalls AS: {recallsAS} \n")
+#     file.write(f"precisions QS: {precisionsQS} \n")
+#     file.write(f"recalls QS: {recallsQS} \n")
+#     file.write(f"precisions W: {precisionsW} \n")
+#     file.write(f"recalls W: {recallsW} \n")
 
-AS_baseline = get_baseline("AS", all_true_classes, all_predicted_classes)
-QS_baseline = get_baseline("QS", all_true_classes, all_predicted_classes)
-W_baseline = get_baseline("W", all_true_classes, all_predicted_classes)
-plot_pr_curve(precisionsAS, recallsAS, precisionsQS, recallsQS, recallsW, precisionsW, AS_baseline, QS_baseline, W_baseline)
+# AS_baseline = get_baseline("AS", all_true_classes, all_predicted_classes)
+# QS_baseline = get_baseline("QS", all_true_classes, all_predicted_classes)
+# W_baseline = get_baseline("W", all_true_classes, all_predicted_classes)
+# plot_pr_curve(precisionsAS, recallsAS, precisionsQS, recallsQS, recallsW, precisionsW, AS_baseline, QS_baseline, W_baseline)
 
 
 
