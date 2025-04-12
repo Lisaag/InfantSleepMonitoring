@@ -27,10 +27,10 @@ from matplotlib.colors import Normalize
 
 max_movement_fraction = 0.5
 
-CREM_threshold = 0.75 #threshold of when fragment is classified as REM
-OREM_threshold = 0.75#threshold of when fragment is classified as REM
+CREM_threshold = 0.5 #threshold of when fragment is classified as REM
+OREM_threshold = 0.5#threshold of when fragment is classified as REM
  
-REM_threshold = 0.75 #threshold of when fragment is classified as REM
+REM_threshold = 0.5 #threshold of when fragment is classified as REM
 O_threshold = 3 * (settings.fragment_length//45) #threshold of O count when fragment is classified as O
 AS_REM_count = 0#number of REMs in a minute to be classified as AS
 W_O_count = 5 #number os O in am inute to be classified as Ws
