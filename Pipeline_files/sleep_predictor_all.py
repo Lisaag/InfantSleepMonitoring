@@ -27,8 +27,8 @@ from matplotlib.colors import Normalize
 
 max_movement_fraction = 0.5
 
-CREM_threshold = 0.7 #threshold of when fragment is classified as REM
-OREM_threshold = 0.7#threshold of when fragment is classified as REM
+CREM_threshold = 0.8 #threshold of when fragment is classified as REM
+OREM_threshold = 0.8#threshold of when fragment is classified as REM
  
 REM_threshold = 0.8 #threshold of when fragment is classified as REM
 O_threshold = 3 * (settings.fragment_length//45) #threshold of O count when fragment is classified as O
