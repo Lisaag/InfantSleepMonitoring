@@ -30,7 +30,7 @@ max_movement_fraction = 0.5
 CREM_threshold = 0.55 #threshold of when fragment is classified as REM
 OREM_threshold = 0.75#threshold of when fragment is classified as REM
  
-REM_threshold = 0.75 #threshold of when fragment is classified as REM
+REM_threshold = 0.5 #threshold of when fragment is classified as REM
 O_threshold = 3 * (settings.fragment_length//45) #threshold of O count when fragment is classified as O
 AS_REM_count = 0#number of REMs in a minute to be classified as AS
 W_O_count = 5 #number os O in am inute to be classified as Ws
@@ -45,8 +45,8 @@ def plot_pr_curve(precisionsAS, recallsAS, precisionsQS, recallsQS, precisionsW,
     
     plt.figure(figsize=(8, 6))
 
-    plt.plot(recallsAS, precisionsAS, color="#ff3333", marker='.', label=f"AS {round(auc_pr_AS, 2)}")
-    plt.plot(recallsQS, precisionsQS, color="#87e087", marker='.', label=f"QS {round(auc_pr_QS, 2)}")
+    plt.plot(recallsAS, precisionsAS, color="#ff3333", marker='.', label=f"AS (AP = {round(auc_pr_AS, 2)})")
+    plt.plot(recallsQS, precisionsQS, color="#87e087", marker='.', label=f"QS (AP = {round(auc_pr_QS, 2)})")
 
     plt.axhline(y=AS_baseline, color="#ff3333", linestyle=':', linewidth=2, label=f"AS baseline {round(AS_baseline, 2)}")
     plt.axhline(y=QS_baseline, color="#87e087", linestyle=':', linewidth=2, label=f"QS baseline {round(QS_baseline, 2)}")
