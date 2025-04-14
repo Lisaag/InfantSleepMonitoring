@@ -307,6 +307,8 @@ for i in range(0, 1):
         all_true_classes += true_classes
         all_predicted_classes += prediction_classes
 
+        print(f"vid AS{true_classes.count('AS')}, QS {true_classes.count('QS')}, W {true_classes.count('W')}")
+
     plot_confusion_matrix(all_true_classes, all_predicted_classes)
 
 
