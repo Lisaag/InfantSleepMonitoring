@@ -88,8 +88,8 @@ def get_metrics(target_class, true_labels = list(), predicted_labels = list()):
     return precision, recall
 
 def plot_confusion_matrix(true_labels = list(), predicted_labels = list()):
-    print(true_labels)
-    print(predicted_labels)
+    #print(true_labels)
+    #print(predicted_labels)
     filtered_true_labels = []
     filtered_predicted_labels = []
     for i in (range(len(predicted_labels))):
@@ -183,10 +183,10 @@ def is_valid_movement(frag_idx, positions, cur_vid):
     min_x = min(positions[0]); max_x = max(positions[0])
     min_y = min(positions[1]); max_y = max(positions[1])
     if (max_x - min_x > max_movement):
-        print(f"FRAG {frag_idx} TOO MUCH MOVEMENT ON X AXIS")
+        #(f"FRAG {frag_idx} TOO MUCH MOVEMENT ON X AXIS")
         return False
     if (max_y - min_y > max_movement):
-        print(f"FRAG {frag_idx} TOO MUCH MOVEMENT ON y AXIS")
+        #print(f"FRAG {frag_idx} TOO MUCH MOVEMENT ON y AXIS")
         return False
 
     return True
@@ -215,17 +215,17 @@ def compute_sleep_states(cur_vid):
     with open(os.path.join(settings.predictions_path,cur_vid, "sleep_predictions.csv"), "w") as file:
         file.write("min;state;C;O;CR;OR" + "\n")
 
-    print(f"{minute_count} minutes detected")
+    #print(f"{minute_count} minutes detected")
 
     REM_counts = []
     for minute in range(minute_count):
-        print(f"processing minute {minute}")
+        #print(f"processing minute {minute}")
 
         O = 0; C = 0; O_R = 0; C_R = 0
         for fragment in range(minute*frag_per_min, minute*frag_per_min + frag_per_min):
             row =  frags_df[frags_df['idx'] == fragment]
             if row.empty:
-                print(f'no fragment idx {fragment} found')
+                #print(f'no fragment idx {fragment} found')
                 continue
             positions = row['positions'].apply(ast.literal_eval)
             if(not is_valid_movement(fragment, positions.iloc[0], cur_vid)):
@@ -265,7 +265,7 @@ def compute_sleep_states(cur_vid):
                         C += 1
 
             
-        print(f'O - {O}, OR - {O_R}, C - {C}, CR - {C_R} ')
+        #print(f'O - {O}, OR - {O_R}, C - {C}, CR - {C_R} ')
         
         if(O+C+O_R+C_R < frag_per_min//2):
             sleep_state = "reject"
@@ -278,7 +278,7 @@ def compute_sleep_states(cur_vid):
 
         REM_counts.append(O_R+C_R)
 
-        print(f'minute {minute} classified as {sleep_state}')
+       # print(f'minute {minute} classified as {sleep_state}')
 
         row =  true_pred_df[true_pred_df['idx'] == minute]
         true_classes.append(row['state'].iloc[0])
@@ -307,7 +307,7 @@ for i in range(0, 1):
         all_true_classes += true_classes
         all_predicted_classes += prediction_classes
 
-        print(f"vid AS{true_classes.count('AS')}, QS {true_classes.count('QS')}, W {true_classes.count('W')}")
+        print(f"vid {vid} -  AS{true_classes.count('AS')}, QS {true_classes.count('QS')}, W {true_classes.count('W')}")
 
     plot_confusion_matrix(all_true_classes, all_predicted_classes)
 
