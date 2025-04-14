@@ -1,7 +1,7 @@
 import os
 
 is_OREM = True
-is_combined = True
+is_combined = False
 
 val_ids = [['416', '778'],
            ['004', '704', '773'],
