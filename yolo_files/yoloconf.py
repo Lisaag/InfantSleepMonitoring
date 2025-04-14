@@ -4,13 +4,12 @@ import seaborn as sns
 import numpy as np
 
 
-def plot_confusion_matrix():
-    data = np.array([[437, 13], [30, 0]])
+def plot_confusion_matrix(data, idx):
     msk = np.array([[False, False], [False, True]])
 
     sns.set_theme(font_scale=1.0, style='white')  
     plt.figure(figsize=(12, 9), tight_layout=True)
-    h = sns.heatmap(data, mask=msk, annot=True, fmt='d', cmap='Blues', xticklabels=np.arange(2), yticklabels=np.arange(2), annot_kws={"size": 8}, square=True)
+    h = sns.heatmap(data, mask=msk, annot=True, fmt='d', cmap='Blues', xticklabels=np.arange(2), yticklabels=np.arange(2), annot_kws={"size": 16}, square=True)
     h.set_xticklabels(['eye', 'background'])
     h.set_yticklabels(['eye', 'background'])
     plt.xlabel('True')
@@ -18,7 +17,9 @@ def plot_confusion_matrix():
     plt.title('Confusion Matrix')
 
 
-    plt.savefig(os.path.join(os.path.abspath(os.getcwd()),"train_plots", "confusion_matrix.jpg"), dpi=500, format='jpg')  
+    plt.savefig(os.path.join(os.path.abspath(os.getcwd()), "train_plots", "confusion_matrix" + str(idx) + ".jpg"), dpi=500, format='jpg')  
 
+data = [np.array([[296, 85], [171, 0]]), np.array([[392, 28], [75, 0]]), np.array([[428, 33], [39, 0]]), np.array([[437, 13], [30, 0]])]
 
-plot_confusion_matrix()
+for i in range(len(data)):
+    plot_confusion_matrix(data[i], i)
