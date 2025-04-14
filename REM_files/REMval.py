@@ -242,7 +242,8 @@ def validate_model(run, fold, path):
 
     best_idx = np.argmax(f1_scores[:-1])
 
-    best_threshold = thresholds[max(0, best_idx -1)]
+    #best_threshold = thresholds[max(0, best_idx -1)]
+    best_threshold = 0.5
     predicted_labels = [1 if x >= best_threshold else 0 for x in predictions]
 
     plot_pr_curve(precision, recall, best_threshold, best_idx, path)
