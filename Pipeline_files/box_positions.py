@@ -1,14 +1,12 @@
-import cv2
-import pandas as pd
-import os
-import settings
 import ast
-
+from collections import defaultdict
+import os
 import statistics
 
-from collections import defaultdict
+import cv2
+import pandas as pd
 
-import numpy as np
+import settings
 
 
 def get_frame_count(path):

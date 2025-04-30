@@ -1,7 +1,20 @@
+"""
+This script is used to track eyes in full-length video's.
+Input = path of the full-length video.
+Output = a csv file containing the bounding box position, confidence score, class throughout the whole video.
+Takes a little time depending on the length of the video.
+
+Author: Lisa Groen
+Date: April 30, 2025
+"""
+
+
+from collections import defaultdict
+import os
+
 import cv2
 from ultralytics import YOLO
-import os
-from collections import defaultdict
+
 import settings
 
 def get_frame_count(path):
@@ -9,7 +22,16 @@ def get_frame_count(path):
     return int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     
 
-def track_vid_aabb(frag_idx:int, vid_path):
+def track_vid_aabb(frag_idx:int, vid_path:str):
+    """
+    Track localized instances of eyes across frames of a 1.5 second fragment
+
+    Parameters:
+    - frag_idx: index of the fragment of the full-length video
+    - vid_path: path of the full-length video
+    Returns:
+    dict: containing track informataion(bbox size&pos, conf score, class) of each found eye instance
+    """
     model = YOLO(settings.yolo_weights_path)
 
     print(f'Processing {settings.video_path}, fragment index {frag_idx}, frame {frag_idx*settings.fragment_length}')
@@ -44,7 +66,7 @@ def track_vid_aabb(frag_idx:int, vid_path):
         if(frame_idx >= settings.fragment_length):
             break
 
-    #Delete track instances with only few detections    
+    #Delete track instances with detections in less than half of frames
     to_del = list()
     for key in box_history.keys():
         if(len(box_history[key]) < settings.fragment_length / 2):
@@ -58,7 +80,14 @@ def track_vid_aabb(frag_idx:int, vid_path):
     
     return box_history
 
-def save_boxes_csv(boxes:defaultdict, fragment_idx:int, vid_idx:int):
+def save_boxes_csv(boxes:defaultdict, fragment_idx:int):
+    """
+    append bbox info for a 1.5 second fragment to csv file
+
+    Parameters:
+    - boxes: dictionary containing track informataion(bbox size&pos, conf score, class) of each found eye instance
+    - fragment_idx: index of the fragment of the full-length video
+    """
     starting_frame_idx = settings.fragment_length * fragment_idx
     for i in range(starting_frame_idx, starting_frame_idx + settings.fragment_length):
         frame_boxes = {}; frame_classes = {}; frame_confs = {}   
@@ -69,25 +98,26 @@ def save_boxes_csv(boxes:defaultdict, fragment_idx:int, vid_idx:int):
                 frame_boxes[detection] = box; frame_classes[detection] = cls; frame_confs[detection] = conf
     
         with open(os.path.join(settings.eye_loc_path, settings.cur_vid+".csv"), "a") as file:
-            file.write(str(i + vid_idx * (30*60*3)) + ";" + str(frame_boxes) + ";" + str(frame_classes) + ";" + str(frame_confs) + "\n")
+            file.write(str(i) + ";" + str(frame_boxes) + ";" + str(frame_classes) + ";" + str(frame_confs) + "\n")
 
 
-def detect_vid():
+def detect_vid(vid_path:str):
+    """
+    Save eye localization information for n fragments of 1.5 seconds in given video file
+
+    Parameters:
+    - vid_path: path of the video
+    """
     with open(os.path.join(settings.eye_loc_path, settings.cur_vid+".csv"), "w") as file:
         file.write("frame;boxes;classes;confs" + "\n")
 
-    for vid in range(2, 19):  
-        vid_path = os.path.join(os.path.abspath(os.getcwd()), str(vid)+"_out.mp4")
-
         frame_count = get_frame_count(vid_path) 
-
-        print(frame_count)
 
         fragment_count = int((frame_count - (frame_count % settings.fragment_length)) / settings.fragment_length)
 
         for i in range(fragment_count):
             boxes = track_vid_aabb(i, vid_path)
-            save_boxes_csv(boxes, i, vid - 2)
+            save_boxes_csv(boxes, i)
     
 
-detect_vid()
+detect_vid(os.path.join(os.path.abspath(os.getcwd()),"2_out.mp4"))

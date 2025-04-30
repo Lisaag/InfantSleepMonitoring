@@ -1,16 +1,26 @@
-import cv2
-import pandas as pd
-import os
-import settings
-import ast
+"""
+This script is used to crop the eyes from all frames of a full-length video.
+It uses the tracked eye positions and bounding box size to cut out the eye.
+Saves cropped eyes as jpg, stored in a folder per fragment of 45 frames (1.5 second)
+In case of 2 detected eyes, uses only the eye with the highest mean confidence score.
 
+Author: Lisa Groen
+Date: April 30, 2025
+"""
+
+import ast
+from collections import defaultdict
+import numpy as np
+import os
+import pandas as pd
 import statistics
 
-from collections import defaultdict
+import cv2
 
-import numpy as np
+import settings
 
-#index where cutting was cut off
+
+#index of last cut, to continue process from that point instead of starting over
 def get_last_index(directory):
     existing_folders = []
     for dir in os.listdir(directory):
@@ -25,8 +35,8 @@ def get_last_index(directory):
 def get_frame_count(path):
     cap = cv2.VideoCapture(path)
     return int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-    
 
+#In case of no eye detection at the frame of center index, get frame closest to the center index instead
 def get_valid_center_index(bboxes):
     center_index = len(bboxes) // 2
     if bboxes[center_index] is not None:
@@ -61,6 +71,7 @@ def xyxy_to_square(x1, y1, x2, y2, size):
 
     return [x1, y1, x2, y2]
 
+#Get crop size as the max bbox dimension over all frames in a fragment
 def get_crop_size(bboxes):
     #Get center frame
     center_index = get_valid_center_index(bboxes)
@@ -77,12 +88,10 @@ def get_crop_size(bboxes):
 
     bbox = xyxy_to_square(x1, y1, x2, y2 , size)
 
-    #cutouts = [bbox for _ in range(frame_count)]
-
     return bbox
 
+#Crop eye from frames in a video
 def crop_eye(frag_idx, box, vid_path, fragment):
-    #print(f'Processing {settings.video_path}, fragment index {frag_idx}, frame {frag_idx*settings.fragment_length}')
     cap = cv2.VideoCapture(vid_path)
 
     current_frame_idx = settings.fragment_length * frag_idx
@@ -138,33 +147,30 @@ def get_boxes(df_bboxes, fragment_idx):
     if highest_conf == -1: return None, None
     return all_boxes.get(highest_conf_idx), all_classes.get(highest_conf_idx)
 
+
 fragment_path = os.path.join(settings.eye_frag_path, settings.cur_vid[:-4])
 if not os.path.exists(fragment_path): os.makedirs(fragment_path)
 with open(os.path.join(fragment_path, "info.csv"), "w") as file:
     file.write("idx;positions;open_count" + "\n")
 
-
+#Get all localized positions over full-length video
 df_bboxes = pd.read_csv(os.path.join(settings.eye_loc_path, settings.cur_vid +".csv"), delimiter=';')
-#last_index = max(0, get_last_index(fragment_path) - 1) #in case last one failed, we go back to previous
 
-for vid in range(2, 19):  
-    print(f'PROCESSING VIDEO {vid}_out.mp4')
+vid_path = os.path.join(os.path.abspath(os.getcwd()), "2_out.mp4")
+frame_count = get_frame_count(vid_path) 
+fragment_count = int((frame_count - (frame_count % settings.fragment_length)) / settings.fragment_length)
 
-    vid_path = os.path.join(os.path.abspath(os.getcwd()), str(vid)+"_out.mp4")
-    frame_count = get_frame_count(vid_path) 
-    fragment_count = int((frame_count - (frame_count % settings.fragment_length)) / settings.fragment_length)
+for i in range(0, fragment_count):
+    fragment = i
+    print(f'Processing fragment {fragment} out of {fragment_count}')
+    boxes, classes = get_boxes(df_bboxes, fragment)
+    if boxes is None: 
+        print(f"NO DETECTIONS FOR FRAGMENT {fragment}")
+        continue
 
-    for i in range(0, fragment_count):
-        fragment = i + ((vid-2) * 120) #120 1.5 second fragments in all 3 mins
-
-        print(f'Processing fragment {fragment} out of {fragment_count}')
-        boxes, classes = get_boxes(df_bboxes, fragment)
-        if boxes is None: 
-            print(f"NO DETECTIONS FOR FRAGMENT {fragment}")
-            continue
-        crop_box = get_crop_size(boxes)
-
-        with open(os.path.join(fragment_path, "info.csv"), "a") as file:
-            file.write(str(fragment) + ";" + str([[(x1+x2)//2, (y1+y2)//2] for box in boxes if box is not None for x1, y1, x2, y2 in [box]])+ ";" + str(classes.count(1.0)) + "\n")
-
-        crop_eye(i, crop_box, vid_path, fragment)
+    #get cropping size for all frames in fragment
+    crop_box = get_crop_size(boxes)
+    with open(os.path.join(fragment_path, "info.csv"), "a") as file:
+        file.write(str(fragment) + ";" + str([[(x1+x2)//2, (y1+y2)//2] for box in boxes if box is not None for x1, y1, x2, y2 in [box]])+ ";" + str(classes.count(1.0)) + "\n")
+    #crop the eyes from fragment
+    crop_eye(i, crop_box, vid_path, fragment)

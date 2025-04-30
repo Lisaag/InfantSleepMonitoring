@@ -25,7 +25,6 @@ import re
 
 import REMmodelvis
 
-
 initial_lr = 0.0001
 
 def lr_schedule(epoch):
@@ -33,6 +32,7 @@ def lr_schedule(epoch):
     print(f"INITIAL LR {initial_lr}")
     return initial_lr * (0.8 ** (epoch // 5))  # Reduce LR every 5 epochs
 
+#create new dir to save train results
 def create_next_numbered_dir(directory):
     existing_folders = []
     for dir in os.listdir(directory):
@@ -40,7 +40,7 @@ def create_next_numbered_dir(directory):
             if(dir.isdigit()):
                 existing_folders.append(int(dir))
     
-    next_folder = max(existing_folders, default=0) + 1  # Default to 0 if no numeric folders exist
+    next_folder = max(existing_folders, default=0) + 1
     
     new_folder_path = os.path.join(directory, str(next_folder))
     os.makedirs(new_folder_path)
@@ -77,52 +77,7 @@ def create_model(lr = 0.0001, dropout=0.3, l2=0.1, input_shape=(1, 6, 64, 64), s
 
     return model
 
-def create_model_simple(lr = 0.0001, dropout=0.3, l2=0.1, input_shape=(1, 6, 64, 64), seed = 0):
-    model = models.Sequential([
-        layers.Conv3D(32, kernel_size=(1, 3, 3), padding='same',activation='relu', input_shape=input_shape),
-        layers.Conv3D(32, kernel_size=(3, 3, 3), activation='relu', padding='same'),
-        layers.Dropout(dropout, seed=seed),
-        layers.MaxPooling3D(pool_size=(1, 2, 2)),
-        layers.Conv3D(64, kernel_size=(3, 3, 3), activation='relu', padding='valid'),
-        layers.Dropout(dropout, seed=seed),
-        layers.MaxPooling3D(pool_size=(1, 2, 2)),
-
-        layers.Flatten(),
-        layers.Dense(64, activation='relu', kernel_regularizer=regularizers.L2(l2), kernel_initializer=tf.keras.initializers.HeNormal(seed=seed)),
-        layers.Dense(1, activation='sigmoid')
-    ])
-
-    optimizer = keras.optimizers.Adam(lr=lr)
-    model.compile(optimizer=optimizer,
-                  loss=keras.losses.BinaryCrossentropy(from_logits=False),
-                  metrics=['accuracy', tf.keras.metrics.AUC(), tf.keras.metrics.Precision(), tf.keras.metrics.Recall()])
-
-    return model
-
-def create_model_complex(lr = 0.0001, dropout=0.3, l2=0.1, input_shape=(1, 6, 64, 64), seed = 0):
-    model = models.Sequential([
-        layers.Conv3D(32, kernel_size=(1, 3, 3), padding='same',activation='relu', input_shape=input_shape),
-        layers.Conv3D(32, kernel_size=(3, 3, 3), activation='relu', padding='same'),
-        layers.Dropout(dropout, seed=seed),
-        layers.MaxPooling3D(pool_size=(2, 2, 2)),
-       
-        layers.Conv3D(64, kernel_size=(3, 3, 3), activation='relu', padding='valid', stride = (1, 2, 2)),
-        layers.Conv3D(64, kernel_size=(3, 3, 3), activation='relu', padding='valid', stride = (1, 2, 2)),
-        layers.Dropout(dropout, seed=seed),
-        layers.MaxPooling3D(pool_size=(2, 2, 2)),
-
-        layers.Flatten(),
-        layers.Dense(64, activation='relu', kernel_regularizer=regularizers.L2(l2), kernel_initializer=tf.keras.initializers.HeNormal(seed=seed)),
-        layers.Dense(1, activation='sigmoid')
-    ])
-
-    optimizer = keras.optimizers.Adam(lr=lr)
-    model.compile(optimizer=optimizer,
-                  loss=keras.losses.BinaryCrossentropy(from_logits=False),
-                  metrics=['accuracy', tf.keras.metrics.AUC(), tf.keras.metrics.Precision(), tf.keras.metrics.Recall()])
-
-    return model
-
+#used for sorting the fragemnts' frames by index
 def extract_number(filename):
     match = re.search(r'(\d+)(?=\.jpg$)', filename)
     return int(match.group(1)) if match else float('inf')
@@ -135,8 +90,7 @@ def REMtrain(val_ids, idx, dir, batch_size, lr, l2, dropout, seed):
     input_shape = (settings.frame_stack_count, settings.img_size, settings.img_size, 1)
 
     model = create_model(lr, dropout, l2, input_shape=input_shape, seed=seed)
-    #model = create_model_complex(lr, dropout, l2, input_shape=input_shape, seed=seed)
-    #model = create_model_simple(lr, dropout, l2, input_shape=input_shape, seed=seed)
+
     print(model.summary())
 
     save_model_json(model, save_directory)
@@ -146,8 +100,7 @@ def REMtrain(val_ids, idx, dir, batch_size, lr, l2, dropout, seed):
     for patient in os.listdir(settings.data_dir):
         patient_dir:str = os.path.join(settings.data_dir, patient)
         patient_id:str = patient[0:3]
-        if(patient_id == '440'): continue
-        print(patient_id)
+        if(patient_id == '440'): continue #don't use patient 440, bad performance
         for eye_state in os.listdir(patient_dir):
             if(not settings.is_combined):
                 if(settings.is_OREM and (eye_state == "C" or eye_state == "CR")): continue
@@ -156,7 +109,6 @@ def REMtrain(val_ids, idx, dir, batch_size, lr, l2, dropout, seed):
             for sample in os.listdir(eye_state_dir):
                 if(patient_id in val_ids and sample[-3:] == "AUG"):
                     continue
-                #if(sample[-3:] == "AUG"): continue
                 sample_dir = os.path.join(eye_state_dir, sample)
                 images = list()
                 frames = glob.glob(os.path.join(sample_dir, "*.jpg"))
@@ -164,6 +116,7 @@ def REMtrain(val_ids, idx, dir, batch_size, lr, l2, dropout, seed):
 
                 frame_indices = np.linspace(0, len(sorted_frames) - 1, settings.frame_stack_count, dtype=int).tolist()
 
+                #normalize frames
                 for idx in frame_indices:
                     image = cv2.imread(os.path.join(sample_dir, sorted_frames[idx]), cv2.IMREAD_GRAYSCALE) 
                     image = cv2.resize(image, (settings.img_size, settings.img_size))
@@ -176,23 +129,19 @@ def REMtrain(val_ids, idx, dir, batch_size, lr, l2, dropout, seed):
                 label = 0 if eye_state == "O" or eye_state == "C" else 1
 
                 if(patient_id in val_ids): 
-                    #print(f'from {patient_id} add to val')
                     val_samples.append(stacked_images)
                     val_labels.append(label)
                 else:
-                    #print(f'from {patient_id} add to train')
                     train_samples.append(stacked_images)
                     train_labels.append(label)
 
     train_samples_stacked = np.stack(train_samples, axis=0)
     train_labels_numpy = np.array(train_labels, dtype=int)
     train_labels_bce = train_labels_numpy.reshape(-1, 1)
-    #train_labels_bce = tf.one_hot(train_labels_numpy, depth=2)
+
     val_samples_stacked = np.stack(val_samples, axis=0)
     val_labels_numpy = np.array(val_labels, dtype=int)
     val_labels_bce = val_labels_numpy.reshape(-1, 1)
-    #print(val_labels_bce)
-    #tf.one_hot(val_labels_numpy, depth=2)
 
 
     checkpoint = keras.callbacks.ModelCheckpoint(filepath = os.path.join(save_directory,settings.checkpoint_filename), monitor='val_loss', verbose=1, save_best_only=True, save_weights_only=True, mode='min', save_freq="epoch")
@@ -201,7 +150,7 @@ def REMtrain(val_ids, idx, dir, batch_size, lr, l2, dropout, seed):
 
     history = model.fit(train_samples_stacked, train_labels_bce, validation_data=(val_samples_stacked, val_labels_bce), epochs=50, batch_size=batch_size, callbacks=[lr_callback, checkpoint])
 
-    #save training and vall loss values and plot in graph
+    #save training and vall loss values and plot loss graph
     with open(os.path.join(save_directory, "loss.txt"), 'w', newline='') as csvfile:
         fieldnames = ['loss', 'val_loss']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
@@ -213,20 +162,16 @@ def REMtrain(val_ids, idx, dir, batch_size, lr, l2, dropout, seed):
     
     REMmodelvis.plot_loss_curve(history.history['loss'], history.history['val_loss'], save_directory)
 
-locs = [os.path.join(os.path.abspath(os.getcwd()),"REM", "raw", "cropped", "center"), os.path.join(os.path.abspath(os.getcwd()),"REM", "raw", "cropped", "interpolate"), os.path.join(os.path.abspath(os.getcwd()),"REM", "raw", "cropped", "every")]
-
-for i in range(1):
-    #settings.data_dir = locs[i]
-    for batch_size in settings.train_batch_size:
-        for lr in settings.train_initial_lr:
-            initial_lr=lr
-            for l2 in settings.train_l2:
-                for dropout in settings.train_dropout:   
-                    for seed in settings.seeds:
-                        save_dir = create_next_numbered_dir(os.path.join(os.path.abspath(os.getcwd()),"REM-results"))    
-                        with open(os.path.join(save_dir, "train_config.csv"), "w") as file:
-                            file.write("batch_size,lr,l2,dropout" + "\n")   
-                            file.write(f'{batch_size},{lr},{l2},{dropout}' + "\n")
-                            file.write(settings.data_dir)   
-                        for idx, val_ids in enumerate(settings.val_ids):
-                            REMtrain(val_ids, idx, save_dir, batch_size, lr, l2, dropout, seed)
+for batch_size in settings.train_batch_size:
+    for lr in settings.train_initial_lr:
+        initial_lr=lr
+        for l2 in settings.train_l2:
+            for dropout in settings.train_dropout:   
+                for seed in settings.seeds:
+                    save_dir = create_next_numbered_dir(os.path.join(os.path.abspath(os.getcwd()),"REM-results"))    
+                    with open(os.path.join(save_dir, "train_config.csv"), "w") as file:
+                        file.write("batch_size,lr,l2,dropout" + "\n")   
+                        file.write(f'{batch_size},{lr},{l2},{dropout}' + "\n")
+                        file.write(settings.data_dir)   
+                    for idx, val_ids in enumerate(settings.val_ids):
+                        REMtrain(val_ids, idx, save_dir, batch_size, lr, l2, dropout, seed)

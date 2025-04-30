@@ -5,7 +5,6 @@ import numpy as np
 import glob
 import shutil
 
-
 def remove_folder_recursively(folder_path):
     try:
         shutil.rmtree(folder_path)
@@ -13,6 +12,7 @@ def remove_folder_recursively(folder_path):
     except Exception as e:
         print(f"Error removing folder {folder_path}: {e}")
 
+#get csv with fragment data
 def get_csv(folder_path):
     csv_files = glob.glob(os.path.join(folder_path, "*.csv")) 
     if(len(csv_files) > 1):print(f"MORE THAN 1 CSV FILE FOR {folder_path}")
@@ -33,6 +33,7 @@ def xyxy_to_square(x1, y1, x2, y2, size, offset = [0, 0]):
 
     return [x1, y1, x2, y2]
 
+#extract eyes using localized position of center frame
 def center_pos_frames(df_bboxes,  min_bounds, max_bounds, pos_offset = 0, size_factor = 1):
     #+1, because max_bounds is valid index, not length
     frame_count = max_bounds + 1 - min_bounds
@@ -63,6 +64,7 @@ def center_pos_frames(df_bboxes,  min_bounds, max_bounds, pos_offset = 0, size_f
 
     return cutouts    
 
+#extract eyes using localized position of first and last frame, and interpolating for in between frames
 def interpolate_pos_frames(df_bboxes,  min_bounds, max_bounds, pos_offset = 0, size_factor = 1):
     #+1, because max_bounds is valid index, not length
     frame_count = max_bounds + 1 - min_bounds
@@ -93,6 +95,7 @@ def interpolate_pos_frames(df_bboxes,  min_bounds, max_bounds, pos_offset = 0, s
     cutouts = list(zip(x1_vals, y1_vals, x2_vals, y2_vals))
     return cutouts  
 
+#extract eyes using all localized positions
 def every_pos_frames(df_bboxes,  min_bounds, max_bounds, pos_offset = 0, size_factor = 1):
     cutouts = []
 
@@ -109,7 +112,7 @@ def every_pos_frames(df_bboxes,  min_bounds, max_bounds, pos_offset = 0, size_fa
     height = max(int(abs(y1 - y2)) for y1, y2 in zip(df_bboxes['y1'][df_index_first:df_index_last], df_bboxes['y2'][df_index_first:df_index_last]))
 
     for i in range(min_bounds, max_bounds + 1):
-        #not every frame has a localisation, so in that case take the frame closest by that does have a localisation
+        #In case of a frame with no succesfully localized eye, take the closest frame that did have a succesful localization
         index = min(df_bboxes['frame'], key=lambda v: abs(v - i))
         _, x1, y1, x2, y2 = df_bboxes.loc[df_bboxes['frame'] == index].iloc[0]
         bbox = xyxy_to_square(x1, y1, x2, y2, size * size_factor, [pos_offset * size, pos_offset * height])
@@ -118,15 +121,13 @@ def every_pos_frames(df_bboxes,  min_bounds, max_bounds, pos_offset = 0, size_fa
 
     return cutouts  
 
-def save_frame_stack(frame, vid, current_frame, frame_indices, bbox, dir):
-    #unpack bbox values
+#save frames of a fragment as JPG
+def save_frame_stack(frame, vid, current_frame, bbox, dir):
     x1, y1, x2, y2 = bbox
     
-    #save stack of frames
-    #if np.isin(current_frame, frame_indices):
     cv2.imwrite(os.path.join(dir, "FRAME" + str(current_frame) + ".jpg"), frame[y1:y2, x1:x2])
 
-    #save video for debugging
+    #Save video with rectangle drawn around the eye, for debugging purpose
     cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
     vid.write(frame)
 
@@ -144,7 +145,6 @@ def extract_frames(video_dir:str, file_name:str, csv_dir:str, patient_id:str, RE
     min_bounds = temp_aug_offset[0]
     max_bounds = frame_count - 1 - temp_aug_offset[1]
 
-    frame_stack_count = 6
     df_bboxes = pd.read_csv(csv_dir)
 
     print(f'PROCESSING VIDEO - {video_input_path}')
@@ -153,9 +153,6 @@ def extract_frames(video_dir:str, file_name:str, csv_dir:str, patient_id:str, RE
     interpolate_frames = interpolate_pos_frames(df_bboxes, min_bounds, max_bounds, pos_aug_offset, size_factor)
     every_frames = every_pos_frames(df_bboxes, min_bounds, max_bounds, pos_aug_offset, size_factor)
 
-
-    frame_indices = np.linspace(min_bounds, max_bounds, frame_stack_count, dtype=int).tolist()
-
     center_frames_dir = os.path.join(cropped_dir, "center", patient_id, REMclass, file_name.replace(".mp4", "")+suffix)
     if not os.path.exists(center_frames_dir): os.makedirs(center_frames_dir)
     interpolate_frames_dir = os.path.join(cropped_dir, "interpolate", patient_id, REMclass, file_name.replace(".mp4", "")+suffix)
@@ -163,13 +160,11 @@ def extract_frames(video_dir:str, file_name:str, csv_dir:str, patient_id:str, RE
     every_frames_dir = os.path.join(cropped_dir, "every", patient_id, REMclass, file_name.replace(".mp4", "")+suffix)
     if not os.path.exists(every_frames_dir): os.makedirs(every_frames_dir)
 
-
     # write results to video, for debugging
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
     center_vid = cv2.VideoWriter(os.path.join(center_frames_dir, "center.mp4"), fourcc, fps, (frame_width, frame_height))
     interpolate_vid = cv2.VideoWriter(os.path.join(interpolate_frames_dir, "interpolate.mp4"), fourcc, fps, (frame_width, frame_height))
     every_vid = cv2.VideoWriter(os.path.join(every_frames_dir, "every.mp4"), fourcc, fps, (frame_width, frame_height))
-
 
     current_frame = 0
 
@@ -181,9 +176,9 @@ def extract_frames(video_dir:str, file_name:str, csv_dir:str, patient_id:str, RE
             current_frame+=1
             continue
 
-        save_frame_stack(frame.copy(), center_vid, current_frame, frame_indices, center_frames[current_frame - min_bounds], center_frames_dir)
-        save_frame_stack(frame.copy(), interpolate_vid, current_frame, frame_indices, interpolate_frames[current_frame - min_bounds], interpolate_frames_dir)
-        save_frame_stack(frame.copy(), every_vid, current_frame, frame_indices, every_frames[current_frame - min_bounds], every_frames_dir)
+        save_frame_stack(frame.copy(), center_vid, current_frame, center_frames[current_frame - min_bounds], center_frames_dir)
+        save_frame_stack(frame.copy(), interpolate_vid, current_frame, interpolate_frames[current_frame - min_bounds], interpolate_frames_dir)
+        save_frame_stack(frame.copy(), every_vid, current_frame, every_frames[current_frame - min_bounds], every_frames_dir)
 
         current_frame+=1
 
@@ -196,25 +191,21 @@ def extract_frames(video_dir:str, file_name:str, csv_dir:str, patient_id:str, RE
         
 
 def detect_vid():
-    #cropped_dir = os.path.join(os.path.abspath(os.getcwd()), "REM", "raw", "cropped")
     cropped_dir = os.path.join(os.path.abspath(os.getcwd()), "REM", "raw", "cropped")
-    #remove_folder_recursively(cropped_dir)
     video_dir:str = os.path.join(os.path.abspath(os.getcwd()), "REM", "raw", "cutout")
     frames_dir:str = os.path.join(os.path.abspath(os.getcwd()), "REM", "raw", "frames")
     for patient in os.listdir(video_dir):
-        # if(patient != '773_02-11-2022'):
-        #     continue
         patient_dir:str = os.path.join(video_dir, patient)
         for eye_state_dir in os.listdir(patient_dir):
             fragment_dir:str = os.path.join(patient_dir, eye_state_dir)
             for fragment_file in os.listdir(fragment_dir):
                 bbox_csv = get_csv(os.path.join(frames_dir, patient, eye_state_dir, fragment_file.replace(".mp4", "")))
                 if (bbox_csv == None): continue
-                # extract_frames(fragment_dir, fragment_file, bbox_csv, patient, eye_state_dir, cropped_dir)
-                # extract_frames(fragment_dir, fragment_file, bbox_csv, patient, eye_state_dir, cropped_dir, suffix="TEMP1AUG", temp_aug_offset=[0, 6])
-                # extract_frames(fragment_dir, fragment_file, bbox_csv, patient, eye_state_dir, cropped_dir, suffix="TEMP2AUG", temp_aug_offset=[6, 0])
-                # extract_frames(fragment_dir, fragment_file, bbox_csv, patient, eye_state_dir, cropped_dir, suffix="POS1AUG", pos_aug_offset=0.075)
-                # extract_frames(fragment_dir, fragment_file, bbox_csv, patient, eye_state_dir, cropped_dir, suffix="POS2AUG", pos_aug_offset=-0.075)
+                extract_frames(fragment_dir, fragment_file, bbox_csv, patient, eye_state_dir, cropped_dir)
+                extract_frames(fragment_dir, fragment_file, bbox_csv, patient, eye_state_dir, cropped_dir, suffix="TEMP1AUG", temp_aug_offset=[0, 6])
+                extract_frames(fragment_dir, fragment_file, bbox_csv, patient, eye_state_dir, cropped_dir, suffix="TEMP2AUG", temp_aug_offset=[6, 0])
+                extract_frames(fragment_dir, fragment_file, bbox_csv, patient, eye_state_dir, cropped_dir, suffix="POS1AUG", pos_aug_offset=0.075)
+                extract_frames(fragment_dir, fragment_file, bbox_csv, patient, eye_state_dir, cropped_dir, suffix="POS2AUG", pos_aug_offset=-0.075)
                 extract_frames(fragment_dir, fragment_file, bbox_csv, patient, eye_state_dir, cropped_dir, suffix="SIZE1AUG", size_factor=1.1)
                 extract_frames(fragment_dir, fragment_file, bbox_csv, patient, eye_state_dir, cropped_dir, suffix="SIZE2AUG", size_factor=0.9)
 

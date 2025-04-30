@@ -1,13 +1,24 @@
-import os
+"""
+This script is used to predict REM in full-length video's.
+Output = a csv file containing the REM predictions over the whole video.
+This script uses separate models for open REM and closed REM, unlike REM_predictor_combined.py, which uses a single model.
+
+Author: Lisa Groen
+Date: April 30, 2025
+"""
+
 import numpy as np
-import settings
-import cv2
+import os
 import pandas as pd
 
+
+import cv2
 os.environ["SM_FRAMEWORK"] = "tf.keras"
 import tensorflow as tf
 from tensorflow.keras import layers, models, regularizers
 from keras import backend as K
+
+import settings
 
 save_path = os.path.join(settings.eye_frag_path, settings.cur_vid[:-4])
 
@@ -28,6 +39,15 @@ def load_model_json(path):
     return models.model_from_json(loaded_model_json)
 
 def get_sample(fragment, frags_df):
+    """
+    Preprocess stack of images for 1.5 second fragment, to be used as input for the REM model
+
+    Parameters:
+    - fragment: fragment index
+    - frags_df: dataframe consisting info on all fragments of full-length video
+    Returns:
+    stack of n images of fragment
+    """
     images = []
 
     if not os.path.exists(os.path.join(save_path, str(fragment))):
@@ -51,8 +71,11 @@ def get_sample(fragment, frags_df):
     
 
 def run_inference():
+    """
+    Use the REM model to predict REM for all fragments of a full-length video.
+    Processes the video per fragment.
+    """
     fragment_count = get_last_index(save_path)
-    print(f'{fragment_count+1} fragments detected from {save_path}')
 
     frags_df = pd.read_csv(os.path.join(settings.eye_frag_path, settings.cur_vid[:-4], "info.csv"), delimiter=';')
 
@@ -67,11 +90,9 @@ def run_inference():
             continue
 
         if(open_count >= 3):
-            print("OPEN")
             model = load_model_json(os.path.join(settings.model_path, 'open', settings.model_filename))
             model.load_weights(os.path.join(settings.model_path, 'open', settings.checkpoint_filename))
         else:
-            print("CLOSED")
             model = load_model_json(os.path.join(settings.model_path, 'closed', settings.model_filename))
             model.load_weights(os.path.join(settings.model_path, 'closed', settings.checkpoint_filename))
             

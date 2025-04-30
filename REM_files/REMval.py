@@ -1,11 +1,8 @@
 import os
 os.environ["SM_FRAMEWORK"] = "tf.keras"
 import tensorflow as tf
-from tensorflow.keras import layers, models, regularizers
-from keras import backend as K
+from tensorflow.keras import models
 
-import tensorflow.keras as keras
-import csv
 import numpy as np
 import cv2
 import matplotlib.pyplot as plt
@@ -23,7 +20,6 @@ from sklearn.metrics import precision_score, recall_score, roc_auc_score, accura
 import statistics
 import seaborn as sns
 
-import pandas as pd
 
 def scale_to_01_range(x):
     value_range = (np.max(x) - np.min(x))
@@ -40,22 +36,21 @@ def load_model_json(path):
 
     return models.model_from_json(loaded_model_json)
 
+#precision recall curve
 def plot_pr_curve(precision, recall, best_threshold, best_idx, path):
-    best_f1 = (2 * precision[best_idx] * recall[best_idx]) / (precision[best_idx] + recall[best_idx] + 1e-9)
-
     sns.set_style("whitegrid")
 
     plt.figure(figsize=(8, 6))
     plt.plot(recall, precision, marker='.')
     plt.scatter(recall[best_idx], precision[best_idx], s=50.0, color='red', label=f'Best threshold: {best_threshold:.2f}')
 
-    # Labels and title
     plt.xlabel("Recall", fontsize=12)
     plt.ylabel("Precision", fontsize=12)
     plt.title("Precision-Recall Curve", fontsize=14)
     plt.legend()
     plt.savefig(os.path.join(path,"prcurve.jpg"), format='jpg', dpi=500)  
 
+#tsne plot, showing for both training and validation data
 def plot_tsne_both(model, path, samples, val_labels, train_labels):
     model2 = tf.keras.Model(inputs=model.input, outputs=model.layers[-2].output)
     features = model2(samples)
@@ -89,10 +84,8 @@ def plot_tsne_both(model, path, samples, val_labels, train_labels):
     plt.legend(loc='best')
     plt.savefig(os.path.join(path,"tsne_both.jpg"), format='jpg', dpi=500)  
 
+#tsne plot for 2 classes
 def plot_tsne(model, path, val_samples_stacked, true_labels):
-    print('OUTPUT -2')
-    print(model.layers[-2])
-    #print(model.layers[-4].output)
     model2 = tf.keras.Model(inputs=model.input, outputs=model.layers[-2].output)
     features = model2(val_samples_stacked)
 
@@ -121,16 +114,11 @@ def plot_tsne(model, path, val_samples_stacked, true_labels):
     plt.legend(loc='best')
     plt.savefig(os.path.join(path,"tsne.jpg"), format='jpg', dpi=500)  
 
+#When using the combined REM model, plot tsne for all 4 classes
 def plot_tsne_all(model, path, val_samples_stacked, all_labels):
-    # Mapping dictionary
     mapping = {'O': 0, 'OR': 1, 'C': 2, 'CR': 3}
-
-    # Replace using the mapping
     all_labels = [mapping[element] for element in all_labels]
 
-    print('OUTPUT -2')
-    print(model.layers[-2])
-    #print(model.layers[-4].output)
     model2 = tf.keras.Model(inputs=model.input, outputs=model.layers[-2].output)
     features = model2(val_samples_stacked)
 
@@ -170,7 +158,7 @@ def visualize_results(model, predicted_labels, true_labels, val_samples, path):
     REMmodelvis.plot_confusion_matrix(path, true_labels, predicted_labels)
     plot_tsne(model, path, val_samples, true_labels)
 
-
+#Prepare validation data
 def get_validation_data(fold):
     val_samples = list(); val_labels = list()
     train_samples = list(); train_labels = list()
@@ -179,15 +167,14 @@ def get_validation_data(fold):
     for patient in os.listdir(settings.data_dir):
         patient_dir:str = os.path.join(settings.data_dir, patient)
         patient_id:str = patient[0:3]
-        if(patient_id == '440'): continue
-        print(patient_id)
+        if(patient_id == '440'): continue #skip patient 440, bad performance
+
         for eye_state in os.listdir(patient_dir):
             if(not settings.is_combined):
                 if(settings.is_OREM and (eye_state == "C" or eye_state == "CR")): continue
                 if(not settings.is_OREM and (eye_state == "O" or eye_state == "OR")): continue
             eye_state_dir = os.path.join(patient_dir, eye_state)
             for sample in os.listdir(eye_state_dir):
-                #if(patient_id not in settings.val_ids[fold]): continue
                 if(sample[-3:] == "AUG"): continue
                 sample_dir = os.path.join(eye_state_dir, sample)
                 images = list()
@@ -195,8 +182,10 @@ def get_validation_data(fold):
                 frames = glob.glob(os.path.join(sample_dir, "*.jpg"))
                 sorted_frames = sorted(frames, key=extract_number)
 
+                #get settings.frame_stack_count number of frames from the fragment, evenly spaced
                 frame_indices = np.linspace(0, len(sorted_frames) - 1, settings.frame_stack_count, dtype=int).tolist()
 
+                #some normalization steps
                 for idx in frame_indices:
                     image = cv2.imread(os.path.join(sample_dir, sorted_frames[idx]), cv2.IMREAD_GRAYSCALE) 
                     image = cv2.resize(image, (settings.img_size, settings.img_size))
@@ -209,7 +198,6 @@ def get_validation_data(fold):
                 label = 0 if eye_state == "O" or eye_state == "C" else 1
 
                 if(patient_id in settings.val_ids[fold]): 
-                    print(f'from {patient_id} add to val')
                     val_samples.append(stacked_images)
                     val_labels.append(label)
                     all_labels.append(eye_state)
@@ -219,15 +207,12 @@ def get_validation_data(fold):
                     train_labels.append(label)
                 
 
-
-                
-
-
     val_samples_stacked = np.stack(val_samples, axis=0)
     train_samples_stacked = np.stack(train_samples, axis=0)
 
     return val_samples_stacked, val_labels, train_samples_stacked, train_labels, all_labels
 
+#run inference on test set, and get performance metrics
 def validate_model(run, fold, path):
     print(path)
     model = load_model_json(os.path.join(path, settings.model_filename))
@@ -267,15 +252,15 @@ def validate_model(run, fold, path):
 
 
 with open(os.path.join(settings.results_dir, "metrics.csv"), "w") as file:
-    #file.write("run,m_accuracy,m_precision,m_recall,m_AUC,sd_accuracy,sd_precision,sd_recall,sd_AUC" + "\n")
     file.write("run,m_accuracy,m_precision,m_recall,m_AUC,auc,mF1" + "\n")
-
 
 
 all_APs = []
 all_means = []
 all_stds = []
 
+
+#Get average metrics over train runs and over the 5 folds
 for run in os.listdir(settings.results_dir):
     if(not run.isdigit()): continue
     with open(os.path.join(settings.results_dir, run, "metrics.csv"), "w") as file:
@@ -285,13 +270,11 @@ for run in os.listdir(settings.results_dir):
     for fold in range(len(settings.val_ids)):
         metrics.append(validate_model(run, fold, os.path.join(settings.results_dir, run, str(fold))))
 
-   
     metrics = np.array(metrics).T
     all_APs.append([metrics[3]])
 
     with open(os.path.join(settings.results_dir, "metrics.csv"), "a") as file:
         file.write(f'{run},{metrics[0]},{metrics[1]},{metrics[2]},{metrics[3]},{metrics[4]},{metrics[5]}' + "\n")
-
 
     all_means.append([statistics.mean(metrics[0]), statistics.mean(metrics[1]), statistics.mean(metrics[2]), statistics.mean(metrics[3]), statistics.mean(metrics[4]), statistics.mean(metrics[5])])
     all_stds.append([statistics.stdev(metrics[0]), statistics.stdev(metrics[1]), statistics.stdev(metrics[2]), statistics.stdev(metrics[3]), statistics.stdev(metrics[4]), statistics.stdev(metrics[5])])
@@ -299,18 +282,10 @@ for run in os.listdir(settings.results_dir):
 all_means = np.array(all_means).T
 all_stds = np.array(all_stds).T
 
+#Write std between folds, std between train runs, and the total average metrics of all folds&trian runs
 with open(os.path.join(settings.results_dir, "metrics.csv"), "a") as file:
     file.write(f'{"std/fold"},{statistics.mean(all_stds[0])},{statistics.mean(all_stds[1])},{statistics.mean(all_stds[2])},{statistics.mean(all_stds[3])},{statistics.mean(all_stds[4])},{statistics.mean(all_stds[5])}' + "\n")
     file.write(f'{"std/run"},{statistics.stdev(all_means[0])},{statistics.stdev(all_means[1])},{statistics.stdev(all_means[2])},{statistics.stdev(all_means[3])},{statistics.stdev(all_means[4])},{statistics.stdev(all_means[5])}' + "\n")
     file.write(f'{"mean/total"},{statistics.mean(all_means[0])},{statistics.mean(all_means[1])},{statistics.mean(all_means[2])},{statistics.mean(all_means[3])},{statistics.mean(all_means[4])},{statistics.mean(all_means[5])}' + "\n")
 
-
-
-
-
-
-#make_boxplot(all_APs, os.path.join(settings.results_dir,run,"box.jpg"))
-
-
-        #file.write(f'{run},{statistics.mean(metrics[0])},{statistics.mean(metrics[1])},{statistics.mean(metrics[2])},{statistics.mean(metrics[3])},{statistics.stdev(metrics[0])},{statistics.stdev(metrics[1])},{statistics.stdev(metrics[2])},{statistics.stdev(metrics[3])}' + "\n")
 

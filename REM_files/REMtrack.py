@@ -10,8 +10,6 @@ import ast
 import shutil
 
 
-#video_input_path = os.path.join(os.path.abspath(os.getcwd()), "REM", "raw", "cutout", "554_02-03-2023")
-
 def track_vid_aabb(relative_weights_path:str, root_dir:str, file_name:str):
     weights_path = os.path.join(os.path.abspath(os.getcwd()), relative_weights_path)
     model = YOLO(weights_path)
@@ -103,7 +101,6 @@ def write_bbox(boxes:defaultdict, video_input_path:str, root_dir:str, file_name:
         if not ret:
             break
 
-        #if boxes[key].get(current_frame) != None:
         # top-left corner and bottom-right corner of rectangle
         for box in box_data:
             key, x1, y1, width, height = box

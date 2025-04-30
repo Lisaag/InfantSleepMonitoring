@@ -1,31 +1,30 @@
-#If movement is more than X --> discard
+"""
+This script is used to predict final sleep state of each minute in a full length video.
+Outputs predictions and metrics for each minute in a video.
 
-#if x REM detected --> AS
-#if x O detected --> W
-#else, QS
+Author: Lisa Groen
+Date: April 30, 2025
+"""
+
+import ast
+import matplotlib.pyplot as plt
+from matplotlib.patches import Patch
+from matplotlib.cm import ScalarMappable
+from matplotlib.colors import Normalize
+import numpy as np
+import os
+import pandas as pd
+import seaborn as sns
+
+
+import cv2
+from sklearn.metrics import auc
+from sklearn.metrics import confusion_matrix
 
 import settings
 
-import numpy as np
-import pandas as pd
-import os
-import ast
 
-import cv2
-
-import matplotlib.pyplot as plt
-
-from matplotlib.patches import Patch
-
-from sklearn.metrics import auc
-
-import seaborn as sns
-from sklearn.metrics import confusion_matrix
-
-from matplotlib.cm import ScalarMappable
-from matplotlib.colors import Normalize
-
-max_movement_fraction = 0.5
+max_movement_fraction = 0.5 #maximum position difference of eye between frames, as a fraction of the eye's bounding box
 
 CREM_threshold = 0.7 #threshold of when fragment is classified as REM
 OREM_threshold = 0.7#threshold of when fragment is classified as REM
@@ -38,6 +37,14 @@ W_O_count = 5 #number os O in am inute to be classified as Ws
 frag_per_min = 40
 
 def plot_pr_curve(precisionsAS, recallsAS, precisionsQS, recallsQS, precisionsW, recallsW, AS_baseline, QS_baseline, W_baseline):
+    """
+    Plots precision-recall curve of all sleep states
+    Parameters:
+    - precisions*: list of precisions over range of threshold, per sleep state
+    - recalls*: list of recalls over range of threshold, per sleep state
+    - *_baseline: baseline for performance reference (see paper)
+    """
+
     sns.set_style("whitegrid")
 
     auc_pr_AS = auc(recallsAS, precisionsAS)
@@ -63,6 +70,14 @@ def plot_pr_curve(precisionsAS, recallsAS, precisionsQS, recallsQS, precisionsW,
     plt.savefig(os.path.join(settings.predictions_path,"prcurve.jpg"), format='jpg', dpi=500) 
 
 def get_baseline(target_class, all_true_labels, all_predicted_labels):
+    """
+    Get baseline, important for class imbalance (see paper)
+    Parameters:
+    - target_class: AS, QS, or W
+    - all_true_labels: list of ground truth sleep states per minute
+    - all_predicted_labels: list of all predicted sleep states per minute
+    """
+
     filtered_true_labels = []
     for i in (range(len(all_predicted_labels))):
         if all_predicted_labels[i] != 'reject' and all_true_labels[i] != 'reject':
@@ -72,6 +87,14 @@ def get_baseline(target_class, all_true_labels, all_predicted_labels):
 
 
 def get_metrics(target_class, true_labels = list(), predicted_labels = list()):
+    """
+    Get precision and recall per sleep state
+    Parameters:
+    - target_class: AS, QS, or W
+    - all_true_labels: list of ground truth sleep states per minute
+    - predicted_labels: list of all predicted sleep states per minute
+    """
+
     filtered_true_labels = []
     filtered_predicted_labels = []
     for i in (range(len(predicted_labels))):
@@ -88,8 +111,12 @@ def get_metrics(target_class, true_labels = list(), predicted_labels = list()):
     return precision, recall
 
 def plot_confusion_matrix(true_labels = list(), predicted_labels = list()):
-    #print(true_labels)
-    #print(predicted_labels)
+    """
+    Generate confusion matrix over all full-length videos of the test set.
+    Parameters:
+    - true_labels: list of ground truth sleep states per minute
+    - predicted_labels: list of all predicted sleep states per minute
+    """
     filtered_true_labels = []
     filtered_predicted_labels = []
     for i in (range(len(predicted_labels))):
@@ -112,6 +139,14 @@ def plot_confusion_matrix(true_labels = list(), predicted_labels = list()):
     plt.savefig(os.path.join(settings.predictions_path, "confusion_matrix.jpg"), format='jpg', dpi=500)  
 
 def show_prediction_bar(true_classes, prediction_classes, cur_vid, REM_counts):
+    """
+    Generate prediction bar, showing ground truth and predicted sleep states over a full length video (see paper)
+    Parameters:
+    - true_classes: list of ground truth sleep states per minute
+    - prediction_classes: list of all predicted sleep states per minute
+    - cur_vid: vid to draw prediciton bar for
+    - REM_counts: number of REMs per minute
+    """
     mapping = {
         'AS': 0,
         'QS': 1,
@@ -172,6 +207,16 @@ def show_prediction_bar(true_classes, prediction_classes, cur_vid, REM_counts):
     plt.savefig(os.path.join(settings.predictions_path,cur_vid,"plot.jpg"), dpi=500, format='jpg')  
 
 def is_valid_movement(frag_idx, positions, cur_vid):
+    """
+    Determine if fragment is valid. If infant moves too much, fragment is denied.
+    Parameters:
+    - frag_idx: index of fragment
+    - positions: all localized eye positions over the fragment
+    - cur_vid: vid being processed
+
+    Returns:
+    True, if difference between eye positions across frames is less than max_movement
+    """
     img_path = os.path.join(settings.eye_frag_path, cur_vid, str(frag_idx), "0.jpg")
     image = cv2.imread(img_path)
     height, width, channels = image.shape
@@ -183,16 +228,21 @@ def is_valid_movement(frag_idx, positions, cur_vid):
     min_x = min(positions[0]); max_x = max(positions[0])
     min_y = min(positions[1]); max_y = max(positions[1])
     if (max_x - min_x > max_movement):
-        #(f"FRAG {frag_idx} TOO MUCH MOVEMENT ON X AXIS")
         return False
     if (max_y - min_y > max_movement):
-        #print(f"FRAG {frag_idx} TOO MUCH MOVEMENT ON y AXIS")
         return False
 
     return True
 
 
 def compute_sleep_states(cur_vid):
+    """
+    Compute sleep states for each minute over a full-length video
+    Parameters:
+    - cur_vid: current video being processed, path
+    """
+
+    #Get predictions either of combined model, or open-closed model
     if settings.is_combined:
         pred_df = pd.read_csv(os.path.join(settings.predictions_path,cur_vid, "predictions.csv"), delimiter=';')
     else:
@@ -207,52 +257,57 @@ def compute_sleep_states(cur_vid):
     true_classes = []
     prediction_classes = []
 
-
+    #Save configurations of sleep predictions
     with open(os.path.join(settings.predictions_path,cur_vid, "configurations.csv"), "w") as file:
         file.write("max_movement_fraction;REM_threshold;CREM_threshold;OREM_threshold;AS_REM_count;O_threshold;W_O_count\n")
         file.write(str(max_movement_fraction) + ";" + str(REM_threshold) + ";" + str(CREM_threshold) + ";" + str(OREM_threshold) + ";" + str(AS_REM_count) + ";" + str(O_threshold) + ";" + str(W_O_count) + "\n")
 
+    #Save eye states and sleep state per mintute of video
     with open(os.path.join(settings.predictions_path,cur_vid, "sleep_predictions.csv"), "w") as file:
         file.write("min;state;C;O;CR;OR" + "\n")
 
-    #print(f"{minute_count} minutes detected")
-
-    REM_counts = []
+    REM_counts = [] #Saves number of REM per minute
     for minute in range(minute_count):
-        #print(f"processing minute {minute}")
 
         O = 0; C = 0; O_R = 0; C_R = 0
         for fragment in range(minute*frag_per_min, minute*frag_per_min + frag_per_min):
             row =  frags_df[frags_df['idx'] == fragment]
+            #If fragment does not contain any detections, continue
             if row.empty:
-                #print(f'no fragment idx {fragment} found')
                 continue
+
+            #check if infant moves too much
             positions = row['positions'].apply(ast.literal_eval)
             if(not is_valid_movement(fragment, positions.iloc[0], cur_vid)):
                 continue
 
+            #Get number of frames where eyes are open
             open_count = row['open_count'].iloc[0]
 
-
+            #when using combined model
             if(settings.is_combined):
                 row =  pred_df[pred_df['idx'] == fragment]
 
                 prediction = row['predictions'].iloc[0]
 
-                #TODO misschien andere threshold voor O_R vs C_R?
                 is_REM = True if prediction >= REM_threshold else False
 
+                #Determine eye state of fragment (OR, O, CR, or C)
                 if open_count > O_threshold:
                     if is_REM: O_R += 1
                     else: O += 1
                 else:
                     if is_REM: C_R += 1
                     else: C += 1
+
+            #when using open-closed model
             else:
                 row =  pred_df[pred_df['idx'] == fragment]
 
                 prediction = float(row['predictions'].iloc[0])
                 eye_class = row['class'].iloc[0]
+
+                #Determine eye state of fragment (OR, O, CR, or C)
                 if(eye_class == "O"):
                     if prediction >= OREM_threshold:
                         O_R += 1
@@ -263,12 +318,11 @@ def compute_sleep_states(cur_vid):
                         C_R += 1
                     else:
                         C += 1
-
-            
-        #print(f'O - {O}, OR - {O_R}, C - {C}, CR - {C_R} ')
         
+        #When valid fragments of a minute is less than half, reject
         if(O+C+O_R+C_R < frag_per_min//2):
             sleep_state = "reject"
+        #else, determinute sleep state based on eye states over the minute
         else:
             sleep_state = 'QS'
             if O >= W_O_count:
@@ -278,72 +332,29 @@ def compute_sleep_states(cur_vid):
 
         REM_counts.append(O_R+C_R)
 
-       # print(f'minute {minute} classified as {sleep_state}')
-
         row =  true_pred_df[true_pred_df['idx'] == minute]
         true_classes.append(row['state'].iloc[0])
-        if row['state'].iloc[0] == "reject": sleep_state = "reject"
+        if row['state'].iloc[0] == "reject": sleep_state = "reject" #when ground truth = reject, set predicted to reject
         prediction_classes.append(sleep_state)  
 
+        #Append minute sleep state prediction to csv
         with open(os.path.join(settings.predictions_path,cur_vid, "sleep_predictions.csv"), "a") as file:
             file.write(str(minute) + ";" + str(sleep_state) + ";" + str(C) + ";" + str(O)+ ";" + str(C_R)+ ";" + str(O_R) + "\n")
+
 
     show_prediction_bar(true_classes, prediction_classes, cur_vid, REM_counts)
 
     return true_classes, prediction_classes
 
 
+all_true_classes = []
+all_predicted_classes = []
 
-# precisionsAS = []; recallsAS = []
-# precisionsQS = []; recallsQS = []
-# precisionsW = []; recallsW = []
-for i in range(0, 1):
-    #AS_REM_count = i  
+#process all videos in test set
+for vid in settings.all_vids:          
+    true_classes, prediction_classes = compute_sleep_states(vid[0:-4])
+    all_true_classes += true_classes
+    all_predicted_classes += prediction_classes
+    print(f"vid {vid} -  AS{true_classes.count('AS')}, QS {true_classes.count('QS')}, W {true_classes.count('W')}")
 
-    all_true_classes = []
-    all_predicted_classes = []
-    for vid in settings.all_vids:          
-        true_classes, prediction_classes = compute_sleep_states(vid[0:-4])
-        all_true_classes += true_classes
-        all_predicted_classes += prediction_classes
-
-        print(f"vid {vid} -  AS{true_classes.count('AS')}, QS {true_classes.count('QS')}, W {true_classes.count('W')}")
-
-    plot_confusion_matrix(all_true_classes, all_predicted_classes)
-
-
-    # precisionAS, recallAS = get_metrics("AS", all_true_classes, all_predicted_classes)
-    # precisionQS, recallQS = get_metrics("QS", all_true_classes, all_predicted_classes)
-    # precisionW, recallW = get_metrics("W", all_true_classes, all_predicted_classes)
-
-    # precisionsAS.append(precisionAS)
-    # recallsAS.append(recallAS)
-    # precisionsQS.append(precisionQS)
-    # recallsQS.append(recallQS)
-    # precisionsW.append(precisionW)
-    # recallsW.append(recallW)
-
-# with open(os.path.join(settings.predictions_path,"prs.txt"), "w") as file:
-#     file.write(f"precisions AS: {precisionsAS} \n")
-#     file.write(f"recalls AS: {recallsAS} \n")
-#     file.write(f"precisions QS: {precisionsQS} \n")
-#     file.write(f"recalls QS: {recallsQS} \n")
-#     file.write(f"precisions W: {precisionsW} \n")
-#     file.write(f"recalls W: {recallsW} \n")
-
-# AS_baseline = get_baseline("AS", all_true_classes, all_predicted_classes)
-# QS_baseline = get_baseline("QS", all_true_classes, all_predicted_classes)
-# W_baseline = get_baseline("W", all_true_classes, all_predicted_classes)
-# plot_pr_curve(precisionsAS, recallsAS, precisionsQS, recallsQS, recallsW, precisionsW, AS_baseline, QS_baseline, W_baseline)
-
-
-
-
-
-    
-
-
-    
-
-
-
+plot_confusion_matrix(all_true_classes, all_predicted_classes)

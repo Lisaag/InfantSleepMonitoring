@@ -36,7 +36,6 @@ W_O_count = 5 #number os O in am inute to be classified as W
 
 frag_per_min = 40
 
- 
 
 def plot_confusion_matrix(true_labels = list(), predicted_labels = list()):
     print(true_labels)
