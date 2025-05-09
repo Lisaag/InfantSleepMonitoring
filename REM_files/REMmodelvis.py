@@ -1,11 +1,17 @@
-import matplotlib.pyplot as plt
-import csv
-import os
-#from sklearn.metrics import confusion_matrix
-import seaborn as sns
-import numpy as np
-import settings
+"""
+This script is used to plot confusion matrix, and loss curve.
 
+Author: Lisa Groen
+Date: May 7, 2025
+"""
+
+import csv
+import matplotlib.pyplot as plt
+import numpy as np
+import os
+import seaborn as sns
+
+import settings
 
 def plot_confusion_matrix(path, true_labels = list(), predicted_labels = list()):
     if(len(true_labels) == 0 or len(predicted_labels) == 0):
@@ -59,7 +65,7 @@ def plot_loss_curve(train_losses = list(), val_losses = list(), save_directory=o
     plt.title(f'Training and validation loss')
     plt.legend()
     plt.grid(True)
-    plt.ylim(min(all_losses) - 0.01, 2.0)#max(all_losses) + 0.01)
+    plt.ylim(min(all_losses) - 0.01, 2.0)
     plt.savefig(os.path.join(save_directory,"plot.jpg"), dpi=500, format='jpg')  
 
 

@@ -1,3 +1,10 @@
+"""
+This script is used to validate the YOLO model performance.
+Set the model to the trained weights you want to validate, and make sure to set the corresponding yaml file.
+
+Author: Lisa Groen
+Date: May 9, 2025
+"""
 from ultralytics import YOLO
 
 model = YOLO("runs/OCC/occ3/weights/best.pt")

@@ -1,3 +1,9 @@
+"""
+This script is used to train the REM model to classify REM.
+
+Author: Lisa Groen
+Date: May 9, 2025
+"""
 import settings
 
 import csv
@@ -25,7 +31,7 @@ import re
 
 import REMmodelvis
 
-initial_lr = 0.0001
+initial_lr = 0.00018
 
 def lr_schedule(epoch):
     global initial_lr
@@ -47,12 +53,14 @@ def create_next_numbered_dir(directory):
 
     return new_folder_path
     
+#save model as json file
 def save_model_json(model, path):
     model_json = model.to_json()
 
     with open(os.path.join(path, settings.model_filename), "w") as json_file:
         json_file.write(model_json)
 
+#model architecture
 def create_model(lr = 0.0001, dropout=0.3, l2=0.1, input_shape=(1, 6, 64, 64), seed = 0):
     model = models.Sequential([
         layers.Conv3D(16, kernel_size=(1, 3, 3), padding='same',activation='relu', input_shape=input_shape),
@@ -97,16 +105,18 @@ def REMtrain(val_ids, idx, dir, batch_size, lr, l2, dropout, seed):
 
     val_samples = list(); val_labels = list(); train_samples = list(); train_labels = list()
 
+    #construct dataset
     for patient in os.listdir(settings.data_dir):
         patient_dir:str = os.path.join(settings.data_dir, patient)
-        patient_id:str = patient[0:3]
-        if(patient_id == '440'): continue #don't use patient 440, bad performance
+        patient_id:str = patient[0:3] #patient id is first 3 numbers of file name
         for eye_state in os.listdir(patient_dir):
             if(not settings.is_combined):
+                #Skip closed samples for open model, and open samples for closed model
                 if(settings.is_OREM and (eye_state == "C" or eye_state == "CR")): continue
                 if(not settings.is_OREM and (eye_state == "O" or eye_state == "OR")): continue
             eye_state_dir = os.path.join(patient_dir, eye_state)
             for sample in os.listdir(eye_state_dir):
+                #don't validate on augmented images
                 if(patient_id in val_ids and sample[-3:] == "AUG"):
                     continue
                 sample_dir = os.path.join(eye_state_dir, sample)
@@ -114,6 +124,7 @@ def REMtrain(val_ids, idx, dir, batch_size, lr, l2, dropout, seed):
                 frames = glob.glob(os.path.join(sample_dir, "*.jpg"))
                 sorted_frames = sorted(frames, key=extract_number)
 
+                #Use only 6 evenly spaced frames
                 frame_indices = np.linspace(0, len(sorted_frames) - 1, settings.frame_stack_count, dtype=int).tolist()
 
                 #normalize frames
@@ -162,16 +173,22 @@ def REMtrain(val_ids, idx, dir, batch_size, lr, l2, dropout, seed):
     
     REMmodelvis.plot_loss_curve(history.history['loss'], history.history['val_loss'], save_directory)
 
+
+#Here, model is trained several times with different settings for batch size, initial learning rate, l2 regularization term, and dropout rate.
+#This is done to find the best configuration
 for batch_size in settings.train_batch_size:
     for lr in settings.train_initial_lr:
         initial_lr=lr
         for l2 in settings.train_l2:
             for dropout in settings.train_dropout:   
                 for seed in settings.seeds:
-                    save_dir = create_next_numbered_dir(os.path.join(os.path.abspath(os.getcwd()),"REM-results"))    
+                    #create new dir to save train results
+                    save_dir = create_next_numbered_dir(os.path.join(os.path.abspath(os.getcwd()),"REM-results"))
+                    #save training configurations    
                     with open(os.path.join(save_dir, "train_config.csv"), "w") as file:
                         file.write("batch_size,lr,l2,dropout" + "\n")   
                         file.write(f'{batch_size},{lr},{l2},{dropout}' + "\n")
-                        file.write(settings.data_dir)   
+                        file.write(settings.data_dir) 
+                    #train the model using given configuration  
                     for idx, val_ids in enumerate(settings.val_ids):
                         REMtrain(val_ids, idx, save_dir, batch_size, lr, l2, dropout, seed)

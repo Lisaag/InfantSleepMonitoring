@@ -1,3 +1,10 @@
+"""
+Used to train yolo model, but this can also be done in the cli.
+
+Author: Lisa Groen
+Date: May 9, 2025
+"""
+
 from ultralytics import YOLO
 
 model = YOLO("yolo11l.pt")

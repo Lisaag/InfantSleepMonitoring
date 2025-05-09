@@ -1,3 +1,10 @@
+"""
+Used to plot loss curves, precision, recall, and mAP curves. By default, yolo generates these curves, but this file can be used to create these with a custom style.
+
+Author: Lisa Groen
+Date: May 9, 2025
+"""
+
 import pandas as pd
 import os
 

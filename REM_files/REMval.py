@@ -1,3 +1,10 @@
+"""
+This script is used to validate the REM model on the validation set.
+
+Author: Lisa Groen
+Date: May 9, 2025
+"""
+
 import os
 os.environ["SM_FRAMEWORK"] = "tf.keras"
 import tensorflow as tf
@@ -20,24 +27,35 @@ from sklearn.metrics import precision_score, recall_score, roc_auc_score, accura
 import statistics
 import seaborn as sns
 
-
+#used for t-sne plot
 def scale_to_01_range(x):
     value_range = (np.max(x) - np.min(x))
     starts_from_zero = x - np.min(x)
     return starts_from_zero / value_range
 
+#get number from file name
 def extract_number(filename):
     match = re.search(r'(\d+)(?=\.jpg$)', filename)
     return int(match.group(1)) if match else float('inf')
 
+#load model saved as json
 def load_model_json(path):
     with open(path, "r") as json_file:
         loaded_model_json = json_file.read()
 
     return models.model_from_json(loaded_model_json)
 
-#precision recall curve
 def plot_pr_curve(precision, recall, best_threshold, best_idx, path):
+    """
+    Plot pr curve over a range of sigmoid thresholds.
+
+    Parameters:
+    precision: list of precisions over range of threshold
+    recall: list of recalls over range of threshold
+    best_threshold: threshold with highest F1
+    best_idx: idx with highest F1
+    path: save path
+    """
     sns.set_style("whitegrid")
 
     plt.figure(figsize=(8, 6))
@@ -50,8 +68,17 @@ def plot_pr_curve(precision, recall, best_threshold, best_idx, path):
     plt.legend()
     plt.savefig(os.path.join(path,"prcurve.jpg"), format='jpg', dpi=500)  
 
-#tsne plot, showing for both training and validation data
 def plot_tsne_both(model, path, samples, val_labels, train_labels):
+    """
+    Scatter plot using t-sne. This shows plot for both samples from training, and validation set
+
+    Parameters:
+    model: model, used to get the last dense layer, used to get the feature vectors that are used as tsne input
+    path: save path
+    samples: all samples to apply tsne to
+    val_labels: class labels of validation set
+    train_labels: class labels of train set
+    """
     model2 = tf.keras.Model(inputs=model.input, outputs=model.layers[-2].output)
     features = model2(samples)
 
@@ -84,8 +111,16 @@ def plot_tsne_both(model, path, samples, val_labels, train_labels):
     plt.legend(loc='best')
     plt.savefig(os.path.join(path,"tsne_both.jpg"), format='jpg', dpi=500)  
 
-#tsne plot for 2 classes
 def plot_tsne(model, path, val_samples_stacked, true_labels):
+    """
+    Scatter plot using t-sne. This shows plot for validation samples, either for O/OR, C/CR, or -/REM
+
+    Parameters:
+    model: model, used to get the last dense layer, used to get the feature vectors that are used as tsne input
+    path: save path
+    val_samples_stacked: all samples to apply tsne to (all from validation set)
+    true_labels: class labels of validation set
+    """
     model2 = tf.keras.Model(inputs=model.input, outputs=model.layers[-2].output)
     features = model2(val_samples_stacked)
 
@@ -114,8 +149,16 @@ def plot_tsne(model, path, val_samples_stacked, true_labels):
     plt.legend(loc='best')
     plt.savefig(os.path.join(path,"tsne.jpg"), format='jpg', dpi=500)  
 
-#When using the combined REM model, plot tsne for all 4 classes
 def plot_tsne_all(model, path, val_samples_stacked, all_labels):
+    """
+    Scatter plot using t-sne. This shows plot for all validation samples of the combined model, and color codes them by class O/OR/C/CR (see paper)
+
+    Parameters:
+    model: model, used to get the last dense layer, used to get the feature vectors that are used as tsne input
+    path: save path
+    val_samples_stacked: all samples to apply tsne to (all from validation set)
+    all_labels: class labels of validation set, given as O/OR/C/CR (not only as -/REM)
+    """
     mapping = {'O': 0, 'OR': 1, 'C': 2, 'CR': 3}
     all_labels = [mapping[element] for element in all_labels]
 
@@ -167,7 +210,6 @@ def get_validation_data(fold):
     for patient in os.listdir(settings.data_dir):
         patient_dir:str = os.path.join(settings.data_dir, patient)
         patient_id:str = patient[0:3]
-        if(patient_id == '440'): continue #skip patient 440, bad performance
 
         for eye_state in os.listdir(patient_dir):
             if(not settings.is_combined):
@@ -212,9 +254,18 @@ def get_validation_data(fold):
 
     return val_samples_stacked, val_labels, train_samples_stacked, train_labels, all_labels
 
-#run inference on test set, and get performance metrics
 def validate_model(run, fold, path):
-    print(path)
+    """
+    run inference on test set, and get performance metrics
+
+    Parameters:
+    run: index of train run
+    fold: index of fold (bc we use k-fold cross validation)
+    path: save path
+
+    Returns:
+    accuracy, pr, rec, ap, auc, f1 performance metrics
+    """
     model = load_model_json(os.path.join(path, settings.model_filename))
     model.load_weights(os.path.join(path, settings.checkpoint_filename))
 
@@ -251,14 +302,15 @@ def validate_model(run, fold, path):
     return accuracy, pr, rec, ap, auc, f1
 
 
+
+
 with open(os.path.join(settings.results_dir, "metrics.csv"), "w") as file:
     file.write("run,m_accuracy,m_precision,m_recall,m_AUC,auc,mF1" + "\n")
 
-
+#save performance metrics over multiple runs & multiple folds, so later the mean and stdv can be taken
 all_APs = []
 all_means = []
 all_stds = []
-
 
 #Get average metrics over train runs and over the 5 folds
 for run in os.listdir(settings.results_dir):

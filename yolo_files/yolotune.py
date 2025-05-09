@@ -1,3 +1,10 @@
+"""
+Used to tune data augmentation params, using a genetic algorithm
+
+Author: Lisa Groen
+Date: May 9, 2025
+"""
+
 from ultralytics import YOLO
 
 model = YOLO("yolo11l.pt")

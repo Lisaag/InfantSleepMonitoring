@@ -1,13 +1,26 @@
+"""
+This script is used to show a box plot of difference in AP between train runs (see paper), for each train fold.
+
+Author: Lisa Groen
+Date: May 7, 2025
+"""
+
 import pandas as pd
 import matplotlib.pyplot as plt
+import numpy as np
+import os
 import seaborn as sns
 
-import os
 import settings
 
-import numpy as np
 
-def make_boxplot(data, classes):
+def make_boxplot(APs, folds):
+    """
+    Compute sleep states for each minute over a full-length video
+    Parameters:
+    - APs: all APs over train runs
+    - folds: fold indices
+    """
     plt.figure()
     sns.set_style("whitegrid")
     plt.ylim(0.4, 1.0)
@@ -15,12 +28,12 @@ def make_boxplot(data, classes):
     palette = sns.color_palette("husl", 5)
 
     df = pd.DataFrame({
-    "Fold": classes,
-    "AP": data
+    "Fold": folds,
+    "AP": APs
     })
 
     sns.boxplot(x="Fold", y="AP", hue="Fold", data=df, palette=palette, width=0.6, legend=False)
-    #sns.stripplot(x="Folds", y="AP", hue="Folds", palette=palette,  data=df, color="black", jitter=True, alpha=0.6, legend=False)
+
     for i, fold in enumerate(df["Fold"].unique()):
         values = df[df["Fold"] == fold]["AP"]
         x_jitter = np.random.normal(loc=i, scale=0.05, size=len(values)) - 0.5 # Small jitter
@@ -30,28 +43,27 @@ def make_boxplot(data, classes):
     plt.savefig(os.path.join(settings.results_dir, "boxplot.jpg"), format='jpg', dpi=500)  
 
 
-
-
-
 APs = []
-classes = []
+folds = []
 
+#run folder name is integer
 for run in os.listdir(settings.results_dir):
     if(not run.isdigit()): continue
 
+    #path to metrics csv, where APs are saved
     path = os.path.join(settings.results_dir, run, "metrics.csv")
 
+    #get metrics over all train runs
     metrics = pd.read_csv(path)
 
+    #5 = number of folds
     for fold in range(5):
         result = metrics.loc[metrics["fold"] == fold, "AP"]
         AP = result.iloc[0] if not result.empty else None
         APs.append(AP)
-        classes.append(fold+1)
-        print(fold)
-        print(AP)
+        folds.append(fold+1)
 
-make_boxplot(APs, classes)
+make_boxplot(APs, folds)
 
 
 

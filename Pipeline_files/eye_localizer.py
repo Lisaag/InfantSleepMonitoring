@@ -22,7 +22,7 @@ def get_frame_count(path):
     return int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     
 
-def track_vid_aabb(frag_idx:int, vid_path:str):
+def track_eyes(frag_idx:int, vid_path:str):
     """
     Track localized instances of eyes across frames of a 1.5 second fragment
 
@@ -116,7 +116,7 @@ def detect_vid(vid_path:str):
         fragment_count = int((frame_count - (frame_count % settings.fragment_length)) / settings.fragment_length)
 
         for i in range(fragment_count):
-            boxes = track_vid_aabb(i, vid_path)
+            boxes = track_eyes(i, vid_path)
             save_boxes_csv(boxes, i)
     
 

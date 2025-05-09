@@ -1,12 +1,19 @@
+"""
+This script is used to cut fragments from full-length video's.
+You need a csv file where the timestamp are given for a fragment, and the video path.
+
+Author: Lisa Groen
+Date: May 7, 2025
+"""
+
 from moviepy.video.io.VideoFileClip import VideoFileClip
 import os
-
 import pandas as pd
 
 
-def cut_video(file_name:str, start_time:str, input_file:str, output_dir:str):
+def cut_video(file_name:str, start_time:str, input_file_path:str, output_dir:str):
     try:
-        video = VideoFileClip(input_file)
+        video = VideoFileClip(input_file_path)
 
         fragment_length = 1.5
         aug_offset = 0.1
@@ -50,4 +57,3 @@ for i in range(len(df_all)):
     print(f"{i} - {input_file}")
 
     cut_video(df_all["filename"][i], df_all["timestamp"][i], input_file, output_dir)
-    

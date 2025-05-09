@@ -1,16 +1,28 @@
+"""
+This script is used to track eyes, and save bounding boxes of eye with highest mean confidence score of fragments for the REM dataset.
+
+Author: Lisa Groen
+Date: May 7, 2025
+"""
 import cv2
-from ultralytics import YOLO
-from pathlib import Path
-import os
-import numpy as np
-from itertools import chain 
 from collections import defaultdict
-import statistics
-import ast
-import shutil
+import os
+from ultralytics import YOLO
 
 
-def track_vid_aabb(relative_weights_path:str, root_dir:str, file_name:str):
+
+def track_eyes(relative_weights_path:str, root_dir:str, file_name:str):
+    """
+    Track eyes, omit localizations with only few detections
+
+    Parameters:
+    relative_weights_path: relative path to YOLO weights (trained to localize infants eyes)
+    root_dir: root dir of video
+    file_name: video file name
+
+    Returns:
+    box_history: contains frame index, and bounding box/confidence score/class information over the fragment of the whole fragment. Can be of 2 eyes in case of 2 localized eyes
+    """
     weights_path = os.path.join(os.path.abspath(os.getcwd()), relative_weights_path)
     model = YOLO(weights_path)
 
@@ -32,7 +44,7 @@ def track_vid_aabb(relative_weights_path:str, root_dir:str, file_name:str):
         results = model.track(frame, verbose=False, persist=True)
 
         # Draw predictions on the frame
-        for result in results:  # Iterate through detections
+        for result in results:  
             boxes = result.boxes  # Get bounding boxes
             if(boxes.id == None): continue
 
@@ -59,7 +71,17 @@ def track_vid_aabb(relative_weights_path:str, root_dir:str, file_name:str):
     
     return box_history
 
+
 def write_bbox(boxes:defaultdict, video_input_path:str, root_dir:str, file_name:str):
+    """
+    Write bbox over video, for debugging purpose
+
+    Parameters:
+    boxes: bbox info over fragment
+    video_input_path: root path of video
+    file_name: video file name
+
+    """
     box_data = list()
 
     ratio = 1/1
@@ -116,7 +138,16 @@ def write_bbox(boxes:defaultdict, video_input_path:str, root_dir:str, file_name:
     out_bbox.release()
     cv2.destroyAllWindows()
 
+
 def save_boxes_csv(boxes:defaultdict, root_dir:str, file_name:str):
+    """
+    Save bbox info to csv file
+
+    Parameters:
+    boxes: bboxes, over fragment
+    root_dir: dir of video file
+    file_name: file name of video file
+    """
     fragement_dir = os.path.join(root_dir, file_name.replace(".mp4", ""))
 
     if not os.path.exists(fragement_dir):
@@ -137,6 +168,12 @@ def save_boxes_csv(boxes:defaultdict, root_dir:str, file_name:str):
 
 
 def detect_vid(relative_weights_path:str):
+    """
+    Detect eyes in video
+
+    Parameters:
+    relative_weights_path: path to YOLO eye localization wegiths
+    """
     root_dir:str = os.path.join(os.path.abspath(os.getcwd()), "REM", "raw", "cutout")
     frames_dir:str = os.path.join(os.path.abspath(os.getcwd()), "REM", "raw", "frames")
 
@@ -146,7 +183,7 @@ def detect_vid(relative_weights_path:str):
         for eye_state_dir in os.listdir(patient_dir):
             fragment_dir:str = os.path.join(patient_dir, eye_state_dir)
             for fragment_file in os.listdir(fragment_dir):
-                all_boxes = track_vid_aabb(relative_weights_path, fragment_dir, fragment_file)
+                all_boxes = track_eyes(relative_weights_path, fragment_dir, fragment_file)
                 save_boxes_csv(all_boxes, os.path.join(frames_dir, patient, eye_state_dir), fragment_file)
                 write_bbox(all_boxes, fragment_dir, os.path.join(frames_dir, patient, eye_state_dir), fragment_file)
 

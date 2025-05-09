@@ -1,3 +1,9 @@
+"""
+This (extra) script to again get all box positions over fragments (after already processing the data). In case this info is lost
+
+Author: Lisa Groen
+Date: April 30, 2025
+"""
 import ast
 from collections import defaultdict
 import os
@@ -51,21 +57,19 @@ with open(os.path.join(fragment_path, "info.csv"), "w") as file:
     file.write("idx;positions;open_count" + "\n")
 
 
+vid = "INSERT VID NAME"
+
 df_bboxes = pd.read_csv(os.path.join(settings.eye_loc_path, settings.cur_vid +".csv"), delimiter=';')
 
-for vid in range(2, 19):  
-    vid_path = os.path.join(os.path.abspath(os.getcwd()), str(vid)+"_out.mp4")
-
-    frame_count = get_frame_count(vid_path) 
-    fragment_count = int((frame_count - (frame_count % settings.fragment_length)) / settings.fragment_length)
-
-    for i in range(0, fragment_count):
-        fragment = i + ((vid-2) * 120) #120 1.5 second fragments in all 3 mins
-        print(f'Processing fragment {fragment} out of {fragment_count}')
-        boxes, classes = get_boxes(df_bboxes, fragment)
-        if boxes is None: 
-            print(f"NO DETECTIONS FOR FRAGMENT {fragment}")
-            continue
-
-        with open(os.path.join(fragment_path, "info.csv"), "a") as file:
-            file.write(str(fragment) + ";" + str([[(x1+x2)//2, (y1+y2)//2] for box in boxes if box is not None for x1, y1, x2, y2 in [box]])+ ";" + str(classes.count(1.0)) + "\n")
+vid_path = os.path.join(os.path.abspath(os.getcwd()), str(vid)+"_out.mp4")
+frame_count = get_frame_count(vid_path) 
+fragment_count = int((frame_count - (frame_count % settings.fragment_length)) / settings.fragment_length)
+for i in range(0, fragment_count):
+    fragment = i + ((vid-2) * 120) #120 1.5 second fragments in all 3 mins
+    print(f'Processing fragment {fragment} out of {fragment_count}')
+    boxes, classes = get_boxes(df_bboxes, fragment)
+    if boxes is None: 
+        print(f"NO DETECTIONS FOR FRAGMENT {fragment}")
+        continue
+    with open(os.path.join(fragment_path, "info.csv"), "a") as file:
+        file.write(str(fragment) + ";" + str([[(x1+x2)//2, (y1+y2)//2] for box in boxes if box is not None for x1, y1, x2, y2 in [box]])+ ";" + str(classes.count(1.0)) + "\n")
